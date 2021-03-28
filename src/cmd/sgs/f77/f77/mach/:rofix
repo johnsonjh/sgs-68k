@@ -1,0 +1,10 @@
+
+# MOT :rofix	7.1	
+
+#ident	"@(#)f77/f77/mach::rofix	25.1"
+
+ed $1 <<!
+g/^[ 	]*\.data/s/data/text/
+w
+q
+!

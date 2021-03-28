@@ -1,0 +1,52 @@
+#	START NEW ARIX SCCS HEADER
+#
+#	@(#) README.ses: version 25.1 created on 12/2/91 at 14:55:00
+#
+#	Copyright (c) 1990 by Arix Corporation
+#	All Rights Reserved
+#
+#	@(#)README.ses	25.1	12/2/91 Copyright (c) 1990 by Arix Corporation
+#
+#	END NEW ARIX SCCS HEADER
+#
+===============================================================================
+efl								V.3 upgrade
+
+Fri Sep  5 09:11:51 PDT 1986					kelly
+
+	DESCRIPTION: Original port. Used to put together the "S"
+	Source. No changes between the old efl source and the V.3 source.
+
+	I have no idea what csav.s does.
+
+	FIX:
+
+	FILES:
+
+===============================================================================
+
+===============================================================================
+SPR # N/A
+Tue Nov 29 20:35:16 PST 1988
+sherwood
+sw#
+	DESCRIPTION: Corrupted directory.. had a bad file name 11572.
+
+	FIX/DISCUSSION: I deleted the file.
+
+	FILES:
+
+	RELEASE NOTE: (Document one or more of the following.)
+
+No release note is needed because:
+
+ENHANCEMENT:  
+PROBLEM_FIX:  
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+===============================================================================

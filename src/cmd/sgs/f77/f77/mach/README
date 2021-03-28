@@ -1,0 +1,23 @@
+#	START NEW ARIX SCCS HEADER
+#
+#	@(#) README: version 25.1 created on 12/2/91 at 17:35:45
+#
+#	Copyright (c) 1990 by Arix Corporation
+#	All Rights Reserved
+#
+#	@(#)README	25.1	12/2/91 Copyright (c) 1990 by Arix Corporation
+#
+#	END NEW ARIX SCCS HEADER
+#
+/*	MOT:README	7.1		*/
+
+#ident	"@(#)f77/f77/mach:README	25.1"
+
+The f77 compiler for the 5.0 UNIX release can be built in two ways.
+The makefile "f77.mk" makes the traditional 2-pass version which is
+recommended for swapped systems.
+The makefile "f771p.mk" makes the new 1-pass version, suitable for
+paged systems or ones in which one can afford to run f77 pretty much
+by itself with no other large jobs.
+For the first time, f77 is tagging along the f* files from pcc since
+they are fortran specific and the 1-pass version grabs pcc stuff itself.

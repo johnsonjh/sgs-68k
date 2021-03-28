@@ -1,0 +1,470 @@
+/*#	ATT: ident	"efl:defs	1.5"*/
+
+#ident	"@(#)efl:defs	25.1"
+
+#include "stdio.h"
+
+#define NO  0
+#define YES 1
+
+#define CNULL (char *) 0
+#define PNULL (ptr) 0
+#define CHNULL (chainp) 0
+
+#define HASHEDTABLE 1
+
+#define XL	6
+
+#define NFTNTYPES 7
+#define NEFLTYPES 13
+
+#define MEMSIZE 12100
+#define YYMAXDEPTH 250
+
+#define MAXSTNO 200
+#define MAXINCLUDEDEPTH 10
+#define MAXBLOCKDEPTH 30
+#define MAXINDIFS 150
+#define MAXFTNAMES 250
+#define MAXEFLNAMES 300
+#define MAXSWITCH 100
+
+#define EXECPOOL 20
+#define EXPRPOOL 40
+
+#define NAMESPERLINE 6
+
+#define LINESPACES 66
+#define INDENTSPACES 3
+
+typedef int *ptr;
+
+extern struct chain
+	{
+	ptr nextp;
+	ptr datap;
+	} ;
+
+typedef struct chain *chainp;
+
+extern int yylineno;
+extern int dumpic;
+extern int memdump;
+extern int dbgflag;
+extern int nowarnflag;
+extern int nocommentflag;
+extern int verbose;
+extern int dumpcore;
+#define TEST if(dbgflag)
+#define efgetc (efmacp?*efmacp++:getc(yyin))
+extern char msg[];
+
+#define UNIX 1
+#define GCOS 2
+#define GCOSBCD 3
+#define CRAY	4
+#define IBM	5
+
+#define FIELDMAX 32768.
+
+#define ALLOC(x) (struct x *) intalloc(sizeof(struct x))
+
+extern FILE *diagfile;
+extern FILE *codefile;
+extern FILE *yyin;
+extern FILE *fileptrs[];
+extern char *filenames[];
+extern char *basefile;
+extern int  filelines[];
+extern int filedepth;
+extern char *efmacp;
+extern char *filemacs[];
+extern int pushchars[];
+
+extern struct fileblock *iifilep;
+
+extern int mem[];
+extern unsigned int nmemused;
+extern long int totfreed;
+extern long int totalloc;
+
+extern int nhid[];
+extern int ndecl[];
+
+extern int indifs[];
+extern int nxtindif;
+extern int afterif;
+
+extern neflnames;
+
+extern int nftnch;
+extern int nftncont;
+
+extern char ftnames[MAXFTNAMES][7];
+extern int nftnames;
+extern int nftnm0;
+extern int impltype[];
+extern int ftnmask[];
+
+extern double fieldmax;
+extern int ftnefl[];
+extern int eflftn[];
+
+extern ptr thisexec;
+extern ptr thisctl;
+extern int pushlex;
+extern int igeol;
+extern int ateof;
+extern int eofneed;
+extern int forcerr;
+extern int comneed;
+extern int optneed;
+extern int defneed;
+extern int lettneed;
+extern int iobrlevel;
+
+extern int prevbg;
+
+extern chainp hidlist;
+extern chainp commonlist;
+extern chainp tempvarlist;
+extern chainp temptypelist;
+extern chainp gonelist;
+extern int blklevel;
+extern int ctllevel;
+extern int dclsect;
+extern int instruct;
+extern int inbound;
+extern int inproc;
+
+extern int ncases;
+extern ptr comments;
+extern ptr prevcomments;
+extern ptr genequivs;
+extern ptr arrays;
+extern ptr generlist;
+extern ptr knownlist;
+
+extern int graal;
+extern ptr procname;
+extern int procclass;
+extern ptr thisargs;
+
+extern int langopt;
+extern int dotsopt;
+extern int dbgopt;
+extern int dbglevel;
+
+extern int stnos[];
+extern int nxtstno;
+extern int constno;
+extern int labno;
+extern int nerrs;
+extern int nbad;
+extern int nwarns;
+
+struct headbits
+	{
+	unsigned int tag:8;
+	unsigned int subtype:8;
+	unsigned int blklevel:8;
+	};
+
+extern struct fileblock
+	{
+	FILE *fileptr;
+	char filename[20];
+	};
+
+extern struct fileblock *ibfile;
+extern struct fileblock *icfile;
+extern struct fileblock *idfile;
+extern struct fileblock *iefile;
+
+
+extern struct comentry
+	{
+	struct headbits header;
+	char comname[7];
+	long int comleng;
+	unsigned int cominit:2;
+	chainp comchain;
+	} ;
+
+extern struct stentry
+	{
+	struct headbits header;
+	char *namep;
+	ptr varp;
+	int hashval;
+	};
+
+extern struct stentry *hashtab[];
+extern struct stentry **hashend;
+
+extern struct typeblock
+	{
+	struct headbits header;
+	ptr sthead;
+	ptr strdesc;
+	int stralign;
+	int strsize;
+	int basetypes;
+	} ;
+
+extern struct keyblock
+	{
+	struct headbits header;
+	ptr sthead;
+	} ;
+
+
+extern struct varblock
+	{
+	struct headbits header;
+	ptr sthead;
+	ptr vinit;
+		unsigned int vadjdim:1;
+		unsigned int vdcldone:1;
+		unsigned int vdclstart:1;
+		unsigned int vnamedone:1;
+		unsigned int vprec:1;
+		unsigned int vext:1;
+		unsigned int vproc:2;
+		unsigned int needpar:1;
+		unsigned int vtype:4;
+		unsigned int vclass:3;
+	ptr vtypep;
+	ptr vdim;
+	ptr vsubs;
+	ptr voffset;
+	int vextbase;
+	int vbase[NFTNTYPES];
+	} ;
+
+extern struct atblock
+	{
+	int atprec;
+	int attype;
+	int atext;
+	int atclass;
+	ptr attypep;
+	ptr atcommon;
+	ptr atdim;
+	} ;
+
+extern struct dimblock
+	{
+	ptr nextp;
+	ptr lowerb;
+	ptr upperb;
+	} ;
+
+extern struct exprblock	/* must be same size as varblock */
+	{
+	struct headbits header;
+	ptr leftp;
+	ptr rightp;
+		unsigned int vadjdim:1;
+		unsigned int vdcldone:1;
+		unsigned int vdclstart:1;
+		unsigned int vnamedone:1;
+		unsigned int vprec:1;
+		unsigned int vext:1;
+		unsigned int vproc:2;
+		unsigned int needpar:1;
+		unsigned int vtype:4;
+		unsigned int vclass:3;
+	ptr vtypep;
+	ptr vdim;
+	ptr vsubs;
+	ptr voffset;
+	int vextbase;
+	int vbase[NFTNTYPES];
+	} ;
+
+
+extern struct execblock
+	{
+	struct headbits header;
+	ptr temps;
+	int labelno;
+		unsigned int uniffable:1;
+		unsigned int brnchend:1;
+		unsigned int labeled:1;
+		unsigned int copylab:1;
+		unsigned int labdefined:1;
+		unsigned int labused:1;
+		unsigned int labinacc:1;
+	ptr execdesc;
+	ptr prevexec;
+	int nxtlabno;
+	int nftnst;
+	} ;
+
+
+extern struct ctlblock	/* must be same size as execblock */
+	{
+	struct headbits header;
+	ptr loopvar;
+	ptr loopctl;
+	ptr prevctl;
+	int nextlab;
+	int breaklab;
+	int xlab;
+	int indifn;
+	} ;
+
+extern struct caseblock
+	{
+	struct headbits header;
+	ptr nextcase;
+	int labelno;
+		unsigned int uniffable:1;
+		unsigned int brnchend:1;
+		unsigned int labeled:1;
+		unsigned int copylab:1;
+		unsigned int labdefined:1;
+		unsigned int labused:1;
+		unsigned int labinacc:1;
+	ptr casexpr;
+	} ;
+
+extern struct labelblock
+	{
+	struct headbits header;
+	ptr sthead;
+	int labelno;
+		unsigned int uniffable:1;
+		unsigned int brnchend:1;
+		unsigned int labeled:1;
+		unsigned int copylab:1;
+		unsigned int labdefined:1;
+		unsigned int labused:1;
+		unsigned int labinacc:1;
+	} ;
+
+extern struct defblock
+	{
+	struct headbits header;
+	ptr sthead;
+	char *valp;
+	} ;
+
+extern struct doblock
+	{
+	struct headbits header;
+	ptr dovar;
+	ptr dopar[3];
+	} ;
+
+extern struct fieldspec
+	{
+	struct headbits header;
+	ptr flbound;
+	ptr frange;
+	ptr frshift;
+	int fanymore;
+	} ;
+
+
+extern struct genblock
+	{
+	struct headbits header;
+	ptr nextgenf;
+	char *genname;
+	char *genfname[NEFLTYPES];
+	int genftype[NEFLTYPES];
+	} ;
+
+
+extern struct knownname
+	{
+	struct headbits header;
+	ptr nextfunct;
+	char *funcname;
+	int functype;
+	} ;
+
+extern struct iostblock
+	{
+	struct headbits header;
+	ptr leftp;	/* padding */
+	ptr right;	/* padding */
+		unsigned int vadjdim:1;
+		unsigned int vdcldone:1;
+		unsigned int vdclstart:1;
+		unsigned int vnamedone:1;
+		unsigned int vprec:1;
+		unsigned int vext:1;
+		unsigned int vproc:2;
+		unsigned int needpar:1;
+		unsigned int vtype:4;
+		unsigned int vclass:3;
+	int iokwd;
+	ptr iounit;
+	ptr iolist;
+	int iojunk[7];	/* padding */
+	} ;
+
+extern struct ioitem
+	{
+	struct headbits header;
+	ptr ioexpr;
+	char *iofmt;
+	int nrep;
+	} ;
+
+
+struct iogroup
+	{
+	struct headbits header;
+	struct doblock *doptr;
+	char *iofmt;
+	int nrep;
+	ptr ioitems;
+	};
+
+
+extern struct tailoring
+	{
+	int ftnsys;
+	int errmode;
+	int charcomp;
+	int ftnin;
+	int ftnout;
+	int ftncontnu;
+	char *procheader;
+	char *lngcxtype;
+	char *lngcxprefix;
+	int ftnchwd;
+	int ftnsize[NFTNTYPES];
+	int ftnalign[NFTNTYPES];
+	char *dfltfmt[NEFLTYPES];
+	int hollincall;
+	int deltastno;
+	int dclintrinsics;
+	int ftn77;
+	}  tailor;
+
+
+extern struct system
+	{
+	char *sysname;
+	short sysno;
+	short chperwd;
+	short idig;
+	short rdig;
+	short ddig;
+	} systab[];
+
+
+
+
+
+/* Declarations of popular functions */
+
+char *copys(), *convic(), *procnm();
+ptr cpexpr(), compconst(), simple(), mknode(), mkint(), mkconst();
+ptr intalloc(), calloc(), allexcblock(), allexpblock();
+ptr mkcall(), coerce(), fold(), buil

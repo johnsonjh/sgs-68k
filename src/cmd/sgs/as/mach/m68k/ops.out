@@ -1,0 +1,585 @@
+#ident	"@(#)ops.out	25.1	12/2/91 Copyright (c) 1991 by Arix Corp."
+
+
+/*	OLD MOT:ops.out	7.1			*/
+/*			Assembler Directives				*/
+{"file",	PSEUDO,		IFILE-256,	0,	0x0L},
+{"ln",		PSEUDO,		ILN-256,	0,	0x0L},
+{"def",		PSEUDO,		IDEF-256,	0,	0x0L},
+{"endef",	PSEUDO,		IENDEF-256,	0,	0x0L},
+{"val",		PSEUDO,		IVAL-256,	0,	0x0L},
+{"type",	PSEUDO,		ITYPE-256,	0,	0x0L},
+{"typeq",	PSEUDO,		ITYPEQ-256,	0,	0x0L},
+{"line",	PSEUDO,		ILINE-256,	0,	0x0L},
+{"scl",		PSEUDO,		ISCL-256,	0,	0x0L},
+{"tag",		PSEUDO,		ITAG-256,	0,	0x0L},
+{"size",	PSEUDO,		ISIZE-256,	0,	0x0L},
+{"dim",		PSEUDO,		IDIM-256,	0,	0x0L},
+{"set",		PSEUDO,		ISET-256,	0,	0x0L},
+{"global",	PSEUDO,		IGLOBAL-256,	0,	0x0L},
+{"data",	PSEUDO,		IDATA-256,	0,	0x0L},
+{"text",	PSEUDO,		ITEXT-256,	0,	0x0L},
+{"byte",	PSEUDO,		IBYTE-256,	0,	0x0L},
+{"short",	PSEUDO,		ISHORT-256,	0,	0x0L},
+{"long",	PSEUDO,		ILONG-256,	0,	0x0L},
+{"space",	PSEUDO,		ISPACE-256,	0,	0x0L},
+{"org",		PSEUDO,		IORG-256,	0,	0x0L},
+{"comm",	PSEUDO,		ICOMM-256,	0,	0x0L},
+{"lcomm",	PSEUDO,		ILCOMM-256,	0,	0x0L},
+{"even",	PSEUDO,		IEVEN-256,	0,	0x0L},
+{"align",	PSEUDO,		IALIGN-256,	0,	0x0L},
+{"swbeg",	PSEUDO,		ISWBEG-256,	0,	0x0L},
+{"ident",	PSEUDO,		IIDENT-256,	0,	0x0L},
+{"section",	PSEUDO,		ISECTION-256,	0,	0x0L},
+{"init",	PSEUDO,		IINIT-256,	0,	0x0L},
+{"version",	PSEUDO,		IVERSION-256,	0,	0x0L},
+{"prec",	PSEUDO,		IPREC-256,	0,	0x0L},	/* M68881 option */
+{"round",	PSEUDO,		IROUND-256,	0,	0x0L},	/* M68881 option */
+
+/*				Registers				*/
+{"%d0",		ADREG,		REG-256,	0,	0x0L},
+{"%d1",		ADREG,		REG-256,	0,	0x1L},
+{"%d2",		ADREG,		REG-256,	0,	0x2L},
+{"%d3",		ADREG,		REG-256,	0,	0x3L},
+{"%d4",		ADREG,		REG-256,	0,	0x4L},
+{"%d5",		ADREG,		REG-256,	0,	0x5L},
+{"%d6",		ADREG,		REG-256,	0,	0x6L},
+{"%d7",		ADREG,		REG-256,	0,	0x7L},
+{"%a0",		AAREG,		REG-256,	0,	0x0L},
+{"%a1",		AAREG,		REG-256,	0,	0x1L},
+{"%a2",		AAREG,		REG-256,	0,	0x2L},
+{"%a3",		AAREG,		REG-256,	0,	0x3L},
+{"%a4",		AAREG,		REG-256,	0,	0x4L},
+{"%a5",		AAREG,		REG-256,	0,	0x5L},
+{"%a6",		AAREG,		REG-256,	0,	0x6L},
+{"%fp",		AAREG,		REG-256,	0,	0x6L},
+{"%a7",		AAREG,		REG-256,	0,	0x7L},
+{"%sp",		AAREG,		REG-256,	0,	0x7L},
+{"%pc",		PCREG,		REG-256,	0,	PCREG},
+{"%cc",		CCREG,		REG-256,	0,	CCREG},
+{"%sr",		SRREG,		REG-256,	0,	SRREG},
+{"%sfc",	CTLREG,		REG-256,	0,	0x000L},
+{"%dfc",	CTLREG,		REG-256,	0,	0x001L},
+{"%cacr",	CTLREG,		REG-256,	0,	0x002L},
+#ifdef	M68040
+{"%tc",		CTLREG,		REG-256,	0,	0x003L},
+{"%itt0",	CTLREG,		REG-256,	0,	0x004L},
+{"%itt1",	CTLREG,		REG-256,	0,	0x005L},
+{"%dtt0",	CTLREG,		REG-256,	0,	0x006L},
+{"%dtt1",	CTLREG,		REG-256,	0,	0x007L},
+#endif
+{"%usp",	CTLREG,		REG-256,	0,	0x800L},
+{"%vbr",	CTLREG,		REG-256,	0,	0x801L},
+#ifndef M68040
+{"%caar",	CTLREG,		REG-256,	0,	0x802L},
+#endif
+{"%msp",	CTLREG,		REG-256,	0,	0x803L},
+{"%isp",	CTLREG,		REG-256,	0,	0x804L},
+#ifdef	M68040
+{"%mmusr",	CTLREG,		REG-256,	0,	0x805L},
+{"%urp",	CTLREG,		REG-256,	0,	0x806L},
+{"%srp",	CTLREG,		REG-256,	0,	0x807L},
+#endif
+#if (M68030||M68040)
+{"%crp",	CRPREG,		REG-256,	0,	CRPREG},
+#ifndef	M68040
+{"%srp",	SRPREG,		REG-256,	0,	SRPREG},
+{"%tc",		TCREG,		REG-256,	0,	TCREG},
+{"%mmusr",	MMUREG,		REG-256,	0,	MMUREG},
+#endif
+{"%tt0",	TTREG,		REG-256,	0,	0x0000L},
+{"%tt1",	TTREG,		REG-256,	0,	0x0001L},
+#endif		/* M68030 */
+
+#if	m68k
+	/*	null register mnemonics for 68020 addr. modes	*/
+{"%zd0",	NULDREG,	REG-256,	0,	0x0L},
+{"%zd1",	NULDREG,	REG-256,	0,	0x0L},
+{"%zd2",	NULDREG,	REG-256,	0,	0x0L},
+{"%zd3",	NULDREG,	REG-256,	0,	0x0L},
+{"%zd4",	NULDREG,	REG-256,	0,	0x0L},
+{"%zd5",	NULDREG,	REG-256,	0,	0x0L},
+{"%zd6",	NULDREG,	REG-256,	0,	0x0L},
+{"%zd7",	NULDREG,	REG-256,	0,	0x0L},
+{"%za0",	NULAREG,	REG-256,	0,	0x0L},
+{"%za1",	NULAREG,	REG-256,	0,	0x0L},
+{"%za2",	NULAREG,	REG-256,	0,	0x0L},
+{"%za3",	NULAREG,	REG-256,	0,	0x0L},
+{"%za4",	NULAREG,	REG-256,	0,	0x0L},
+{"%za5",	NULAREG,	REG-256,	0,	0x0L},
+{"%za6",	NULAREG,	REG-256,	0,	0x0L},
+{"%za7",	NULAREG,	REG-256,	0,	0x0L},
+{"%zpc",	NULPCREG,	REG-256,	0,	0x0L},
+#endif	/*m68k*/
+	/* floating point registers for 68881 co-processor */
+#if M68881
+{"%fp0",		FPREG,		REG-256,	0,	0x0L},
+{"%fp1",		FPREG,		REG-256,	0,	0x1L},
+{"%fp2",		FPREG,		REG-256,	0,	0x2L},
+{"%fp3",		FPREG,		REG-256,	0,	0x3L},
+{"%fp4",		FPREG,		REG-256,	0,	0x4L},
+{"%fp5",		FPREG,		REG-256,	0,	0x5L},
+{"%fp6",		FPREG,		REG-256,	0,	0x6L},
+{"%fp7",		FPREG,		REG-256,	0,	0x7L},
+	/* control registers for 68881 co-processor */
+{"%iaddr",		FPIADDR,	REG-256,	0,	0x1L},
+{"%status",		FPSTATUS,	REG-256,	0,	0x2L},
+{"%control",		FPCONTROL,	REG-256,	0,	0x4L},
+#endif	/*M68881*/
+
+
+/*			Instruction Mnemonics				*/
+{"abcd",	DADD,		INST2-256,	16,	0xc100L},
+{"add",		ADD,		INST2-256,	16,	0xd000L},
+{"addi",	ADD,		INST2-256,	16,	0x0600L},
+{"addq",	ADD,		INST2-256,	16,	0x5000L},
+{"addx",	XADD,		INST2-256,	16,	0xd100L},
+{"and",		LOGAND,		INST2-256,	16,	0xc000L},
+{"andi",	LOGAND,		INST2-256,	16,	0x0200L},
+{"asl",		ASHFT,		INST12-256,	16,	0xe1c0L},
+{"asr",		ASHFT,		INST12-256,	16,	0xe0c0L},
+{"br",		BRA,		INST1-256,	16,	0x6000L},
+{"bra",		BRA,		INST1-256,	16,	0x6000L},
+{"bhi",		BR,		INST1-256,	16,	0x6200L},
+{"bls",		BR,		INST1-256,	16,	0x6300L},
+{"bhs",		BR,		INST1-256,	16,	0x6400L},
+{"bcc",		BR,		INST1-256,	16,	0x6400L},
+{"blo",		BR,		INST1-256,	16,	0x6500L},
+{"bcs",		BR,		INST1-256,	16,	0x6500L},
+{"bne",		BR,		INST1-256,	16,	0x6600L},
+{"beq",		BR,		INST1-256,	16,	0x6700L},
+{"bvc",		BR,		INST1-256,	16,	0x6800L},
+{"bvs",		BR,		INST1-256,	16,	0x6900L},
+{"bpl",		BR,		INST1-256,	16,	0x6a00L},
+{"bmi",		BR,		INST1-256,	16,	0x6b00L},
+{"bge",		BR,		INST1-256,	16,	0x6c00L},
+{"blt",		BR,		INST1-256,	16,	0x6d00L},
+{"bgt",		BR,		INST1-256,	16,	0x6e00L},
+{"ble",		BR,		INST1-256,	16,	0x6f00L},
+{"bchg",	BCHG,		INST2-256,	16,	0x0140L},
+{"bclr",	BCHG,		INST2-256,	16,	0x0180L},
+{"bkpt",	BKPT,		INST1-256,	16,	0x4848L}, /* 68020 instruction */
+{"bset",	BCHG,		INST2-256,	16,	0x01c0L},
+{"bsr",		BSR,		INST1-256,	16,	0x6100L},
+{"btst",	BTST,		INST2-256,	16,	0x0100L},
+{"bfchg",	BFCHG,		INST3-256,	16,	0xeac0L}, /* 68020 instruction */
+{"bfclr",	BFCHG,		INST3-256,	16,	0xecc0L}, /* 68020 instruction */
+{"bfset",	BFCHG,		INST3-256,	16,	0xeec0L}, /* 68020 instruction */
+{"bftst",	BFTST,		INST3-256,	16,	0xe8c0L}, /* 68020 instruction */
+{"bfffo",	BFFFO,		INST4-256,	16,	0xedc0L}, /* 68020 instruction */
+{"bfexts",	BFFFO,		INST4-256,	16,	0xebc0L}, /* 68020 instruction */
+{"bfextu",	BFFFO,		INST4-256,	16,	0xe9c0L}, /* 68020 instruction */
+{"bfins",	BFINS,		INST4-256,	16,	0xefc0L}, /* 68020 instruction */
+{"callm",	CALLM,		INST2-256,	16,	0x06c0L}, /* 68020 instruction */
+{"cas",		CAS,		INST3-256,	16,	0x08c0L}, /* 68020 instruction */
+{"cas2",	CAS2,		INST6-256,	16,	0x08fcL}, /* 68020 instruction */
+{"chk",		CHK,		INST2-256,	16,	0x4180L},
+{"chk2",	CHK2,		INST2-256,	16,	0x00c0L}, /* 68020 instruction */
+{"clr",		OPTSIZE,	INST1-256,	16,	0x4200L},
+{"cmp",		CMP,		INST2-256,	16,	0xb000L},
+{"cmpi",	CMP,		INST2-256,	16,	0x0c00L},
+{"cmp2",	CMP2,		INST2-256,	16,	0x00c0L}, /* 68020 instruction */
+{"dbt",		DBCC,		INST2-256,	16,	0x50c8L},
+{"dbf",		DBCC,		INST2-256,	16,	0x51c8L},
+{"dbr",		DBCC,		INST2-256,	16,	0x51c8L},
+{"dbra",	DBCC,		INST2-256,	16,	0x51c8L},
+{"dbhi",	DBCC,		INST2-256,	16,	0x52c8L},
+{"dbls",	DBCC,		INST2-256,	16,	0x53c8L},
+{"dbhs",	DBCC,		INST2-256,	16,	0x54c8L},
+{"dbcc",	DBCC,		INST2-256,	16,	0x54c8L},
+{"dblo",	DBCC,		INST2-256,	16,	0x55c8L},
+{"dbcs",	DBCC,		INST2-256,	16,	0x55c8L},
+{"dbne",	DBCC,		INST2-256,	16,	0x56c8L},
+{"dbeq",	DBCC,		INST2-256,	16,	0x57c8L},
+{"dbvc",	DBCC,		INST2-256,	16,	0x58c8L},
+{"dbvs",	DBCC,		INST2-256,	16,	0x59c8L},
+{"dbpl",	DBCC,		INST2-256,	16,	0x5ac8L},
+{"dbmi",	DBCC,		INST2-256,	16,	0x5bc8L},
+{"dbge",	DBCC,		INST2-256,	16,	0x5cc8L},
+{"dblt",	DBCC,		INST2-256,	16,	0x5dc8L},
+{"dbgt",	DBCC,		INST2-256,	16,	0x5ec8L},
+{"dble",	DBCC,		INST2-256,	16,	0x5fc8L},
+{"divs",	DIVS,		INST23-256,	16,	0x81c0L},
+{"divu",	DIVU,		INST23-256,	16,	0x80c0L},
+{"eor",		LOGEOR,		INST2-256,	16,	0xb000L},
+{"eori",	LOGEOR,		INST2-256,	16,	0x0a00L},
+{"exg",		EXG,		INST2-256,	16,	0xc100L},
+{"ext",		EXT,		INST1-256,	16,	0x4800L},
+{"extb",	EXT,		INST1-256,	16,	0x4900L}, /* 68020 instruction */
+{"extw",	EXT,		INST1-256,	16,	0x4800L}, /* 68020 instruction */
+{"illegal",	DEFAULT+UNSPEC,	INST0-256,	16,	0x4afcL},
+{"jmp",		DEFAULT+UNSPEC,	INST1-256,	16,	0x4ec0L},
+{"jsr",		DEFAULT+UNSPEC,	INST1-256,	16,	0x4e80L},
+{"lea",		LEA,		INST2-256,	16,	0x41c0L},
+{"link",	LINK,		INST2-256,	16,	0x4e50L},
+{"lsl",		LSHFT,		INST12-256,	16,	0xe3c0L},
+{"lsr",		LSHFT,		INST12-256,	16,	0xe2c0L},
+{"moveq",	MOV,		INST2-256,	16,	0x7000L},/* hoss#9 */
+{"mov",		MOV,		INST2-256,	16,	0x0000L},
+{"movm",	MOVM,		INST2-256,	16,	0x4880L},
+{"movp",	MOVP,		INST2-256,	16,	0x0008L},
+{"movs",	MOVS,		INST2-256,	16,	0x0e00L},
+{"muls",	MULS,		INST23-256,	16,	0xc1c0L},
+{"mulu",	MULU,		INST23-256,	16,	0xc0c0L},
+{"nbcd",	DEFAULT+B,	INST1-256,	16,	0x4800L},
+{"neg",		OPTSIZE,	INST1-256,	16,	0x4400L},
+{"negx",	OPTSIZE,	INST1-256,	16,	0x4000L},
+{"nop",		DEFAULT+UNSPEC,	INST0-256,	16,	0x4e71L},
+{"not",		OPTSIZE,	INST1-256,	16,	0x4600L},
+{"or",		LOGOR,		INST2-256,	16,	0x8000L},
+{"ori",		LOGOR,		INST2-256,	16,	0x0000L},
+{"pack",	PACK,     	INST3-256,	16,	0x8140L}, /* 68020 instruction */
+{"pea",		DEFAULT+L,	INST1-256,	16,	0x4840L},
+
+#if (M68030||M68040)
+#ifdef	M68030
+{"pflush",	PFLUSH,     	INST23-256,	16,	0xf000L},
+{"pflusha",	PFLUSH,     	INST0-256,	16,	0xf000L},
+{"ploadr",	PLOAD,     	INST2-256,	16,	0xf000L},
+{"ploadw",	PLOAD,     	INST2-256,	16,	0xf000L},
+{"pmove",	PMOVE,     	INST2-256,	16,	0xf000L},
+{"pmovefd",	PMOVE,     	INST2-256,	16,	0xf000L},
+{"ptestr",	PTEST,     	INST34-256,	16,	0xf000L},
+{"ptestw",	PTEST,     	INST34-256,	16,	0xf000L},
+#else
+{"cinvl",	CINV,     	INST2-256,	16,	0xf400L},
+{"cinvp",	CINV,     	INST2-256,	16,	0xf400L},
+{"cinva",	CINV,     	INST1-256,	16,	0xf400L},
+{"cpushl",	CPUSH,     	INST2-256,	16,	0xf420L},
+{"cpushp",	CPUSH,     	INST2-256,	16,	0xf420L},
+{"cpusha",	CPUSH,     	INST1-256,	16,	0xf420L},
+{"move16",	MOVE16,     	INST2-256,	16,	0xf600L},
+{"pflush",	PFLUSH,     	INST1-256,	16,	0xf500L},
+{"pflusha",	PFLUSH,     	INST0-256,	16,	0xf500L},
+{"pflushn",	PFLUSH,     	INST1-256,	16,	0xf500L},
+{"pflushan",	PFLUSH,     	INST0-256,	16,	0xf500L},
+{"ptestr",	PTEST,     	INST1-256,	16,	0xf548L},
+{"ptestw",	PTEST,     	INST1-256,	16,	0xf548L},
+
+#endif	/* M68030 */
+#endif	/* (M68030||M68040) */
+
+{"reset",	DEFAULT+UNSPEC,	INST0-256,	16,	0x4e70L},
+{"rol",		ROT,		INST12-256,	16,	0xe7c0L},
+{"ror",		ROT,		INST12-256,	16,	0xe6c0L},
+{"roxl",	ROTX,		INST12-256,	16,	0xe5c0L},
+{"roxr",	ROTX,		INST12-256,	16,	0xe4c0L},
+{"rtd",		RTD,		INST1-256,	16,	0x4e74L},
+{"rte",		DEFAULT+UNSPEC,	INST0-256,	16,	0x4e73L},
+{"rtm",		RTM,		INST1-256,	16,	0x06c0L}, /* 68020 instruction */	
+{"rtr",		DEFAULT+UNSPEC,	INST0-256,	16,	0x4e77L},
+{"rts",		DEFAULT+UNSPEC,	INST0-256,	16,	0x4e75L},
+{"sbcd",	DADD,		INST2-256,	16,	0x8100L},
+{"st",		DEFAULT+B,	INST1-256,	16,	0x50c0L},
+{"sf",		DEFAULT+B,	INST1-256,	16,	0x51c0L},
+{"shi",		DEFAULT+B,	INST1-256,	16,	0x52c0L},
+{"sls",		DEFAULT+B,	INST1-256,	16,	0x53c0L},
+{"shs",		DEFAULT+B,	INST1-256,	16,	0x54c0L},
+{"scc",		DEFAULT+B,	INST1-256,	16,	0x54c0L},
+{"slo",		DEFAULT+B,	INST1-256,	16,	0x55c0L},
+{"scs",		DEFAULT+B,	INST1-256,	16,	0x55c0L},
+{"sne",		DEFAULT+B,	INST1-256,	16,	0x56c0L},
+{"seq",		DEFAULT+B,	INST1-256,	16,	0x57c0L},
+{"svc",		DEFAULT+B,	INST1-256,	16,	0x58c0L},
+{"svs",		DEFAULT+B,	INST1-256,	16,	0x59c0L},
+{"spl",		DEFAULT+B,	INST1-256,	16,	0x5ac0L},
+{"smi",		DEFAULT+B,	INST1-256,	16,	0x5bc0L},
+{"sge",		DEFAULT+B,	INST1-256,	16,	0x5cc0L},
+{"slt",		DEFAULT+B,	INST1-256,	16,	0x5dc0L},
+{"sgt",		DEFAULT+B,	INST1-256,	16,	0x5ec0L},
+{"sle",		DEFAULT+B,	INST1-256,	16,	0x5fc0L},
+{"stop",	STOP,		INST1-256,	16,	0x4e72L},
+{"sub",		ADD,		INST2-256,	16,	0x9000L},
+{"subi",	ADD,		INST2-256,	16,	0x0400L},
+{"subq",	ADD,		INST2-256,	16,	0x5100L},
+{"subx",	XADD,		INST2-256,	16,	0x9100L},
+{"swap",	SWAP,		INST1-256,	16,	0x4840L},
+{"tas",		DEFAULT+B,	INST1-256,	16,	0x4ac0L},
+{"tdivs",	TDIVS,		INST23-256,	16,	0x4c40L},
+{"tdivu",	TDIVU,		INST23-256,	16,	0x4c40L},
+{"tmuls",	TMULS,		INST23-256,	16,	0x4c00L},
+{"tmulu",	TMULU,		INST23-256,	16,	0x4c00L},
+{"tt",		DEFAULT+UNSPEC,	INST0-256,	16,	0x50fcL}, /* 68020 instruction */
+{"tf",		DEFAULT+UNSPEC,	INST0-256,	16,	0x51fcL}, /* 68020 instruction */
+{"thi",		DEFAULT+UNSPEC,	INST0-256,	16,	0x52fcL}, /* 68020 instruction */
+{"tls",		DEFAULT+UNSPEC,	INST0-256,	16,	0x53fcL}, /* 68020 instruction */
+{"tcc",		DEFAULT+UNSPEC,	INST0-256,	16,	0x54fcL}, /* 68020 instruction */
+{"tcs",		DEFAULT+UNSPEC,	INST0-256,	16,	0x55fcL}, /* 68020 instruction */
+{"tne",		DEFAULT+UNSPEC,	INST0-256,	16,	0x56fcL}, /* 68020 instruction */
+{"teq",		DEFAULT+UNSPEC,	INST0-256,	16,	0x57fcL}, /* 68020 instruction */
+{"tvc",		DEFAULT+UNSPEC,	INST0-256,	16,	0x58fcL}, /* 68020 instruction */
+{"tvs",		DEFAULT+UNSPEC,	INST0-256,	16,	0x59fcL}, /* 68020 instruction */
+{"tpl",		DEFAULT+UNSPEC,	INST0-256,	16,	0x5afcL}, /* 68020 instruction */
+{"tmi",		DEFAULT+UNSPEC,	INST0-256,	16,	0x5bfcL}, /* 68020 instruction */
+{"tge",		DEFAULT+UNSPEC,	INST0-256,	16,	0x5cfcL}, /* 68020 instruction */
+{"tlt",		DEFAULT+UNSPEC,	INST0-256,	16,	0x5dfcL}, /* 68020 instruction */
+{"tgt",		DEFAULT+UNSPEC,	INST0-256,	16,	0x5efcL}, /* 68020 instruction */
+{"tle",		DEFAULT+UNSPEC,	INST0-256,	16,	0x5ffcL}, /* 68020 instruction */
+{"tpt",		TPCC,		INST1-256,	16,	0x50f8L}, /* 68020 instruction */
+{"tpf",		TPCC,		INST1-256,	16,	0x51f8L}, /* 68020 instruction */
+{"tphi",	TPCC,		INST1-256,	16,	0x52f8L}, /* 68020 instruction */
+{"tpls",	TPCC,		INST1-256,	16,	0x53f8L}, /* 68020 instruction */
+{"tpcc",	TPCC,		INST1-256,	16,	0x54f8L}, /* 68020 instruction */
+{"tpcs",	TPCC,		INST1-256,	16,	0x55f8L}, /* 68020 instruction */
+{"tpne",	TPCC,		INST1-256,	16,	0x56f8L}, /* 68020 instruction */
+{"tpeq",	TPCC,		INST1-256,	16,	0x57f8L}, /* 68020 instruction */
+{"tpvc",	TPCC,		INST1-256,	16,	0x58f8L}, /* 68020 instruction */
+{"tpvs",	TPCC,		INST1-256,	16,	0x59f8L}, /* 68020 instruction */
+{"tppl",	TPCC,		INST1-256,	16,	0x5af8L}, /* 68020 instruction */
+{"tpmi",	TPCC,		INST1-256,	16,	0x5bf8L}, /* 68020 instruction */
+{"tpge",	TPCC,		INST1-256,	16,	0x5cf8L}, /* 68020 instruction */
+{"tplt",	TPCC,		INST1-256,	16,	0x5df8L}, /* 68020 instruction */
+{"tpgt",	TPCC,		INST1-256,	16,	0x5ef8L}, /* 68020 instruction */
+{"tple",	TPCC,		INST1-256,	16,	0x5ff8L}, /* 68020 instruction */
+{"trap",	TRAP,		INST1-256,	16,	0x4e40L},
+{"trapv",	DEFAULT+UNSPEC,	INST0-256,	16,	0x4e76L},
+{"tst",		TST,		INST1-256,	16,	0x4a00L},
+{"unlk",	UNLK,		INST1-256,	16,	0x4e58L},
+{"unpk",	UNPK,		INST3-256,	16,	0x8180L}, /* 68020 instruction */
+
+#if M68881
+/* co_processor instructions */
+{"fabs",	FOP,		INST12-256,	16,	0x0018L},
+#if M68040
+{"fsabs",	FOP,		INST12-256,	16,	0x0058L},
+{"fdabs",	FOP,		INST12-256,	16,	0x005cL},
+#endif	/* M68040 */
+{"facos",	FOP,		INST12-256,	16,	0x001cL},
+{"fadd",	FOP,		INST2-256,	16,	0x0022L},
+#if M68040
+{"fsadd",	FOP,		INST2-256,	16,	0x0062L},
+{"fdadd",	FOP,		INST2-256,	16,	0x0066L},
+#endif	/* M68040 */
+{"fasin",	FOP,		INST12-256,	16,	0x000cL},
+{"fatan",	FOP,		INST12-256,	16,	0x000aL},
+{"fatanh",	FOP,		INST12-256,	16,	0x000dL},
+{"fcmp",	FCMP,		INST2-256,	16,	0xf000L},
+{"fcos",	FOP,		INST12-256,	16,	0x001dL},
+{"fcosh",	FOP,		INST12-256,	16,	0x0019L},
+{"fdiv",	FOP,		INST2-256,	16,	0x0020L},
+#if M68040
+{"fsdiv",	FOP,		INST2-256,	16,	0x0060L},
+{"fddiv",	FOP,		INST2-256,	16,	0x0064L},
+#endif	/* M68040 */
+{"fetox",	FOP,		INST12-256,	16,	0x0010L},
+{"fetoxm1",	FOP,		INST12-256,	16,	0x0008L},
+{"fgetexp",	FOP,		INST12-256,	16,	0x001eL},
+{"fgetman",	FOP,		INST12-256,	16,	0x001fL},
+{"fint",	FOP,		INST12-256,	16,	0x0001L},
+{"fintrz",	FOP,		INST12-256,	16,	0x0003L},
+{"flog10",	FOP,		INST12-256,	16,	0x0015L},
+{"flog2",	FOP,		INST12-256,	16,	0x0016L},
+{"flogn",	FOP,		INST12-256,	16,	0x0014L},
+{"flognp1",	FOP,		INST12-256,	16,	0x0006L},
+{"fmod",	FOP,		INST2-256,	16,	0x0021L},
+{"fmov",	FMOV,		INST23-256,	16,	0xf000L},
+#if M68040
+{"fsmov",	FOP,		INST23-256,	16,	0x0040L},
+{"fdmov",	FOP,		INST23-256,	16,	0x0044L},
+#endif	/* M68040 */
+{"fmovcr",	FMOVCR,		INST2-256,	16,	0xf000L},
+{"fmovm",	FMOVM,		INST24-256,	16,	0xf000L},
+{"fmul",	FOP,		INST2-256,	16,	0x0023L},
+#if M68040
+{"fsmul",	FOP,		INST2-256,	16,	0x0063L},
+{"fdmul",	FOP,		INST2-256,	16,	0x0067L},
+#endif	/* M68040 */
+{"fneg",	FOP,		INST12-256,	16,	0x001aL},
+#if M68040
+{"fsneg",	FOP,		INST12-256,	16,	0x005aL},
+{"fdneg",	FOP,		INST12-256,	16,	0x005eL},
+#endif	/* M68040 */
+{"fnop",	FNOP,		INST0-256,	16,	0xf080L},
+{"frem",	FOP,		INST2-256,	16,	0x0025L},
+{"frestore",	CPRESTORE,	INST1-256,	16,	0xf140L},
+{"fsave",	CPSAVE,		INST1-256,	16,	0xf100L},
+{"fscale",	FOP,		INST2-256,	16,	0x0026L},
+{"fsgldiv",	FSGLDIV,		INST2-256,	16,	0x0024L},
+{"fsglmul",	FSGLMUL,		INST2-256,	16,	0x0027L},
+{"fsin",	FOP,		INST12-256,	16,	0x000eL},
+{"fsincos",	FSINCOS,	INST3-256,	16,	0xf000L},
+{"fsinh",	FOP,		INST12-256,	16,	0x0002L},
+{"fsqrt",	FOP,		INST12-256,	16,	0x0004L},
+#if M68040
+{"fssqrt",	FOP,		INST12-256,	16,	0x0041L},
+{"fdsqrt",	FOP,		INST12-256,	16,	0x0045L},
+#endif	/* M68040 */
+{"fsub",	FOP,		INST2-256,	16,	0x0028L},
+#if M68040
+{"fssub",	FOP,		INST2-256,	16,	0x0068L},
+{"fdsub",	FOP,		INST2-256,	16,	0x006cL},
+#endif	/* M68040 */
+{"ftan",	FOP,		INST12-256,	16,	0x000fL},
+{"ftanh",	FOP,		INST12-256,	16,	0x0009L},
+{"ftentox",	FOP,		INST12-256,	16,	0x0012L},
+{"ftwotox",	FOP,		INST12-256,	16,	0x0011L},
+{"ftest",	FTST,		INST1-256,	16,	0xf000L},
+{"fytox",	FOP,		INST2-256,	16,	0x007eL},
+
+/* fbcc */
+{"fbf",		CPBCC,		INST1-256,	16,	0xf080L},
+{"fbeq",	CPBCC,		INST1-256,	16,	0xf081L},
+{"fbogt",	CPBCC,		INST1-256,	16,	0xf082L},
+{"fboge",	CPBCC,		INST1-256,	16,	0xf083L},
+{"fbolt",	CPBCC,		INST1-256,	16,	0xf084L},
+{"fbole",	CPBCC,		INST1-256,	16,	0xf085L},
+{"fbogl",	CPBCC,		INST1-256,	16,	0xf086L},
+{"fbor",	CPBCC,		INST1-256,	16,	0xf087L},
+{"fbun",	CPBCC,		INST1-256,	16,	0xf088L},
+{"fbueq",	CPBCC,		INST1-256,	16,	0xf089L},
+{"fbugt",	CPBCC,		INST1-256,	16,	0xf08aL},
+{"fbuge",	CPBCC,		INST1-256,	16,	0xf08bL},
+{"fbult",	CPBCC,		INST1-256,	16,	0xf08cL},
+{"fbule",	CPBCC,		INST1-256,	16,	0xf08dL},
+{"fbneq",	CPBCC,		INST1-256,	16,	0xf08eL},
+{"fbt",		CPBCC,		INST1-256,	16,	0xf08fL},
+{"fbsf",	CPBCC,		INST1-256,	16,	0xf090L},
+{"fbseq",	CPBCC,		INST1-256,	16,	0xf091L},
+{"fbgt",	CPBCC,		INST1-256,	16,	0xf092L},
+{"fbge",	CPBCC,		INST1-256,	16,	0xf093L},
+{"fblt",	CPBCC,		INST1-256,	16,	0xf094L},
+{"fble",	CPBCC,		INST1-256,	16,	0xf095L},
+{"fbgl",	CPBCC,		INST1-256,	16,	0xf096L},
+{"fbgle",	CPBCC,		INST1-256,	16,	0xf097L},
+{"fbngle",	CPBCC,		INST1-256,	16,	0xf098L},
+{"fbngl",	CPBCC,		INST1-256,	16,	0xf099L},
+{"fbnle",	CPBCC,		INST1-256,	16,	0xf09aL},
+{"fbnlt",	CPBCC,		INST1-256,	16,	0xf09bL},
+{"fbnge",	CPBCC,		INST1-256,	16,	0xf09cL},
+{"fbngt",	CPBCC,		INST1-256,	16,	0xf09dL},
+{"fbsneq",	CPBCC,		INST1-256,	16,	0xf09eL},
+{"fbst",	CPBCC,		INST1-256,	16,	0xf09fL},
+/* fdbcc */ 
+{"fdbf",	CPDBCC,		INST2-256,	16,	0x0000L},
+{"fdbeq",	CPDBCC,		INST2-256,	16,	0x0001L},
+{"fdbogt",	CPDBCC,		INST2-256,	16,	0x0002L},
+{"fdboge",	CPDBCC,		INST2-256,	16,	0x0003L},
+{"fdbolt",	CPDBCC,		INST2-256,	16,	0x0004L},
+{"fdbole",	CPDBCC,		INST2-256,	16,	0x0005L},
+{"fdbogl",	CPDBCC,		INST2-256,	16,	0x0006L},
+{"fdbor",	CPDBCC,		INST2-256,	16,	0x0007L},
+{"fdbun",	CPDBCC,		INST2-256,	16,	0x0008L},
+{"fdbueq",	CPDBCC,		INST2-256,	16,	0x0009L},
+{"fdbugt",	CPDBCC,		INST2-256,	16,	0x000aL},
+{"fdbuge",	CPDBCC,		INST2-256,	16,	0x000bL},
+{"fdbult",	CPDBCC,		INST2-256,	16,	0x000cL},
+{"fdbule",	CPDBCC,		INST2-256,	16,	0x000dL},
+{"fdbneq",	CPDBCC,		INST2-256,	16,	0x000eL},
+{"fdbt",	CPDBCC,		INST2-256,	16,	0x000fL},
+{"fdbsf",	CPDBCC,		INST2-256,	16,	0x0010L},
+{"fdbseq",	CPDBCC,		INST2-256,	16,	0x0011L},
+{"fdbgt",	CPDBCC,		INST2-256,	16,	0x0012L},
+{"fdbge",	CPDBCC,		INST2-256,	16,	0x0013L},
+{"fdblt",	CPDBCC,		INST2-256,	16,	0x0014L},
+{"fdble",	CPDBCC,		INST2-256,	16,	0x0015L},
+{"fdbgl",	CPDBCC,		INST2-256,	16,	0x0016L},
+{"fdbgle",	CPDBCC,		INST2-256,	16,	0x0017L},
+{"fdbngle",	CPDBCC,		INST2-256,	16,	0x0018L},
+{"fdbngl",	CPDBCC,		INST2-256,	16,	0x0019L},
+{"fdbnle",	CPDBCC,		INST2-256,	16,	0x001aL},
+{"fdbnlt",	CPDBCC,		INST2-256,	16,	0x001bL},
+{"fdbnge",	CPDBCC,		INST2-256,	16,	0x001cL},
+{"fdbngt",	CPDBCC,		INST2-256,	16,	0x001dL},
+{"fdbsneq",	CPDBCC,		INST2-256,	16,	0x001eL},
+{"fdbst",	CPDBCC,		INST2-256,	16,	0x001fL},
+/* fscc */
+{"fsf",		CPSCC,		INST1-256,	16,	0x0000L},
+{"fseq",	CPSCC,		INST1-256,	16,	0x0001L},
+{"fsogt",	CPSCC,		INST1-256,	16,	0x0002L},
+{"fsoge",	CPSCC,		INST1-256,	16,	0x0003L},
+{"fsolt",	CPSCC,		INST1-256,	16,	0x0004L},
+{"fsole",	CPSCC,		INST1-256,	16,	0x0005L},
+{"fsogl",	CPSCC,		INST1-256,	16,	0x0006L},
+{"fsor",	CPSCC,		INST1-256,	16,	0x0007L},
+{"fsun",	CPSCC,		INST1-256,	16,	0x0008L},
+{"fsueq",	CPSCC,		INST1-256,	16,	0x0009L},
+{"fsugt",	CPSCC,		INST1-256,	16,	0x000aL},
+{"fsuge",	CPSCC,		INST1-256,	16,	0x000bL},
+{"fsult",	CPSCC,		INST1-256,	16,	0x000cL},
+{"fsule",	CPSCC,		INST1-256,	16,	0x000dL},
+{"fsneq",	CPSCC,		INST1-256,	16,	0x000eL},
+{"fst",		CPSCC,		INST1-256,	16,	0x000fL},
+{"fssf",	CPSCC,		INST1-256,	16,	0x0010L},
+{"fsseq",	CPSCC,		INST1-256,	16,	0x0011L},
+{"fsgt",	CPSCC,		INST1-256,	16,	0x0012L},
+{"fsge",	CPSCC,		INST1-256,	16,	0x0013L},
+{"fslt",	CPSCC,		INST1-256,	16,	0x0014L},
+{"fsle",	CPSCC,		INST1-256,	16,	0x0015L},
+{"fsgl",	CPSCC,		INST1-256,	16,	0x0016L},
+{"fsgle",	CPSCC,		INST1-256,	16,	0x0017L},
+{"fsngle",	CPSCC,		INST1-256,	16,	0x0018L},
+{"fsngl",	CPSCC,		INST1-256,	16,	0x0019L},
+{"fsnle",	CPSCC,		INST1-256,	16,	0x001aL},
+{"fsnlt",	CPSCC,		INST1-256,	16,	0x001bL},
+{"fsnge",	CPSCC,		INST1-256,	16,	0x001cL},
+{"fsngt",	CPSCC,		INST1-256,	16,	0x001dL},
+{"fssneq",	CPSCC,		INST1-256,	16,	0x001eL},
+{"fsst",	CPSCC,		INST1-256,	16,	0x001fL},
+
+/* ftcc */
+{"ftf",		CPTCC,		INST0-256,	16,	0x0000L},
+{"fteq",	CPTCC,		INST0-256,	16,	0x0001L},
+{"ftogt",	CPTCC,		INST0-256,	16,	0x0002L},
+{"ftoge",	CPTCC,		INST0-256,	16,	0x0003L},
+{"ftolt",	CPTCC,		INST0-256,	16,	0x0004L},
+{"ftole",	CPTCC,		INST0-256,	16,	0x0005L},
+{"ftogl",	CPTCC,		INST0-256,	16,	0x0006L},
+{"ftor",	CPTCC,		INST0-256,	16,	0x0007L},
+{"ftun",	CPTCC,		INST0-256,	16,	0x0008L},
+{"ftueq",	CPTCC,		INST0-256,	16,	0x0009L},
+{"ftugt",	CPTCC,		INST0-256,	16,	0x000aL},
+{"ftuge",	CPTCC,		INST0-256,	16,	0x000bL},
+{"ftult",	CPTCC,		INST0-256,	16,	0x000cL},
+{"ftule",	CPTCC,		INST0-256,	16,	0x000dL},
+{"ftneq",	CPTCC,		INST0-256,	16,	0x000eL},
+{"ftt",		CPTCC,		INST0-256,	16,	0x000fL},
+{"ftsf",	CPTCC,		INST0-256,	16,	0x0010L},
+{"ftseq",	CPTCC,		INST0-256,	16,	0x0011L},
+{"ftgt",	CPTCC,		INST0-256,	16,	0x0012L},
+{"ftge",	CPTCC,		INST0-256,	16,	0x0013L},
+{"ftlt",	CPTCC,		INST0-256,	16,	0x0014L},
+{"ftle",	CPTCC,		INST0-256,	16,	0x0015L},
+{"ftgl",	CPTCC,		INST0-256,	16,	0x0016L},
+{"ftgle",	CPTCC,		INST0-256,	16,	0x0017L},
+{"ftngle",	CPTCC,		INST0-256,	16,	0x0018L},
+{"ftngl",	CPTCC,		INST0-256,	16,	0x0019L},
+{"ftnle",	CPTCC,		INST0-256,	16,	0x001aL},
+{"ftnlt",	CPTCC,		INST0-256,	16,	0x001bL},
+{"ftnge",	CPTCC,		INST0-256,	16,	0x001cL},
+{"ftngt",	CPTCC,		INST0-256,	16,	0x001dL},
+{"ftsneq",	CPTCC,		INST0-256,	16,	0x001eL},
+{"ftst",	CPTCC,		INST1-256,	16,	0x001fL},
+/* ftpcc */
+{"ftpf",	CPTPCC,		INST1-256,	16,	0x0000L},
+{"ftpeq",	CPTPCC,		INST1-256,	16,	0x0001L},
+{"ftpogt",	CPTPCC,		INST1-256,	16,	0x0002L},
+{"ftpoge",	CPTPCC,		INST1-256,	16,	0x0003L},
+{"ftpolt",	CPTPCC,		INST1-256,	16,	0x0004L},
+{"ftpole",	CPTPCC,		INST1-256,	16,	0x0005L},
+{"ftpogl",	CPTPCC,		INST1-256,	16,	0x0006L},
+{"ftpor",	CPTPCC,		INST1-256,	16,	0x0007L},
+{"ftpun",	CPTPCC,		INST1-256,	16,	0x0008L},
+{"ftpueq",	CPTPCC,		INST1-256,	16,	0x0009L},
+{"ftpugt",	CPTPCC,		INST1-256,	16,	0x000aL},
+{"ftpuge",	CPTPCC,		INST1-256,	16,	0x000bL},
+{"ftpult",	CPTPCC,		INST1-256,	16,	0x000cL},
+{"ftpule",	CPTPCC,		INST1-256,	16,	0x000dL},
+{"ftpneq",	CPTPCC,		INST1-256,	16,	0x000eL},
+{"ftpt",	CPTPCC,		INST1-256,	16,	0x000fL},
+{"ftpsf",	CPTPCC,		INST1-256,	16,	0x0010L},
+{"ftpseq",	CPTPCC,		INST1-256,	16,	0x0011L},
+{"ftpgt",	CPTPCC,		INST1-256,	16,	0x0012L},
+{"ftpge",	CPTPCC,		INST1-256,	16,	0x0013L},
+{"ftplt",	CPTPCC,		INST1-256,	16,	0x0014L},
+{"ftple",	CPTPCC,		INST1-256,	16,	0x0015L},
+{"ftpgl",	CPTPCC,		INST1-256,	16,	0x0016L},
+{"ftpgle",	CPTPCC,		INST1-256,	16,	0x0017L},
+{"ftpngle",	CPTPCC,		INST1-256,	16,	0x0018L},
+{"ftpngl",	CPTPCC,		INST1-256,	16,	0x0019L},
+{"ftpnle",	CPTPCC,		INST1-256,	16,	0x001aL},
+{"ftpnlt",	CPTPCC,		INST1-256,	16,	0x001bL},
+{"ftpnge",	CPTPCC,		INST1-256,	16,	0x001cL},
+{"ftpngt",	CPTPCC,		INST1-256,	16,	0x001dL},
+{"ftpsneq",	CPTPCC,		INST1-256,	16,	0x001eL},
+{"ftpst",	CPTPCC,		INST1-256,	16,	0x001fL},
+#endif /*M68881*/

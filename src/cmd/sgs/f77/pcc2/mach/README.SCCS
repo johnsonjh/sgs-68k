@@ -1,0 +1,31 @@
+Z =============================================================================
+X 97
+X Thu Feb 28 16:12:22 PST 1991
+X simon
+X added m68k ifdefs in place of 020
+X util/src/cmd/sgs/f77/pcc2/mach/m68k
+Z =============================================================================
+Z =============================================================================
+C 157
+K LANG
+T Thu Mar  7 15:55:54 PST 1991
+U gjw
+S Forced as to be compiled as a POSIX binary
+R util/src/cmd/sgs/f77/pcc2/mach/mach.mk	 23.4
+Z =============================================================================
+Z =============================================================================
+X 474
+X Fri May 10 11:05:04 PDT 1991
+X simon
+X Removed -r option to as.  This conflicts with current compiler address space.
+X util/src/cmd/sgs/f77/f77/mach
+Z =============================================================================
+Z =============================================================================
+C 603
+K LANG
+T Wed Jun 12 10:36:56 PDT 1991
+U simon
+S Key off of FAMILY to determine how to compile.  Makes one binary for 020 & 040
+R util/src/cmd/sgs/f77/pcc2/mach/mach.mk	 23.6
+B /usr/lib/f77pass1
+Z =============================================================================

@@ -1,0 +1,49 @@
+#	START NEW ARIX SCCS HEADER
+#
+#	@(#) README.ses: version 25.1 created on 12/2/91 at 19:40:50
+#
+#	Copyright (c) 1990 by Arix Corporation
+#	All Rights Reserved
+#
+#	@(#)README.ses	25.1	12/2/91 Copyright (c) 1990 by Arix Corporation
+#
+#	END NEW ARIX SCCS HEADER
+#
+
+#ident	"@(#)libmalloc:README.ses	25.1"
+
+========================================================================
+libmalloc.mk   llib-lmall.c   mallint.h      malloc.c	V.3 upgrade
+
+Thu Aug 21 10:54:22 PDT 1986				Chang
+									
+	DESCRIPTION: Original port of libmalloc routines.
+
+	FIX: libmalloc.a generated. Not able to test.
+
+	FILES:
+	/usr/src/lib/libmalloc/libmalloc.mk
+	/usr/src/lib/libmalloc/llib-lmall.c
+	/usr/src/lib/libmalloc/mallint.h
+	/usr/src/lib/libmalloc/malloc.c
+========================================================================
+Wed Sep 10 09:32:37 PDT 1986
+Chang
+
+	DESCRIPTION: There is an undocumented obsolete function cfree
+                     in V.3 and a slight difference in between V.2.
+
+	FIX: 
+
+	FILES:
+	/usr/src/lib/libmalloc/malloc.c
+===============================================================================
+Tue Sep 30 15:19:50 PDT 1986
+hanna
+	DESCRIPTION:
+		Unfortunately, they don't seem to have fixed mallinfo any...
+		we shall see. try it out.
+	FIX:
+	TECHNOTE:
+	FILES:
+===============================================================================

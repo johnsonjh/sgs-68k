@@ -1,0 +1,33 @@
+
+#	ATT: ident	"pkg.sgs:UNINSTALL.sgs	1.5"
+#
+# UNINSTALL a sgs Package
+#
+
+#ident	"@(#)scripts/sgs:sgs.un	25.1"
+
+OPTDIR=/usr/options
+INSPATH=/
+
+#
+# determine if domestic version of libcrypt is on machine
+#
+
+if [ -s /usr/options/crypt.name ]
+then
+	rmfiles=''
+else
+	rmfiles=/usr/lib/libcrypt.a
+fi
+
+# Remove the files found in the Rlist file from the disk.
+#
+
+echo "The following files will be removed:"
+
+cd ${INSPATH}
+for i in `cat ${OPTDIR}/sgs.rlst` $rmfiles
+do
+	echo $i
+	rm -rf $i
+done

@@ -1,0 +1,10 @@
+Z =============================================================================
+C 89
+K LANG
+T Wed Feb 27 15:32:36 PST 1991
+U simon
+S Changed defines to include 68040 processor.  Removed hard coded 020.
+R util/src/cmd/sgs/dis/mach/mach.mk	 23.3
+R util/src/cmd/sgs/dis/mach/m68k/text_dis.c	 23.3
+B /bin/dis
+Z =============================================================================

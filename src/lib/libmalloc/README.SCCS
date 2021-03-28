@@ -1,0 +1,16 @@
+Z =============================================================================
+C 963
+K LANG
+T Fri Sep 20 22:35:26 PDT 1991
+U simon
+S POSIX build failed because a 15 character file name was being created. SHortened
+R util/src/lib/libmalloc/libmalloc.mk	 23.4
+Z =============================================================================
+Z =============================================================================
+C 1056
+K LANG
+T Wed Oct  2 13:16:40 PDT 1991
+U simon
+S File was being compiled twice for nonprofiled.  Not it is not.
+R util/src/lib/libmalloc/libmalloc.mk	 23.5
+Z =============================================================================

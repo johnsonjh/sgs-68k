@@ -1,0 +1,2 @@
+SGS=/src1/s90/sgs/020_3.3_p4
+$SGS/bin/bin/cc 		-YS,$SGS/lib 		-Yp,$SGS/lib 		-Y0,$SGS/lib 		-Y1,$SGS/lib 		-Y2,$SGS/lib 		-Y3,$SGS/lib 		-Ya,$SGS/bin 		-Yl,$SGS/bin 		-YL,$SGS/lib 		-YU,$SGS/usr/lib 		-YI,$SGS/usr/include "$@"

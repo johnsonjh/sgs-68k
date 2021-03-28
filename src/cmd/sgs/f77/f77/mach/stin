@@ -1,0 +1,483 @@
+#	stin	7.1		*/
+SHAPES
+#	it is more or less true that the costs = number of memory refs.
+#	the cost is 1 for memory items, 0 for regs and building consts
+#	$l and $r are used to account for multiple memory accesses
+#	basic shapes
+F:	'FREE';			# Execute the subtree for side effects
+N:	'NAME'	:1;		# Name of (typically static variable)
+				# cost = 2 wds address
+T:	'TEMP'	:1;		# Temporary location in memory
+				# cost = 1 wd offset
+A:	'AUTO'  :1;		# Automatic Variable
+P:	'PARAM' :1;		# function parameter
+CC:	'CC';			# Execute for Condition Codes only
+R:	'REG' :0;			# Value goes in a register
+
+#	constants
+C:	:1;		
+C0:	CONVAL 0 :0;
+C1:	CONVAL 1 :0;
+C2:	CONVAL 2 :0;
+C3:	CONVAL 3 :0;
+C4:	CONVAL 4 :0;
+C5:	CONVAL 5 :0;
+C6:	CONVAL 6 :0;
+C7:	CONVAL 7 :0;
+C8:	CONVAL 8 :0;
+C16:	CONVAL 16 :0;
+C32:	CONVAL 32 :0;
+C64:	CONVAL 64 :0;
+C128:	CONVAL 128 :0;
+C256:	CONVAL 256 :0;
+
+
+CPOW2B: C1, C2, C4, C8, C16, C32, C64, C128, C256;
+
+CPOW2:		USERCOST 1 :0;	# any power of 2
+CPOW2SUM:	USERCOST 2 :0;	# the sum of 2 powers of 2 (e.g. 10 = 8 + 2)
+CPOW2DIF:	USERCOST 3 :0;	# the diff. of powers of 2 (e.g. 14 = 16 - 2)
+
+C0to7:	POSRANGE 3 :0;		# should really be [1-8]; is [0-7]
+Cc:	SGRANGE 7 :1;		# Constant character
+Cuc:	POSRANGE 8 :1;		# Constant character
+Cs:	SGRANGE 15 :1;		# Constant short
+Cus:	POSRANGE 16 :1;		# Constant unsigned short
+C7bit:	SGRANGE 6 :1;		# Short displacement which can be added to
+C15BIT:	POSRANGE 15 :1;		# Constant positive word
+
+#	more complicated address modes
+
+C1to8:  C1, C2, C3, C4, C5, C6, C7, C8;
+EA: (R+Cs),  R, (R-Cs);		# Offset from register
+  # Double indexing
+EEA:	R[lul]+R[p], ('CONV' R[s])+R[p];
+CEEA: EEA + Cc;
+AWDnR: *EA,N,P,A;		# Addressable Word, not Register
+AWD: R, T, AWDnR;		# Addressable Word (temp in reg?)
+SEEA: *EEA, *CEEA;
+CPI: *(R ++ C1);    # character postincrement, etc.
+SPI: *(R ++ C2);
+LPI: *(R ++ C4);
+CAWDnC: *(R -= C1) ,  CPI, AWD, SEEA ;	# Addresssable word for byte op
+SAWDnC: *(R -= C2) ,  SPI, AWD, SEEA ;	# Addressable Word for short op
+LAWDnC: *(R -= C4) ,  LPI, AWD, SEEA ;	# Addressable Word for long op
+LAWDnCR: *(R -= C4) ,  LPI, AWDnR, SEEA ;# Addressable Word for long op
+CAWD: C, CAWDnC;
+CAWDn2: C, *(R -= C1) , CPI, AWDnR;  # no double indexing, so clear is OK
+SAWD : C, SAWDnC;
+LAWD : C, LAWDnC;
+LAWDnR: C, LAWDnCR;
+SFLD: 'FLD' SAWD ;
+UCHR: 'CONV' CAWD[cuc];
+SHRT: Cs, 'CONV' SAWD[s];
+USHRT: 'CONV' SAWD[sus];
+RCR: 'CONV' R[cucsuslul], R[cucsuslul];
+CRCR: C, RCR;
+BSHFT: (C1 << RCR);
+CR: R[cucsuslul], C[cucsuslul];
+PCR: R, C;
+PTRSUB: LAWD[p] - PCR[p];
+EXTEND: AWDnR, *EEA , *(EEA + C7bit);	# Address allowing subsequent byte
+CRCRSHIFT: C, RCR, C1to8;
+					#  access (non register)
+
+# for function returns when functions return simple structures
+UREG: & R ;
+UHALF: UREG + C2;
+
+OPCODES
+DCOST  :1;
+
+'COMOP' F,F {$N} "" ;
+'COMOP' F,R {$A $> $R} "Y" ;
+'COMOP' F,CC {$C} "" ;
+
+'GENLAB' F  {$N} "\L%L:\n" ;
+'GENLAB' R  {$L} "\L%L:\n" ;
+'GENLAB' CC  {$C} "\L%L:\n" ;
+
+'GENUBR' F  {$N} "ZI" ;
+'GENUBR' C0  {$N} "ZI" ;
+'GENUBR' R  {$N} "ZI" ;
+'GENBR' CC  {$N} "ZI" ;
+
+'CM' F,F {$N} "";
+
+'CALL' C,F {$A $1} "	jsr	CL\nZc" ;
+'CALL' R,F {$A $< $1} "	jsr	(CL)\nZc" ;
+
+'UCALL' C {$A $1} "	jsr	CL\n" ;
+'UCALL' R {$A $< $1} "	jsr	(CL)\n" ;
+
+	# MOVQ is 0 to offset Cc cost
+= R[cucsuslul], Cc {$L} "	mov.l	AR,AL\n" :0;
+
+= CAWD[cuc], C0 {$R} "	clr.b	AL\n" ;
+= R[cuc], CAWD[cuc] {$L} "RL!R	mov.b	AR,AL\n" ;
+= CAWD[cuc], CAWD[cuc] {$R} "RL!R	mov.b	AR,AL\n" ;
+= CAWD[cuc], CAWD[cuc] {$C} "	mov.b	AR,AL\n" ;
+
+= SAWD[sus], C0 {$R} "	clr.w	AL\n" ;
+= R[sus], SAWD[sus] 	{$L} "RL!R	mov.w	AR,AL\n" ;
+= SAWD[sus], SAWD[sus] 	{$R} "RL!R	mov.w	AR,AL\n" ;
+= SAWD[sus], SAWD[sus] 	{$C} "	mov.w	AR,AL\n" ;
+
+= LAWD[lul], C0 {$R $l } "	clr.l	AL\n" ;
+= R[lul], LAWD[lul] {$L $r} "RL!R	mov.l	AR,AL\n" ;
+= LAWD[lul], LAWD[lul] {$R $l $r} "RL!R	mov.l	AR,AL\n" ;
+= LAWD[lul], LAWD[lul] {$C $l $r} "	mov.l	AR,AL\n" ;
+
+	# note that moves to address registers don't set condition code
+	# this is the reason for LAWDnR
+= R[p], C0 "	sub.l	AL,AL\n" ;
+= R[p], (&A)[p] "	lea.l	A(RL),AL\n" ;
+= R[p], (&P)[p] "	lea.l	A(RL),AL\n" ;
+= LAWD[p], R[plul] {$R $l} "RR!L\tmov.l	AR,AL\n";  # remember the register
+= LAWDnR[p], C0 {$L $C} "	clr.l	AL\n";
+= LAWD[p], LAWD[plul] {$l $r} "RL!R	mov.l	AR,AL\n";
+= LAWDnR[p], LAWD[plul] {$R $C $l $r} "	mov.l	AR,AL\n";
+= R[p], EA[p] {$r} "	lea.l	UR,AL\n" ;
+= R[p], EEA[p] {$r} "	lea.l	UR,AL\n" ;
+= R[p], CEEA[p] {$r} "	lea.l	UR,AL\n" ;
+
+= SFLD[cuc], CAWD[cuc] {1 $R} "\tmov.b\tAR,A1\nH?L\tlsl.b\t&HL,A1\n\tand.b\t&ML,A1\n\tand.b\t&M~L,A-(LL)\n\tor.b\tA1,A(LL)\n" :5;
+
+= SFLD[sus], SAWD[sus] {1 $R} "\tmov.w\tAR,A1\nH?L\tlsl.w\t&HL,A1\n\tand.w\t&ML,A1\n\tand.w\t&M~L,A-(LL)\n\tor.w\tA1,A(LL)\n" :5;
+
+= SFLD[lul], LAWD[] {1 $R} "\tmov.l\tAR,A1\nH?L\tlsl.l\t&HL,A1\n\tand.l\t&ML,A1\n\tand.l\t&M~L,A-(LL)\n\tor.l\tA1,A(LL)\n" :5;
+
+#  put the tests before the copies so the fast mode will work
+CAWDnC[cuc] {$C} "	tst.b	AR\n" ;
+SAWDnC[sus] {$C} "	tst.w	AR\n" ;
+	# the 1 $< should ensure that %d0 is used here
+R[p] {$C 1 $<} "	mov.l	AR,%d0\n" ;  # faster than compare...
+LAWDnC[lulp] {$C $r} "	tst.l	AR\n" ;
+
+Cc[lulsuscuc] {$1} "	mov.l	AR,A1\n" :0;  # MOVQ (cost 0 to offset Cc cost)
+C0[p] {$1} "	sub.l	A1,A1\n" :1;
+
+# these are quite high costs; really, sty should make the cost
+# correspond to the address mode cost, but it doesn't (yet!)
+
+CAWD[cuc] {$1 $>} "RR!1	mov.b	AR,A1\n" :1;
+SAWD[sus] {$> $1} "RR!1	mov.w	AR,A1\n";
+LAWD[plul] {$> $1 $r} "RR!1	mov.l	AR,A1\n";
+
+#  for some reason (bug in sty?) this didn't work
+# EA[p] {$1 $>} "	lea.l	U.,A1\n" ;
+
++ R[lul], R[p] {$1 $< $>} "	lea.l	U.,A1\n" :2;
++ ('CONV' R[s]), R[p] {$1 $< $>} "	lea.l	U.,A1\n" :2;
++ EEA, Cc {$1 $<} "	lea.l	U.,A1\n" :1;	# plus 1 for constant
++ R[p], Cs {$1 $<} "	lea.l	U.,A1\n" :1;	# plus 1 for constant
+- R[p], Cs {$1 $<} "	lea.l	U.,A1\n" :1;	# plus 1 for constant
+
+'UAND' A {$1 $>} "	lea.l	AL,A1\n" :1;
+'UAND' P {$1 $>} "	lea.l	AL,A1\n" :1;
+'UAND' T {$1} "ZtALA1" :5; # must store to mem if register temp
+
+'FLD'[cuc] SAWD[]  {$< $1 $C}
+	"RL!1\tmov.b\tAL,A1\nH?.\tlsr.b\t&H.,A1\n\tand.b\t&N.,A1\n" :7;
+'FLD'[sus] SAWD[]  {$< $1 $C}
+	"RL!1\tmov.w\tAL,A1\nH?.\tlsr.w\t&H.,A1\n\tand.w\t&N.,A1\n" :7;
+'FLD'[lul] SAWD[]  {$< $1 $C}
+	"RL!1\tmov.l\tAL,A1\nH?.\tlsr.l\t&H.,A1\n\tand.l\t&N.,A1\n" :7;
+
+'ARG' (&A) {$N $l} "	pea.l	A(LL)Z0\n" ;
+'ARG' (&P) {$N $l} "	pea.l	A(LL)Z0\n" ;
+'ARG'[sus] SAWD[sus] {$N} "\tmov.w\tAL,Z1\n" ;
+'ARG'[lul] SAWD[sus] {$N 1 $<}
+	"\tmov.w\tAL,A1\n\tmov.l\tA1,Z2\n" ; # short structures
+'ARG' LAWD[lulp]  {$N $l} "	mov.l	AL,Z2\n" ;
+'ARG' EA[p] {$N} "	pea.l	ULZ0\n" :3;
+
+'CMP' R[cuc], CAWDnC[cuc] {$C} "	cmp.b	AL,AR\n" ;
+'CMP' R[sus], SAWDnC[sus] {$C} "	cmp.w	AL,AR\n" ;
+'CMP' R[plul], LAWDnC[plul] {$C $r} "	cmp.l	AL,AR\n" ;
+'CMP' CAWDnC[c], Cc {$C} "	cmp.b	AL,AR\n" ;
+'CMP' CAWDnC[uc], Cuc {$C} "	cmp.b	AL,AR\n" ;
+'CMP' CAWDnC[s], Cs {$C} "	cmp.w	AL,AR\n" ;
+'CMP' CAWDnC[us], Cus {$C} "	cmp.w	AL,AR\n" ;
+'CMP' LAWDnC[plul], C {$C $l $r} "	cmp.l	AL,AR\n" ;
+'CMP' CPI, CPI {$C} "	cmp.b	AL,AR\n";
+'CMP' SPI, SPI {$C} "	cmp.w	AL,AR\n";
+'CMP' LPI, LPI {$C} "	cmp.l	AL,AR\n";
+
+'UMINUS' R[lul]  {$1 $[} "RL!1	mov.l	AL,A1\n	neg.l	A1\n" ;
+'UMINUS' R[sus]  {$1 $[} "RL!1	mov.w	AL,A1\n	neg.w	A1\n" ;
+'UMINUS' R[cuc]  {$1 $[} "RL!1	mov.b	AL,A1\n	neg.b	A1\n" ;
+
+~ R[lul]  {$1 $[} "RL!1	mov.l	AL,A1\n	not.l	A1\n" ;
+~ R[sus]  {$1 $[} "RL!1	mov.w	AL,A1\n	not.w	A1\n" ;
+~ R[cuc]  {$1 $[} "RL!1	mov.b	AL,A1\n	not.b	A1\n" ;
+
+-- CAWD[cuc], C {$1 $l} "F\tmov.b\tA-L,A1\n\tsub.b\tAR,AL\n" :2;
+++ CAWD[cuc], C {$1 $l} "F\tmov.b\tA-L,A1\n\tadd.b\tAR,AL\n" :2;
+-- SAWD[sus], C {$1 $l} "F	mov.w	A-L,A1\n	sub.w	AR,AL\n" :2;
+++ SAWD[sus], C {$1 $l} "F	mov.w	A-L,A1\n	add.w	AR,AL\n" :2;
+-- LAWD[plul], C {$1 $l $l $l $r} "F\tmov.l\tA-L,A1\n\tsub.l\tAR,AL\n" :2;
+++ LAWD[plul], C {$1 $l $l $l $r} "F\tmov.l\tA-L,A1\n\tadd.l\tAR,AL\n" :2;
+
+& EXTEND[lul], CPOW2 {$C} "\tbtst\tZBARAL\n" : 1;
+& ('CONV' EXTEND[sus]), CPOW2 {$C} "\tbtst\tZBARA(LL)\n" : 1;
+
+& R[lulsuscuc], BSHFT {$C} "\tbtst\tA(RR),AL\n" :2;
+& UCHR, BSHFT {$C} "\tbtst\tA(RR),AL\n" :2;
+& R[lulsuscuc], CPOW2 {$C} "\tbtst\tZbAR,AL\n" :3;
+& UCHR, CPOW2B {$C} "\tbtst\tZbAR,AL\n" :3;
+& R[lul], Cc {1 $C} "\tmov.l\tAR,A1\n\tand.l\tAL,A1\n" :2;	#  cost = 3
+& R[lulsus], C15BIT {1 $< $C} "RL!1\tmov.l\tAL,A1\n\tand.w\tAR,A1\n" :2;	#  cost = 3
+
+&= CAWD[cuc], CR {$L $C} "	and.b	AR,AL\n" ;
+&= R[cuc], CAWD[cuc] {$L $C} "	and.b	AR,AL\n" ;
+&= SAWD[sus], CR {$L $C} "	and.w	AR,AL\n" ;
+&= R[sus], SAWD[sus] {$L $C} "	and.w	AR,AL\n" ;
+&= LAWD[lul], CR {$L $C $l $r} "	and.l	AR,AL\n" ;
+&= R[lul], LAWD[lul] {$L $C $r} "	and.l	AR,AL\n" ;
+
+|= EXTEND[lulsuscuc], CPOW2 {$L} "\tbset\tZBARAL\n" : 1;
+|= CAWD[cuc], CR {$L $C} "	or.b	AR,AL\n" ;
+|= R[cuc], CAWD[cuc] {$L $C} "	or.b	AR,AL\n" ;
+|= SAWD[sus], CR {$L $C} "	or.w	AR,AL\n" ;
+|= R[sus], SAWD[sus] {$L $C} "	or.w	AR,AL\n" ;
+|= R[lulsus], Cus {$L} "\tor.w\tAR,AL\n" :2;
+|= R[lulsuscuc], CPOW2 {$L} "	bset	ZbAR,AL\n" :3;
+|= R[lulsuscuc], BSHFT {$L} "	bset	A(RR),AL\n" :2;
+|= LAWD[lul], CR {$L $C $l $r} "	or.l	AR,AL\n" ;
+|= R[lul], LAWD[lul] {$L $C $r} "	or.l	AR,AL\n" ;
+
+	# ADDQ
++= CAWD[cuc], C1to8 {$L $C} "	add.b	AR,AL\n" ;
++= SAWD[sus], C1to8 {$L $C} "	add.w	AR,AL\n" ;
++= LAWD[lul], C1to8 {$L $C $l} "	add.l	AR,AL\n" ;
++= R[p], C1to8 {$L} "	add.l	AR,AL\n" :2; # 4 cy longer than D reg, no cc
+	# ordinary adds...
++= CAWD[cuc], CR {$L $C} "	add.b	AR,AL\n" ;
++= R[cuc], CAWD[cuc] {$L $C} "	add.b	AR,AL\n" ;
++= SAWD[sus], CR {$L $C} "	add.w	AR,AL\n" ;
++= R[sus], SAWD[sus] {$L $C} "	add.w	AR,AL\n" ;
++= LAWD[lul], CR {$L $C $l} "	add.l	AR,AL\n" ;
++= R[lul], LAWD[lul] {$L $C $r} "	add.l	AR,AL\n" ;
++= R[p], Cc  "	add.w	AR,AL\n" :2;	# 4 cycles longer than D register
++= R[p], ('CONV' R[s]) {$l} "	add.w	AR,AL\n" :2;
++= LAWD[p], CR[lul] {$l $r} "	add.l	AR,AL\n" :2;
++= R[p], LAWD[lul] {$r} "	add.l	AR,AL\n" :2;
++= R[p], SHRT "	add.w	AR,AL\n" :2;
++= LAWD[p], C[lulsus] {$l $r} "	add.l	AR,AL\n" :2;
+
+	# SUBQ
+-= CAWD[cuc], C1to8 {$L $C} "	sub.b	AR,AL\n" ;
+-= SAWD[sus], C1to8 {$L $C} "	sub.w	AR,AL\n" ;
+-= LAWD[lul], C1to8 {$L $C $l} "	sub.l	AR,AL\n" ;
+-= R[p], C1to8 {$L $l} "	sub.l	AR,AL\n" :2;	#no cc
+-= CAWD[cuc], CR {$L $C} "	sub.b	AR,AL\n" ;
+-= SAWD[sus], R[suslul] {$L $C} "	sub.w	AR,AL\n" ;
+-= R[sus], SAWD[sus] {$L $C} "	sub.w	AR,AL\n" ;
+-= SAWD[sus], C[suslul] {$L $C} "	sub.w	AR,AL\n" ;
+-= LAWD[lul], R[lul] {$L $C $l} "	sub.l	AR,AL\n" ;
+-= R[lul], LAWD[lul] {$L $C $r} "	sub.l	AR,AL\n" ;
+-= LAWD[lul], C[lulsus] {$L $C $l $r} "	sub.l	AR,AL\n" ;
+-= LAWD[p], R[lul]  {$l} "	sub.l	AR,AL\n" :2;
+-= R[p], LAWD[lul]  {$r} "	sub.l	AR,AL\n" :2;
+-= R[p], SHRT "	sub.w	AR,AL\n" :2;
+-= LAWD[p], C[lulsus] {$l $r} "	sub.l	AR,AL\n" :2;
+
+# pointer subtraction: note that A1 refers to a data register!
+-  LAWD[p], LAWD[p] {$1 $< $l $r} "	mov.l	AL,A1\n	sub.l	AR,A1\n" :3;
+
+^= EXTEND[lulsuscuc], CPOW2 {$L} "\tbchg\tZBARAL\n" : 1;
+^= CAWD[cuc], CR {$L $C } "	eor.b	AR,AL\n" ;
+^= SAWD[sus], CR {$L $C } "	eor.w	AR,AL\n" ;
+^= R[lulsus], Cus {$L} "\teor.w\tAR,AL\n" :2;
+^= R[lulsuscuc], CPOW2 {$L} "	bchg	ZbAR,AL\n" :3;
+^= R[lulsuscuc], BSHFT {$L} "	bchg	A(RR),AL\n" :2;
+^= LAWD[lul], R[lul] {$L $C $l} "	eor.l	AR,AL\n" ;
+^= LAWD[lul], C {$L $C $l $r} "	eor.l	AR,AL\n" ;
+
+*= R[lul], CPOW2SUM {1 $L $C}
+	"ZfARlAL\tmov.l\tAL,A1\nZdARlAL\tadd.l\tA1,AL\n";
+*= R[sus], CPOW2SUM {1 $L $C}
+	"ZfARwAL\tmov.w\tAL,A1\nZdARwAL\tadd.w\tA1,AL\n";
+*= R[cuc], CPOW2SUM {1 $L $C}
+	"ZfARbAL\tmov.b\tAL,A1\nZdARbAL\tadd.b\tA1,AL\n";
+*= R[lul], CPOW2DIF {1 $L $C}
+	"ZfARlAL\tmov.l\tAL,A1\nZDARlAL\tsub.l\tA1,AL\n";
+*= R[sus], CPOW2DIF {1 $L $C}
+	"ZfARwAL\tmov.w\tAL,A1\nZDARwAL\tsub.w\tA1,AL\n";
+*= R[cuc], CPOW2DIF {1 $L $C}
+	"ZfARbAL\tmov.b\tAL,A1\nZDARbAL\tsub.b\tA1,AL\n";
+*= LAWD[lul], CPOW2SUM {2 $1 $C}
+	"\tmov.l\tA-L,A1\nZfARlA1\tmov.l\tA1,A2\nZdARlA1\tadd.l\tA2,A1\n\tmov.l\tA1,AL\n" :2;
+*= SAWD[sus], CPOW2SUM {2 $1 $C}
+	"\tmov.w\tA-L,A1\nZfARwA1\tmov.w\tA1,A2\nZdARwA1\tadd.w\tA2,A1\n\tmov.w\tA1,AL\n" :2;
+*= CAWD[cuc], CPOW2SUM {2 $1 $C}
+	"\tmov.b\tA-L,A1\nZfARbA1\tmov.b\tA1,A2\nZdARbA1\tadd.b\tA2,A1\n\tmov.b\tA1,AL\n" :2;
+*= LAWD[lul], CPOW2DIF {2 $1 $C}
+	"\tmov.l\tA-L,A1\nZfARlA1\tmov.l\tA1,A2\nZDARlA1\tsub.l\tA2,A1\n\tmov.l\tA1,AL\n" :2;
+*= SAWD[sus], CPOW2DIF {2 $1 $C}
+	"\tmov.w\tA-L,A1\nZfARwA1\tmov.w\tA1,A2\nZDARwA1\tsub.w\tA2,A1\n\tmov.w\tA1,AL\n" :2;
+*= CAWD[cuc], CPOW2DIF {2 $1 $C}
+	"\tmov.b\tA-L,A1\nZfARbA1\tmov.b\tA1,A2\nZDARbA1\tsub.b\tA2,A1\n\tmov.b\tA1,AL\n" :2;
+*= R[s], SAWD[s] {$1 $<} "	muls.w	AR,AL\n" :10;
+*= R[sus], SAWD[sus]  "	mulu.w	AR,AL\n" :10;
+*= SAWD[s], SAWD[s] {$1}
+	"\tmov.w\tA-L,A1\n\tmuls.w\tAR,A1\n\tmov.w\tA1,AL\n" :13;
+*= SAWD[sus], SAWD[sus] {$1}
+	"\tmov.w\tA-L,A1\n\tmulu.w\tAR,A1\n\tmov.w\tA1,AL\n" :13;
+* SHRT[l], Cs {$1 $[} "R(LL)!1	mov.w	A(LL),A1\n	muls.w	AR,A1\n" :10;
+* USHRT[ul], Cus {$1 $<} "R(LL)!1\tmov.w\tA(LL),A1\n	mulu.w	AR,A1\n" :10;
+* SHRT[l], SHRT[l] {$1 $<} "R(LL)!1\tmov.w\tA(LL),A1\n	muls.w	AR,A1\n" :10;
+/ PTRSUB, CPOW2 {$1}
+	"R(LL)!1\tmov.l\tA(LL),A1\n\tsub.l\tA(LR),A1\n\tasr.l\tZbAR,A1\n" :2;
+/= LAWD[ul], CPOW2 {1 $L $C}
+		"RL!1\tmov.l\tA-L,A1\n\tlsr.l\tZbAR,A1\nRL!1\tmov.l\tA1,AL\n";
+/= SAWD[us], CPOW2 {1 $L $C}
+		"RL!1\tmov.w\tA-L,A1\n\tlsr.w\tZbAR,A1\nRL!1\tmov.w\tA1,AL\n";
+/= CAWD[uc], CPOW2 {1 $L $C} 
+		"RL!1\tmov.b\tA-L,A1\n\tlsr.b\tZbAR,A1\nRL!1\tmov.b\tA1,AL\n";
+/= R[l], CPOW2B {$L $C}
+	"\ttst.l\tAL\n\tbpl.b\tZL1\n\tneg.l\tAL\n\tlsr.l\tZbAR,AL\n\tneg.l\tAL\n\tbra.b\tZL2\nZl1:\tlsr.l\tZbAR,AL\nZl2:\n";
+/= R[s], CPOW2B {$L $C}
+	"\ttst.w\tAL\n\tbpl.b\tZL1\n\tneg.w\tAL\n\tlsr.w\tZbAR,AL\n\tneg.w\tAL\n\tbra.b\tZL2\nZl1:\tlsr.w\tZbAR,AL\nZl2:\n";
+/= R[c], CPOW2B {$L $C} 
+	"\ttst.b\tAL\n\tbpl.b\tZL1\n\tneg.b\tAL\n\tlsr.b\tZbAR,AL\n\tneg.b\tAL\n\tbra.b\tZL2\nZl1:\tlsr.b\tZbAR,AL\nZl2:\n";
+/= LAWD[l], CPOW2B {$1 $C}
+	"\tmov.l\tA-L,A1\n\tbpl.b\tZL1\n\tneg.l\tA1\n\tlsr.l\tZbAR,A1\n\tneg.l\tA1\n\tbra.b\tZL2\nZl1:\tlsr.l\tZbAR,A1\nZl2:\tmov.l\tA1,AL\n" :2;
+/= SAWD[s], CPOW2B {$1 $C}
+	"\tmov.w\tA-L,A1\n\tbpl.b\tZL1\n\tneg.w\tA1\n\tlsr.w\tZbAR,A1\n\tneg.w\tA1\n\tbra.b\tZL2\nZl1:\tlsr.w\tZbAR,A1\nZl2:\tmov.w\tA1,AL\n" :2;
+/= CAWD[c], CPOW2B {$1 $C}
+	"\tmov.b\tA-L,A1\n\tbpl.b\tZL1\n\tneg.b\tA1\n\tlsr.b\tZbAR,A1\n\tneg.b\tA1\n\tbra.b\tZL2\nZl1:\tlsr.b\tZbAR,A1\nZl2:\tmov.b\tA1,AL\n" :2;
+/= R[l], CPOW2 {1 $L $C}
+	"\tmov.l\tZbAR,A1\n\ttst.l\tAL\n\tbpl.b\tZL1\n\tneg.l\tAL\n\tlsr.l\tA1,AL\n\tneg.l\tAL\n\tbra.b\tZL2\nZl1:\tlsr.l\tA1,AL\nZl2:\n";
+/= R[s], CPOW2 {1 $L $C}
+	"\tmov.l\tZbAR,A1\n\ttst.w\tAL\n\tbpl.b\tZL1\n\tneg.w\tAL\n\tlsr.w\tA1,AL\n\tneg.w\tAL\n\tbra.b\tZL2\nZl1:\tlsr.w\tA1,AL\nZl2:\n";
+/= LAWD[l], CPOW2 {2 $1 $C}
+	"\tmov.l\tZbAR,A2\n\tmov.l\tA-L,A1\n\tbpl.b\tZL1\n\tneg.l\tA1\n\tlsr.l\tA2,A1\n\tneg.l\tA1\n\tbra.b\tZL2\nZl1:\tlsr.l\tA2,A1\nZl2:\tmov.l\tA1,AL\n":2;
+/= SAWD[s], CPOW2 {2 $1 $C}
+	"\tmov.l\tZbAR,A2\n\tmov.w\tA-L,A1\n\tbpl.b\tZL1\n\tneg.w\tA1\n\tlsr.w\tA2,A1\n\tneg.w\tA1\n\tbra.b\tZL2\nZl1:\tlsr.w\tA2,A1\nZl2:\tmov.w\tA1,AL\n":2;
+/= R[s], SAWD[s] {$1 $[} "\text.l\tAL\n\tdivs.w\tAR,AL\n" :22;
+/= R[sus], SAWD[sus] "\tswap.w\tAL\n\tclr.w\tAL\n\tswap.w\tAL\n	divu.w	AR,AL\n" :23;
+/= SAWD[s], SAWD[s] {$1}
+	"\tmov.w\tA-L,A1\n\text.l\tA1\n\tdivs.w\tAR,A1\n\tmov.w\tA1,AL\n" :24;
+/= SAWD[sus], SAWD[sus] {$1}
+     "\tmov.l\t&0,A1\n\tmov.w\tA-L,A1\n\tdivu.w\tAR,A1\n\tmov.w\tA1,AL\n" 		:24;
+/[suscuc] R[l], SHRT {$1 $[} "RL!1\tmov.l\tAL,A1\n\tdivs.w\tAR,A1\n" :20;
+/[suscuc] R[lul], USHRT  {$1 $[} "RL!1\tmov.l\tAL,A1\n\tdivu.w\tAR,A1\n" :20;
+/[suscuc] R[ul], Cus {$1 $[} "RL!1\tmov.l\tAL,A1\n\tdivu.w\tAR,A1\n" :20;
+% LAWD[l], CPOW2 {$1 $< $C}
+	"RL=1\ttst.l\tA1\nRL!1\tmov.l\tAL,A1\n\tbpl.b\tZL1\n\tneg.l\tA1\n\tand.l\tAR-1,A1\n\tneg.l\tA1\n\tbra.b\tZL2\nZl1:\tand.l\tAR-1,A1\nZl2:\n";
+% SAWD[s], CPOW2 {$1 $< $C}
+	"RL=1\ttst.w\tA1\nRL!1\tmov.w\tAL,A1\n\tbpl.b\tZL1\n\tneg.w\tA1\n\tand.w\tAR-1,A1\n\tneg.w\tA1\n\tbra.b\tZL2\nZl1:\tand.w\tAR-1,A1\nZl2:\n";
+% CAWD[c], CPOW2 {$1 $< $C}
+	"RL=1\ttst.b\tA1\nRL!1\tmov.b\tAL,A1\n\tbpl.b\tZL1\n\tneg.b\tA1\n\tand.b\tAR-1,A1\n\tneg.b\tA1\n\tbra.b\tZL2\nZl1:\tand.b\tAR-1,A1\nZl2:\n";
+%= LAWD[ul], CPOW2 {$L $C}
+	"\tand.l\tAR-1,AL\n";
+%= SAWD[us], CPOW2 {$L $C}
+	"\tand.w\tAR-1,AL\n";
+%= CAWD[uc], CPOW2B {$L $C}
+	"\tand.b\tAR-1,AL\n";
+%= R[s], SAWD[s] "\text.l\tAL\n\tdivs.w\tAR,AL\n\tswap.w\tAL\n" :23;
+%= R[sus], SAWD[sus] "\tswap.w\tAL\n\tclr.w\tAL\n\tswap.w\tAL\n\tdivu.w\tAR,AL\n\tswap.w\tAL\n"
+	:24;
+
+/ LAWD[l], LAWD[l] {2 $1 $< $> $l $r}
+	"\tmov.l\tAR,Z2\nRL!1\tmov.l\tAL,%d0\n\tjsr\tldiv%%\nZp" :30;
+% LAWD[l], LAWD[l] {2 $1 $< $> $l $r}
+	"\tmov.l\tAR,Z2\nRL!1\tmov.l\tAL,%d0\n\tjsr\tlrem%%\nZp" :30;
+* LAWD[lul], LAWD[lul] {2 $1 $< $> $l $r}
+	"\tmov.l\tAR,Z2\nRL!1\tmov.l\tAL,%d0\n\tjsr\tlmul%%\nZp" :20;
+/ LAWD[lul], LAWD[lul] {2 $1 $< $> $l $r}
+	"\tmov.l\tAR,Z2\nRL!1\tmov.l\tAL,%d0\n\tjsr\tuldiv%%\nZp" :30;
+% LAWD[lul], LAWD[lul] {2 $1 $< $> $l $r}
+	"\tmov.l\tAR,Z2\nRL!1\tmov.l\tAL,%d0\n\tjsr\tulrem%%\nZp" :30;
+
+# floating point ops
++ LAWD[df], LAWD[df] {2 $1 $< $> $l $r}
+	"\tmov.l\tAR,Z2\n\tmov.l\tAL,Z2\n\tjsr\tfladd%%\nZq" :3;
+- LAWD[df], LAWD[df] {2 $1 $< $> $l $r}
+	"\tmov.l\tAR,Z2\n\tmov.l\tAL,Z2\n\tjsr\tflsub%%\nZq" :3;
+* LAWD[df], LAWD[df] {2 $1 $< $> $l $r}
+	"\tmov.l\tAR,Z2\n\tmov.l\tAL,Z2\n\tjsr\tflmul%%\nZq" :3;
+/ LAWD[df], LAWD[df] {2 $1 $< $> $l $r}
+	"\tmov.l\tAR,Z2\n\tmov.l\tAL,Z2\n\tjsr\tfldiv%%\nZq" :3;
+= LAWD[df], LAWD[df] {$l $r} "\tmov.l\tAR,AL\n" ;
+'CONV'[fd] LAWD[l] {2 $1 $< $l} "\tmov.l\tAL,Z2\n\tjsr\tltof%%\nZp" ;
+'CONV'[fd] LAWD[ul] {2 $1 $< $l} "\tmov.l\tAL,Z2\n\tjsr\tultof%%\nZp" ;
+# for the moment, to support both 16 and 32-bit machines, the
+#	conversion ops for shorts are widened to longs
+'CONV'[fd] LAWD[s] {2 $1 $<}
+	"RL!1\tmov.w\tAL,A1\n\text.l\tA1\n\tmov.l\tA1,Z2\n\tjsr\tltof%%\nZp" ;
+'CONV'[fd] LAWD[us] {2 $1 $<}
+"\tmov.w\tAL,%d0\n\tswap.w\t%d0\n\tclr.w\t%d0\n\tswap.w\t%d0\n\tmov.l\t%d0,Z2\n\tjsr\tultof%%\nZp" ;
+'CONV'[fd] LAWD[c] {2 $1 $<}
+"\tmov.b\tAL,%d0\n\text.w\t%d0\n\text.l\t%d0\n\tmov.l\t%d0,Z2\n\tjsr\tltof%%\nZp" ;
+'CONV'[fd] LAWD[uc] {2 $1 $<}
+     "\tmov.b\tAL,%d0\n\tand.l\t&0377,%d0\n\tmov.l\t%d0,Z2\n\tjsr\tultof%%\nZp";
+'CONV'[cucsuslul] LAWD[fd] {2 $1 $< $l} "\tmov.l\tAL,Z2\n\tjsr\tftol%%\nZp" ;
+'CONV'[fd] R[fd] {$1 $< $l} "RL!1\tmov.l\tAL,%d0\n" :0;
+LAWD[df] {$1 $< $r} "\tmov.l\tAR,A1\n";
+LAWD[df] {2 $C $> $r} "\tmov.l\tAR,Z2\n\tjsr\tfltst%%\nZp\ttst.w\t%d0\n" ;
+'UMINUS' R[fd]  {$1 2 $<} "\tmov.l\tAL,Z2\n\tjsr\tflneg%%\nZp" ;
+'CMP' LAWD[df], LAWD[df] {2 $C $< $> $l $r}
+	"\tmov.l\tAR,Z2\n\tmov.l\tAL,Z2\n\tjsr\tflcmp%%\nZq\ttst.w\t%d0\n" :4;
+'ARG' LAWD[fd]  {$N $l} "	mov.l	AL,Z2\n" ;
+
+>>= SAWD[s], C1 {$L $C} "	asr.w	AR,AL\n" ;
+>>= R[s], C1to8 {$L $C} "	asr.w	AR,AL\n" ;
+>>= R[s], CRCR {$L $C $r} "	asr.w	AR,AL\n" ;
+>>= R[l], C1to8 {$L $C} "	asr.l	AR,AL\n" ;
+>>= R[l], CRCR {$L $C $r} "	asr.l	AR,AL\n" ;
+>>= SAWD[us], C1 {$L $C} "	lsr.w	AR,AL\n" ;
+>>= R[us], C1to8 {$L $C} "	lsr.w	AR,AL\n" ;
+>>= R[sus], CRCR {$L $C $r} "	lsr.w	AR,AL\n" ;
+>>= R[ul], C1to8 {$L $C} "	lsr.l	AR,AL\n" ;
+>>= R[lul], CRCR {$L $C $r} "	lsr.l	AR,AL\n" ;
+
+<<= R[sus], C1 {$L $C} "	add.w	AL,AL\n" ;
+<<= SAWD[sus], C1 {$L $C} "	lsl.w	AR,AL\n" ;
+<<= R[sus], C1to8 {$L $C} "	lsl.w	AR,AL\n" ;
+<<= R[sus], CRCR {$L $C $r} "	lsl.w	AR,AL\n" ;
+<<= R[lul], C1 {$L $C} "	add.l	AL,AL\n" ;
+<<= R[lul], C1to8 {$L $C} "	lsl.l	AR,AL\n" ;
+<<= R[lul], CRCR {$L $C $r} "	lsl.l	AR,AL\n" ;
+
+'CONV'[lulcucsus] Cc {$1 $C} "	mov.l	AL,A1\n" :0;	# plus 1 for Cc
+'CONV'[cucsus] LAWD[lul] {$1 $< $l} "RL!1	mov.l	AL,A1\n" ;
+'CONV'[cucsus] SAWD[sus] {$1 $<} "RL!1	mov.w	AL,A1\n" ;
+'CONV'[cucsus] LAWD[lul] {$C $1 $< $l} "	mov.l	AL,A1\n" ;
+'CONV'[cucsus] SAWD[sus] {$C $1 $<} "	mov.w	AL,A1\n" ;
+'CONV'[cucsuslul] LAWD[p] {$C $< $1 $l} "	mov.l	AL,A1\n" ;
+
+'CONV'[sus] CAWD[c] {$C $1 $[} "RL!1\tmov.b\tAL,A1\n\text.w\tA1\n" :2;
+'CONV'[sus] R[uc] {$C $< $1} "RL!1	mov.w	AL,A1\n	and.w	&0377,A1\n" :3;
+'CONV'[sus] CAWDn2[uc] {$1 $<} "Y	clr.w	A1\n	mov.b	AL,A1\n" :2;
+'CONV'[sus] SEEA[uc] {$C $[ $1} "RL!1	mov.b	AL,A1\n	and.w	&0377,A1\n" :3;
+'CONV'[sus] SEEA[uc] {$1} "	clr.w	A1\n	mov.b	AL,A1\n" :2;
+
+'CONV'[lul] CAWD[c] {$C $1 $[}
+	"RL!1\tmov.b\tAL,A1\n\text.w\tA1\n\text.l\tA1\n" :3;
+'CONV'[lul] R[uc] {$C $1} "RL!1	mov.w	AL,A1\n	and.l	&0377,A1\n" :3;
+'CONV'[lul] CAWDn2[uc] {$1 $<} "Y	mov.l	&0,A1\n	mov.b	AL,A1\n" :2;
+'CONV'[lul] SEEA[uc] {$C $[ $1} "RL!1	mov.b	AL,A1\n	and.l	&0377,A1\n" :3;
+'CONV'[lul] SEEA[uc] {$1} "	mov.l	&0,A1\n	mov.b	AL,A1\n" :2;
+'CONV'[lul] SAWD[s] {$C $1 $[} "RL!1	mov.w	AL,A1\n	ext.l	A1\n" :2;
+'CONV'[lul] SAWD[us] {$1} "	mov.l	&0,A1\n	mov.w	AL,A1\n" :2;
+'CONV'[lul] SAWD[us] {$1 $[} "RL!1\tmov.w\tAL,A1\n\tswap.w\tA1\n\tclr.w\tA1\n\tswap.w\tA1\n" :4;
+
+'CONV'[p] SAWD[s] {$< $1} "	mov.w	AL,A1\n" ;
+'CONV'[p] R[us] {$< $1} "\tswap.w\tAL\n\tclr.w\tAL\n\tswap.w\tAL\n\tmov.l\tAL,A1\n" :4;
+'CONV'[p] LAWD[lul] {$< $1 $l} "	mov.l	AL,A1\n" ;
+
+'STARG' R  {2 $< $N} "ZS" ;
+'STASG' R,R {1 $< $R} "ZSFZz" ;
+'STASG' LAWD,R {1 $< $R} "	mov.l	AL,A1\nZsFZz" :2;
+
+# for f().x where f returns a simple structure
+'STAR' [sus] UREG {$1 $[} "	swap.w	A1\n" ;
+'STAR' [sus] UHALF {$1 $[} "" :0;
+
+# 'INIT'[cuc] C {$N} "	byte	CL\n" ;
+# 'INIT'[sus] C {$N} "	short	CL\n" ;
+'INIT'[plul] C {$N} "	long	CL\n" ;
+

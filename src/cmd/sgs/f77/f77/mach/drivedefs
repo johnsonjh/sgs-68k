@@ -1,0 +1,38 @@
+/*	drivedefs	7.2		*/
+/*
+  Definitions for Fortran 77 Compiler driver
+  For the VAX, Running on the VAX, 
+  using the second pass of the Portable C compiler as code generator.
+*/
+
+#ident	"@(#)f77/f77/mach:drivedefs	25.1"
+
+#if HERE!=VAX || FAMILY!=PCC || TARGET!=M68K
+	Wrong Definitions File!
+#endif
+
+#ifdef FONEPASS
+#define PASS1NAME       "/usr/lib/f77comp"
+#else
+#define PASS1NAME	"/usr/lib/f77pass1"
+#endif
+#ifdef SGS2
+#define PASS2NAME       "/usr/lib/f77pass2"
+#else
+#define PASS2NAME	"/lib/f1"
+#endif
+#ifdef SGS2
+#define PASS2OPT	"/lib/f77optim"
+#else
+#define PASS2OPT	"/lib/c2"
+#endif
+#if m68k
+#define HLOPTNAME	"/lib/coptim"
+#endif
+#define ASMNAME	"/bin/as"
+#define LDNAME	"/bin/ld"
+#define FOOTNAME	"/lib/crt0.o"
+#define PROFFOOT	"/lib/mcrt0.o"
+#define TEMPPREF	"fort"
+
+static char *liblist [ ] = { "-lF77", "-lI77", "-lm", "-lc", NULL };

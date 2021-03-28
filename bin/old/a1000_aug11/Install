@@ -1,0 +1,69 @@
+#
+# used to install the a1000_aug11 SGSs
+#
+
+echo " ---  >>>  This is the  a1000_aug11 SGS set\n"
+echo "What operating system is this machine running? \n\n"
+echo "     type 1   if Arix 4x"
+echo "     type 2   if Arix V.3"
+echo "     type 3   if System 90\n"
+read OS_NUM
+
+if [ $OS_NUM -lt 1 -o $OS_NUM -gt 3 ]
+then
+	echo "Invalid response.  Exit and try again."
+	exit 1
+fi
+
+echo "Reading in library and include files...\n"
+
+</dev/rmt1; </dev/rmt0		# set the tape to the beginning, skip Install
+cpio -idmuv < /dev/rmt0		# reading in common files
+
+echo "Searching for correct binary files...\n"
+i=1
+while [ $i -lt $OS_NUM ]	# skip over unneeded sections of tape
+	do
+	</dev/rmt0
+	i=`expr $i + 1`
+	echo ""
+	done
+
+cpio -idmuv < /dev/rmt1		# read in the correct sgs
+
+CWD=`pwd`
+
+BINDIR="$CWD/bin"
+LIBDIR="$CWD/lib"
+ULIBDIR="$CWD/usr/lib"
+
+if [ ! -d $BINDIR/bin ]
+then
+	mkdir $BINDIR/bin
+	mv $BINDIR/cc $BINDIR/bin/cc
+fi
+
+echo "SGS=`pwd`" > $CWD/bin/cc
+echo "\$SGS/bin/bin/cc \
+	-YS,\$SGS/lib \
+	-Yp,\$SGS/lib \
+	-Y0,\$SGS/lib \
+	-Y1,\$SGS/lib \
+	-Y2,\$SGS/lib \
+	-Y3,\$SGS/lib \
+	-Ya,\$SGS/bin \
+	-Yl,\$SGS/bin \
+	-YL,\$SGS/lib \
+	-YU,\$SGS/usr/lib \
+	-YI,\$SGS/usr/include \$@" >> $CWD/bin/cc
+
+chmod ugo+x $BINDIR/cc
+
+case "$OS_NUM" in
+	1) OS_NAME="4.x";;
+	2) OS_NAME="V.3";;
+	3) OS_NAME="s90";;
+esac
+
+echo " ---  >>>  Finished installing the a1000_aug11 SGS"
+echo "            to run on your $OS_NAME system."

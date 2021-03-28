@@ -1,0 +1,8 @@
+Z =============================================================================
+C 569
+K UTIL
+T Wed Jun  5 11:47:04 PDT 1991
+U gjw
+S Added extra -I option so that we get the right filehdr.h from the sgs.
+R util/src/cmd/sdb/mach/mach.mk	 23.5
+Z =============================================================================

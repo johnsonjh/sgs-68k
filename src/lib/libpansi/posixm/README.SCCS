@@ -1,0 +1,10 @@
+Z =============================================================================
+C 243
+K LANG
+T Mon Mar 18 13:37:35 PST 1991
+U gjw
+S There was no rule for libp.$(LIBNAME) so I removed it from the all rule.
+D The profiled library is made in the $(LIBNAME) rule by virtue of the .s.a and\
+D  .c.a rules.
+R util/src/lib/libposansi/ansim/ansim.mk	 23.4
+Z =============================================================================

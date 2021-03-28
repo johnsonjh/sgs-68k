@@ -1,0 +1,12 @@
+Z =============================================================================
+C 99
+K UTIL
+T Thu Feb 28 16:29:55 PST 1991
+U simon
+S Added processing of void data type
+D Added processing of void data type.  This is now available in the ansi mode
+D of the compiler.
+R util/src/cmd/lint/comp/manifest	 23.2
+R util/src/cmd/lint/comp/scan.c	 23.2
+B /usr/bin/lint
+Z =============================================================================

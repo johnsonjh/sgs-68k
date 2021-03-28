@@ -1,0 +1,118 @@
+#	START NEW ARIX SCCS HEADER
+#
+#	@(#) README.ses: version 25.1 created on 12/2/91 at 19:31:37
+#
+#	Copyright (c) 1990 by Arix Corporation
+#	All Rights Reserved
+#
+#	@(#)README.ses	25.1	12/2/91 Copyright (c) 1990 by Arix Corporation
+#
+#	END NEW ARIX SCCS HEADER
+#
+========================================================================
+Fri Aug 22 10:49:53 PDT 1986				
+Chang
+
+	DESCRIPTION: Original port of libgen routines.
+	FIX: libgen.a generated. Not able to test.
+	     No this directory in V.2.
+	FILES:
+===============================================================================
+Tue Sep 30 12:00:54 PDT 1986
+hanna
+
+	DESCRIPTION:
+		The make of the libc.h depends on llibc-ln, a file installed
+		by the lint command, change the makefile to reflect this
+		(I'm taking for granted that lint is in usr/source/cmd)
+	FIX:
+	TECHNOTE:
+	FILES:
+===============================================================================
+Tue Sep 30 12:47:54 PDT 1986
+hanna
+
+	DESCRIPTION:
+		This directory also maintains some include files.
+		(something that is normally done in /usr/src/uts/head).
+	FIX:
+	TECHNOTE:
+	FILES:
+		/usr/src/lib/libgen/strselect.h
+		/usr/src/lib/libgen/libc.h
+		/usr/src/lib/libgen/errmsg.h
+		/usr/src/lib/libgen/hash.h
+		/usr/src/lib/libgen/libgen.h
+===============================================================================
+Mon Jun  8 15:52:38 PDT 1987
+chang
+sw0
+	DESCRIPTION:
+		In popen.c the array popen_pid is hardcoded 20 so that
+		it can open at most 20 pipes.  But we want to support 64
+		open files.
+	FIX:
+		Change the the number 20 in popen.c  to be _NFILE.
+	TECHNOTE:
+		none
+	FILES:
+                usr/src/lib/libgen/p2open.c
+===============================================================================
+Fri Aug 21 11:08:03 PDT 1987
+kelly
+	DESCRIPTION: ported 5.3.1 changes. Two new routines were added:
+
+			gmatch.c
+			isencrypt.c
+===============================================================================
+SPR # na
+Thu Dec  8 14:48:39 PST 1988
+sherwood
+sw#
+	DESCRIPTION:	libgen depends on the lint source.  Modified
+		libgen.mk to use PROG_SOURCE
+
+	FIX/DISCUSSION:
+
+	FILES:	usr/src/lib/libgen/libgen.mk
+
+	RELEASE NOTE: (Document one or more of the following.)
+
+No release note is needed because:	internal use only
+===============================================================================
+===============================================================================
+SPR #2187 2188
+Tue Feb 28 19:30:00 PST 1989
+shen
+	DESCRIPTION: syntax error in file /usr/include/lib.h
+	
+	FIX/DISCUSSION:
+		The script usr/src/lib/libgen/mklib-dot-h was modified to
+		search for sigset (like signal) and edit as appropriate. 
+
+	FILES:  usr/src/lib/libgen/mklib-dot-h
+		usr/src/lib/libgen/README.ses
+
+	RELEASE NOTE: (Document one or more of the following.)
+PROBLEM_FIX:  
+	syntax error in file /usr/include/lib.h has been corrected.
+===============================================================================
+SPR #  n/a
+Tue May  2 13:11:43 PDT 1989
+June Curtis
+sw# jc0
+	DESCRIPTION:  libc.h is created by mklib-dot-h.  There was an
+	absolute path name imbedded in the created libc.h such as:
+
+	"Declarations of functions in /S/SCSI/usr/src/cmd/lint/llib-lc"
+
+	This will mess up integration's binary compare.
+
+	FIX/DISCUSSION:  Removed this comment from the mklib-dot-h file.
+
+	FILES: lib/libgen/mklib-dot-h
+
+	RELEASE NOTE: (Document one or more of the following.)
+
+No release note is needed because:  The customer will never know.
+===============================================================================

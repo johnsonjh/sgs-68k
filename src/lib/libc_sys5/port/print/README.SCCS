@@ -1,0 +1,25 @@
+Z =============================================================================
+C 115
+K LANG
+T Mon Mar  4 13:58:09 PST 1991
+U gjw
+S Brought up to date to reflect changes to stdio. We don't key off of iop->_file\
+S being _NFILE for sprint's anymore. Use instead iop->_flag |= _IOSTRING.
+R util/src/lib/libc_sys5/port/print/doprnt.c	 23.3
+R util/src/lib/libc_sys5/port/print/sprintf.c	 23.3
+R util/src/lib/libc_sys5/port/print/vsprintf.c	 23.3
+B printf
+B fprintf
+B sprintf
+B vsprintf
+B vprintf
+B vfprintf
+Z =============================================================================
+Z =============================================================================
+C 116
+K LANG
+T Mon Mar  4 14:02:04 PST 1991
+U gjw
+S Added -DDYNAMIC to DEFLIST variable to build the dynamic version stdio.
+R util/src/lib/libc_sys5/port/print/print.mk	 23.3
+Z =============================================================================

@@ -1,0 +1,12 @@
+Z =============================================================================
+C 1092
+K LANG
+T Wed Oct  9 10:46:56 PDT 1991
+U roger
+S included changes to clean and clobber, as well as rules to build
+S two cpp's cpp2 and cpp4.
+R util/src/cmd/sgs/cpp/mach/mach.mk	 23.3
+B /lib/cpp2
+B /lib/cpp4
+B /lib/cpp
+Z =============================================================================

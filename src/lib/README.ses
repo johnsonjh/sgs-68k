@@ -1,0 +1,84 @@
+#	START NEW ARIX SCCS HEADER
+#
+#	@(#) README.ses: version 25.1 created on 12/2/91 at 18:29:11
+#
+#	Copyright (c) 1990 by Arix Corporation
+#	All Rights Reserved
+#
+#	@(#)README.ses	25.1	12/2/91 Copyright (c) 1990 by Arix Corporation
+#
+#	END NEW ARIX SCCS HEADER
+#
+===============================================================================
+Tue May 26 14:26:24 PDT 1987
+kelly
+
+	DESCRIPTION: commented out references to libwin because libwin is
+	not supported.
+
+	FIX/DISCUSSION:
+
+	FILES:
+	usr/src/lib/lib.mk
+
+===============================================================================
+Mon Aug 15 23:23:38 PDT 1988
+hans
+	DESCRIPTION: libld moved here from cmd/sgs
+
+	FIX/DISCUSSION: 
+
+	FILES:
+	usr/src/lib/lib.mk
+	usr/src/lib/libld/*
+===============================================================================
+Fri Jan 27 19:11:00 PDT 1989
+shen
+	DESCRIPTION:   Ported for NFS 5.3. 1.1 P2 release 
+
+	FIX/DISCUSSION: 
+
+	FILES:	usr/src/lib/lib.mk
+
+	RELEASE NOTE: (Document one or more of the following.)
+no release note required because:
+	resubmit due to loss of source by integration orignally submitted 
+	to integration in November 1988.
+ENHANCEMENT:  
+PROBLEM_FIX:  
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+===============================================================================
+Thu Jan 11 13:29:59 PST 1990
+marc
+	DESCRIPTION:   Extensive changes for 3.0 support
+
+	FIX/DISCUSSION: 
+	        Two new libraries were added, a libc & libm for POSIX compliance.
+		In addition, now that 3 compilers are in use, all libraries must
+		be linked across all libraries.
+
+	FILES:	usr/src/lib/lib.mk
+		libc/* now is libc_sys5/*
+		libm/* now is libm_sys5/*
+		New POSIX libc/* & libm/*
+
+	RELEASE NOTE: (Document one or more of the following.)
+		Ansi libraries are located in /lib & /lib/libp.
+		POSIX libraries are in /lib/cuc & /lib/cuc/libp.
+		System V are in /lib/cuc/sys5 & /lib/cuc/sys5/libp.
+ENHANCEMENT:  
+PROBLEM_FIX:  
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+===============================================================================

@@ -1,0 +1,33 @@
+Z =============================================================================
+C 58
+K UTIL
+T Thu Feb 21 10:36:07 PST 1991
+U simon
+S Added code to allow macdef definition of the machine type
+D M68020 was hard coded into the makefile.  This is now a variable for NEW
+D machines such as M68040.  Keys off of $(MACH) from macdefs
+R util/src/cmd/cxref/cxref.mk	 23.2
+B /usr/lib/xcpp
+B /usr/bin/cxref
+Z =============================================================================
+Z =============================================================================
+C 59
+K UTIL
+T Thu Feb 21 10:38:35 PST 1991
+U simon
+S Fixed definition of current machine.  Added ability to define M68040
+D Current machine was not being defined.  The makefile now passes the correct
+D information down.  $(MACH) is now added as a define in xcpp.  This is
+D configurable currently as M68020 and M68040
+R util/src/cmd/cxref/other/cpp.c	 23.2
+B /usr/lib/xcpp
+B /usr/bin/cxref
+Z =============================================================================
+Z =============================================================================
+C 698
+K UTIL
+T Tue Jul  9 07:34:00 PDT 1991
+U simon
+S yacc need to be a variable so it may be defined in macdefs/sgsdefs.
+R util/src/cmd/cxref/cxref.mk	 23.4
+Z =============================================================================

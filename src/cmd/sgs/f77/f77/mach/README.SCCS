@@ -1,0 +1,62 @@
+Z =============================================================================
+C 101
+K LANG
+T Thu Feb 28 16:39:01 PST 1991
+U simon
+S Added ifdefs for 68k family to override 020 ifdefs
+R util/src/cmd/sgs/f77/f77/mach/comm2.c	 23.2
+R util/src/cmd/sgs/f77/f77/mach/f77.mk	 23.3
+R util/src/cmd/sgs/f77/f77/mach/main.c	 23.2
+R util/src/cmd/sgs/f77/f77/mach/match.c	 23.2
+B /usr/bin/f77
+Z =============================================================================
+Z =============================================================================
+C 153
+K LANG
+T Thu Mar  7 15:48:36 PST 1991
+U gjw
+S Forced as to be compiled as a POSIX binary
+R util/src/cmd/sgs/f77/f77/mach/f77.mk	 23.4
+R util/src/cmd/sgs/f77/f77/mach/onepass.mk	 23.2
+R util/src/cmd/sgs/f77/f77/mach/pcc.mk	 23.2
+Z =============================================================================
+Z =============================================================================
+C 433
+K UTIL
+T Fri Apr 26 10:46:13 PDT 1991
+U gjw
+S Changed the install directory of f77 to root/bin instead of root/usr/bin.
+D The sgs_spec file expected f77 to be installed in root/bin, however, the
+D make file was installing it in root/usr/bin. The make file is now up to
+D date.
+R util/src/cmd/sgs/f77/f77/mach/f77.mk	 23.5
+Z =============================================================================
+Z =============================================================================
+C 443
+K MISC
+T Thu May  2 14:02:43 PDT 1991
+U gjw
+S Installation of f77 is now back in usr/bin !
+R util/src/cmd/sgs/f77/f77/mach/f77.mk	 23.6
+Z =============================================================================
+Z =============================================================================
+C 474
+K LANG
+T Fri May 10 11:05:04 PDT 1991
+U simon
+S Removed -r option to as.  This conflicts with current compiler address space.
+D The current compiler ( ANSI ) and the as -r flag do not play together.  The
+D tables in the f77 compiler were put in read-only space.  Now they must use
+D the compiler to do that, no the assembler.
+R util/src/cmd/sgs/f77/f77/mach/f77.mk	 23.7
+R util/src/cmd/sgs/f77/pcc2/mach/mach.mk	 23.5
+B /usr/lib/f77pass2
+Z =============================================================================
+Z =============================================================================
+C 700
+K LANG
+T Tue Jul  9 07:37:44 PDT 1991
+U simon
+S  need to be a variable so it may be defined in macdefs/sgsdefs.
+R util/src/cmd/sgs/f77/f77/mach/f77.mk	 23.8
+Z =============================================================================

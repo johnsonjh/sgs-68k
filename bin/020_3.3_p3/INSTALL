@@ -1,0 +1,144 @@
+#	START NEW ARIX SCCS HEADER
+#
+#	@(#) INSTALL: version 24.3 created on 11/8/91 at 10:46:06
+#
+#	Copyright (c) 1991 by Arix Corporation
+#	All Rights Reserved
+#
+#	@(#)INSTALL	24.3	11/8/91 Copyright (c) 1991 by Arix Corporation
+#
+#	END NEW ARIX SCCS HEADER
+#
+
+# Installation script to install SGS
+#
+# Installs an SGS in the current directory
+#
+
+# Prompt for yes or no answer - returns non-zero for no
+askyn() {
+	while	echo "$* (y/n) \c">&2
+	do	read yn rest
+		case $yn in
+		     [yY]) return 0 		                  ;;
+	             [nN]) return 1		                  ;;
+		        *) echo "\nPlease answer y, n, or q" >&2  ;;
+		esac
+	done
+}
+
+cat cross_sgs.name
+mv cross_sgs.name /usr/options
+
+echo ""
+
+if [ $# -ne 2 ]
+then
+	echo "Enter the name of this system's rewind device ->  \c"
+	read REWIND
+	echo "Enter the name of this system's non-rewind device ->  \c"
+	read NOREWIND
+else
+	REWIND=$1
+	NOREWIND=$2
+fi
+
+# Position the tape past the first file
+
+< $REWIND; < $NOREWIND
+
+SGSPATH="BOGUS"
+
+askyn "Will this SGS be used as the native sgs?" ||
+{
+#
+# make directory for the REAL cc binary
+#
+# move cc out of the way of the scripts below
+#
+	/bin/echo "Enter the path to the root directory for this sgs ->  \c"
+	read SGSPATH
+
+	if [ -r $SGSPATH ]
+	then
+		if [ ! -d $SGSPATH ]
+		then
+			echo "$SGSPATH exists and is not a directory!!"
+			exit
+		fi
+	else
+		mkdir -p $SGSPATH
+	fi
+
+	cd $SGSPATH
+	echo Loading the binaries
+	/bin/cpio -idmuvB < $REWIND
+
+	BINDIR="$SGSPATH/bin"
+	LIBDIR="$SGSPATH/lib"
+
+	if [ -r ${BINDIR}/bin ]
+	then
+		if [ ! -d ${BINDIR}/bin ]
+		then
+			echo "${BINDIR}/bin exists and is not a directory!!"
+			exit
+		fi
+	else
+		mkdir -p ${BINDIR}/bin
+	fi
+
+	touch ${BINDIR}/cc
+	mv ${BINDIR}/cc ${BINDIR}/bin/cc
+
+	echo "\nWait a second while I make a \"cc\" script\n"
+	echo "SGS=`pwd`" > ${BINDIR}/cc
+	echo "\$SGS/bin/bin/cc \
+		-YS,\$SGS/lib \
+		-Yp,\$SGS/lib \
+		-Y0,\$SGS/lib \
+		-Y1,\$SGS/lib \
+		-Y2,\$SGS/lib \
+		-Y3,\$SGS/lib \
+		-Ya,\$SGS/bin \
+		-Yl,\$SGS/bin \
+		-YL,\$SGS/lib \
+		-YU,\$SGS/usr/lib \
+		-YI,\$SGS/usr/include \"\$@\"" >> ${BINDIR}/cc
+
+		chmod ugo+x $BINDIR/cc
+}
+
+if [ "$SGSPATH" = "BOGUS" ]
+then
+	cd /
+	BINDIR="/bin"
+	LIBDIR="/lib"
+	echo Loading the binaries
+	/bin/cpio -idmuvB < $REWIND
+fi
+
+echo "Is this SGS to produce 020 or 040 code : "
+echo "\n\t(2) : 020 SGS"
+echo "\n\t(4) : 040 SGS"
+while :
+do
+	echo "\n->  \c"
+	read MACH
+
+	case $MACH in
+		[24])
+		echo "\nLinking 0${MACH}0 binaries ..."
+		ln $LIBDIR/cpp${MACH} $LIBDIR/cpp     2> /dev/null
+		ln $LIBDIR/optim${MACH} $LIBDIR/optim 2> /dev/null
+		ln $BINDIR/as${MACH} $BINDIR/as       2> /dev/null
+		ln $BINDIR/dis${MACH} $BINDIR/dis     2> /dev/null
+		break ;;
+
+		*) echo "\nEnter 2 or 4.\n" ;;
+	esac
+done
+
+echo "\nThe installation of the SGS overlay has been completed."
+
+exit 0

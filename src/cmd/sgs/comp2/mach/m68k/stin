@@ -1,0 +1,856 @@
+#ident	"@(#)stin	23.6	4/19/91 Copyright (c) 1991 by Arix Corp."
+#       ******************DESCRIPTIVE NOTES AT END***************
+SHAPES
+#       it is more or less true that the costs = number of memory refs.
+#       the cost is 1 for memory items, 0 for regs and building consts
+#       basic shapes
+
+#       1,2,3   need n regs
+#       $P      need register pair
+#       $<      share left shape reg (Once A1,2,3 seen AL invalid in later
+#                          stmts since may be reused for A1,2,3 [i.e. shared])
+#       $L      result left
+#       $1,2,3  result in reg n
+#       $C      produces correct CC
+#       $N      no value produced - side effects only
+#       $A      need all scratch registers
+#       $[      share left, LHS preferred (if a temp register)
+#       $r      right hand side referenced once more
+#       $Un     user defined need 'n', where 0<=n<=9
+
+F:      'FREE';                 # Execute the subtree for side effects
+N:      'NAME'  :1;             # Name of (typically static variable)
+                                # cost = 2 wds address
+T:      'TEMP'  :1;             # Temporary location in memory
+                                # cost = 1 wd offset
+A:      'AUTO'  :1;             # Automatic Variable
+P:      'PARAM' :1;             # function parameter
+FC:     'FCON'  :0;             # floating point constant
+CC:     'CC';                   # Execute for Condition Codes only
+R:      'REG' :0;                       # Value goes in a register
+
+#       constants
+C:      :1;             
+C0:     CONVAL 0 :0;
+C1:     CONVAL 1 :0;
+C2:     CONVAL 2 :0;
+C3:     CONVAL 3 :0;
+C4:     CONVAL 4 :0;
+C5:     CONVAL 5 :0;
+C6:     CONVAL 6 :0;
+C7:     CONVAL 7 :0;
+C8:     CONVAL 8 :0;
+C16:    CONVAL 16 :0;
+C32:    CONVAL 32 :0;
+C64:    CONVAL 64 :0;
+C128:   CONVAL 128 :0;
+C256:   CONVAL 256 :0;
+
+
+CPOW2B: C1, C2, C4, C8, C16, C32, C64, C128, C256;
+SCL:    POSRANGE 2 :0;          # INDEX REGISTER SCALING FACTORS (0,1,2,3)
+
+CPOW2:          USERCOST 1 :0;  # any power of 2
+CPOW2MUL:       USERCOST 2 :0;  # replacement by add/shift/... code
+
+C0to7:  POSRANGE 3 :0;          # should really be [1-8]; is [0-7]
+Cc:     SGRANGE 7 :1;           # Constant character
+Cuc:    POSRANGE 8 :1;          # Constant character
+Cs:     SGRANGE 15 :1;          # Constant short
+Cus:    POSRANGE 16 :1;         # Constant unsigned short
+C7bit:  SGRANGE 6 :1;           # Short displacement which can be added to
+C15BIT: POSRANGE 15 :1;         # Constant positive word
+# Immediate Constants
+
+C1to8:  C1, C2, C3, C4, C5, C6, C7, C8;
+
+# Modes not using a D register
+
+EA: (R[p]+C),R[p],(R[p]-C);     # Offset from register
+IND: *EA, A, P, N;              # INDirect modes
+#INDD: (IND+C);                  # INDirect with outer Displacement
+#DIND: *INDD, *IND;              # Double INDirect
+#AWDnR: IND,DIND;                # Addressable WorD, not Register
+AWDnR: IND;                     # Addressable WorD, not Register
+AWD: R, T, AWDnR;               # Addressable WorD (temp in reg?)
+
+# Index Register
+
+IR: ('CONV' R[s]), R;           # Index Register
+SIR: (IR<<SCL);                 # Scaled Index Register
+SIRD: IR, SIR, (SIR+C);         # Scaled Index Register w/optional Displacement
+
+# Modes using a D register (index register)
+
+LVAL: &A, &P, R[p], &N;
+LVALD: R[p]+C, C[p];
+EEA: IR+LVAL,SIR+LVAL,LVAL+R;   # index plus base
+CEEA:EEA+C,IR+LVALD,SIR+LVALD;  # index plus base with displacement
+IEEA: *CEEA, *SIRD, *EEA;       # Indirect modes using  D-reg
+
+# Double Indirect
+
+#   Preindirect indexing
+
+#DInD: *IEEA;                    # Double Indirect modes, D-reg, no outer disp
+#DID: DInD, *(IEEA+C);           # Double Indirect with optional outer disp
+
+#   Postindirect indexing
+
+#II: IR+IND, SIR+IND;          # Indirect Index
+#PID: IR+INDD, SIR+INDD;       # Post Indirect with Displacement
+#PII: *PID,*II,*INDD,*IND;     # Post Indirect Index
+#SEEA: IEEA, PII, DID;           # Effective address modes using  D-reg
+SEEA: IEEA;                   # Effective address modes using D-reg
+AWDNP: C, SEEA, AWD;            # no pre-decrement or post-increment
+CPI: *(R ++ C1);                # character postincrement, etc.
+SPI: *(R ++ C2);
+LPI: *(R ++ C4);
+DPI: *(R ++ C8);
+CAWDnC: *(R -= C1) ,  CPI, SEEA, AWD;   # Addresssable word for byte op
+SAWDnC: *(R -= C2) ,  SPI, SEEA, AWD;   # Addressable Word for short op
+LAWDnC: *(R -= C4) ,  LPI, SEEA, AWD;   # Addressable Word for long op
+DAWDnC: *(R -= C8) ,  DPI, AWD;         # No Double indexing.  
+LAWDnCR: *(R -= C4) ,  LPI, SEEA, AWDnR;# Addressable Word for long op
+CAWD: C, CAWDnC;
+CAWDn2: C, *(R -= C1) , CPI, AWDnR;     # no double indexing, so clear is OK
+SAWD : C, SAWDnC;
+LAWD : C, LAWDnC;
+DAWD : FC, DAWDnC[d];                   #Addressable Double. No double indexing
+LAWDnR: C, LAWDnCR;
+CVSLAWD: 'CONV' LAWD[cls];
+FLTDBL: DAWD, LAWDnC[df], 'CONV' LAWDnC[df];
+SFLD: 'FLD' AWDNP ;
+UCHR: 'CONV' CAWD[cuc];
+SHRT: Cs, 'CONV' SAWD[s];
+USHRT: 'CONV' SAWD[sus];
+RCR: 'CONV' R[cucsuslul], R[cucsuslul];
+CRCR: C, RCR;
+BSHFT: (C1 << RCR);
+CR: R[cucsuslul], C[cucsuslul];
+PCR: R, C;
+PTRSUB: LAWD[p] - PCR[p];
+EXTEND: AWDnR, *EEA , *(EEA + C7bit);   # Address allowing subsequent byte
+                                        #  access (non register)
+
+# for function returns when functions return simple structures
+UREG: & R ;
+UHALF: UREG + C2;
+FARG: 'ARG' FLTDBL;     # fortran intrinsic function argument
+
+OPCODES
+DCOST  :1;
+
+'COMOP' F,F {$N} "" ;
+'COMOP' F,R {$A $> $R} "Y" ;
+'COMOP' F,CC {$C} "" ;
+
+'GENLAB' F  {$N} "\L%L:\n" ;
+'GENLAB' R  {$L} "\L%L:\n" ;
+'GENLAB' CC  {$C} "\L%L:\n" ;
+
+'GENUBR' F  {$N} "ZI" ;
+'GENUBR' C0  {$N} "ZI" ;
+'GENUBR' R  {$N} "ZI" ;
+'GENBR' CC  {$L} "ZI" ;
+
+#'GENSCC' F {$C $1} "\tZa.b\tA1\n\tneg.b\tA1\n\textb.l\tA1\n";
+#'GENSCC' R {$C $1} "\tZa.b\tA1\n\tneg.b\tA1\n\textb.l\tA1\n";
+'GENSCC' CC {$C $A $1} "\tZa.b\tA1\n\tneg.b\tA1\n\textb.l\tA1\n";
+
+'GOTO' (*N) {$N $A}     "\tmov.l\tA(LL),%a0\n\tjmp\t\(%a0\)\n";
+
+'FCALL' N, FARG {$U4 $1}        "\tZCL.ZT(RL)\tA(RL),A1\n" ;
+
+'CM' F,F {$N} "";
+
+'CALL' C,F {$A $1} "\tjsr\tCL\nZc" ;
+'CALL' R,F {$A $< $1} "\tjsr\t(CL)\nZc" ;
+
+'UCALL' C {$A $1} "\tjsr\tCL\n" ;
+'UCALL' R {$A $< $1} "\tjsr\t(CL)\n" ;
+
+# MC68881 C intrinsic
+'INTCALL1' C,FLTDBL  {$C $1 $>} "\tZNL.ZTR\tAR,A1\n";
+# Unix conformance use.  The lack of $> below forces AR and A1 to be different
+'INTCALL2' C,R[df]   {$C $1} "\tZNL.x\tAR,A1\n";
+'INTCALL3' C,FLTDBL  {$U4 $C $1 $> 2}
+ "RR!1\tfmov.ZTR\tAR,A1\n\tfmov.x\t&0x467f9400,-(%sp)\n\tfmov.x\tA1,-(%sp)\n\tjsr\tfscales\n\tZNL.x\tA1,A1\n";
+'INTCALL3' C,FLTDBL  {$C $1 $> 2}
+ "RR!1\tfmov.ZTR\tAR,A1\n\tfmov.x\tA1,A2\n\tfscale.s\t&0x467f9400,A2\n\tfnop\n\tZNL.x\tA1,A1\n";
+
+        # MOVQ is 0 to offset Cc cost
+= R[cucsuslul], Cc {$L} "\tmov.l\tAR,AL\n" :0;
+
+= SFLD[], C0 {$R} "\tbfclr\tAL{&ZhL:&SL}\n";
+
+############################################################################
+#	bk: Ansi distinguishes between signed & unsigned bit field types
+#	    so I've inserted type designators ( e.g. [csl] ), and
+#		duplicated the orginal templates, one version using bfextu, the
+#		other using bfexts.  Originally, we always used bfextu.
+= CAWD[cuc], SFLD[csl]  {1 $1 $C} 
+        "\tbfexts\tAR{&ZhR:&SR},A1\n\tmov.b\tA1,AL\n";
+= CAWD[cuc], SFLD[ucusul]  {1 $1 $C} 
+        "\tbfextu\tAR{&ZhR:&SR},A1\n\tmov.b\tA1,AL\n";
+= SAWD[sus], SFLD[csl]  {1 $1 $C} 
+        "\tbfexts\tAR{&ZhR:&SR},A1\n\tmov.w\tA1,AL\n";
+= SAWD[sus], SFLD[ucusul]  {1 $1 $C} 
+        "\tbfextu\tAR{&ZhR:&SR},A1\n\tmov.w\tA1,AL\n";
+= LAWD[lul], SFLD[csl]  {1 $1 $C} 
+        "\tbfexts\tAR{&ZhR:&SR},A1\n\tmov.l\tA1,AL\n";
+= LAWD[lul], SFLD[ucusul]  {1 $1 $C} 
+        "\tbfextu\tAR{&ZhR:&SR},A1\n\tmov.l\tA1,AL\n";
+############################################################################
+
+= CAWD[cuc], C0 {$R} "\tclr.b\tAL\n" ;
+= R[cuc], CAWD[cuc] {$L} "RL!R\tmov.b\tAR,AL\n" ;
+= CAWD[cuc], CAWD[cuc] {$L} "RL!R\tmov.b\tAR,AL\n" ; # changed {$R} to {$L}
+= CAWD[cuc], CAWD[cuc] {$C} "\tmov.b\tAR,AL\n" ;
+= CAWD[cuc], R[lul] {$R} "RL!R\tmov.b\tAR,AL\n" ;
+= CAWD[cuc], R[lul] {$C} "\tmov.b\tAR,AL\n" ;
+
+= SAWD[sus], C0 {$R} "\tclr.w\tAL\n" ;
+= R[sus], SAWD[sus]     {$L} "RL!R\tmov.w\tAR,AL\n" ;
+= SAWD[sus], SAWD[sus]  {$L} "RL!R\tmov.w\tAR,AL\n" ; # changed {$R} to {$L}
+= SAWD[sus], SAWD[sus]  {$C} "\tmov.w\tAR,AL\n" ;
+= SAWD[sus], R[lul] {$R} "RL!R\tmov.w\tAR,AL\n" ;
+= SAWD[sus], R[lul] {$C} "\tmov.w\tAR,AL\n" ;
+
+= LAWD[lul], C0 {$R} "\tclr.l\tAL\n" ;
+= R[lul], LAWD[lul] {$L} "RL!R\tmov.l\tAR,AL\n" ;
+= LAWD[lul], LAWD[lul] {$L} "RL!R\tmov.l\tAR,AL\n" ; # changed {$R} to {$L}
+= LAWD[lul], LAWD[lul] {$C} "\tmov.l\tAR,AL\n" ;
+
+        # note that moves to address registers don't set condition code
+        # this is the reason for LAWDnR
+= R[p], C0 "\tsub.l\tAL,AL\n" ;
+= R[p], (&A)[p] "       lea.l   A(RL),AL\n" ;
+= R[p], (&P)[p] "       lea.l   A(RL),AL\n" ;
+= R[p], R[plul] "RR!L\tmov.l\tAR,AL\n";
+= LAWD[p], R[plul] {$R} "RR!L\tmov.l\tAR,AL\n";  # remember the register
+= LAWDnR[p], C0 {$L $C} "\tclr.l\tAL\n";
+= LAWD[p], LAWD[plul]  "RL!R\tmov.l\tAR,AL\n";
+= LAWDnR[p], LAWD[plul] {$R $C} "\tmov.l\tAR,AL\n";
+
+= SFLD[], AWDNP[cuc] {1 $L}  "RR!1\tmov.b\tAR,A1\n\tbfins\tA1,AL{&ZhL:&SL}\n";
+
+= SFLD[], AWDNP[sus] {1 $L}  "RR!1\tmov.w\tAR,A1\n\tbfins\tA1,AL{&ZhL:&SL}\n";
+
+= SFLD[], AWDNP[lul] {1 $L}  "RR!1\tmov.l\tAR,A1\n\tbfins\tA1,AL{&ZhL:&SL}\n";
+
+#  put the tests before the copies so the fast mode will work
+SFLD[] {$C} "\tbftst\tAR{&ZhR:&SR}\n";
+CAWDnC[cuc] {$C} "      tst.b   AR\n" ;
+SAWDnC[sus] {$C} "      tst.w   AR\n" ;
+        # the 1 $< should ensure that %d0 is used here
+#R[p] {$C 1 $<} "\tmov.l\tAR,%d0\n" ;  # faster than compare...
+LAWDnC[lulp] {$C} "\ttst.l\tAR\n" ;
+
+  # The following template has user need U8 (CC_AREG) to indicate
+  # that the template properly sets condition codes for address registers
+  # This is used for aaddress registers containing INT, UNSIGNED, LONG, ULONG
+LAWDnC[lulp] {$C $U8} "\ttst.l\tAR\n":2 ;
+
+Cc[lulsuscuc] {$1} "\tmov.l\tAR,A1\n" :0;  # MOVQ (cost 0 to offset Cc cost)
+C0[p] {$1} "\tsub.l\tA1,A1\n" :1;
+
+# these are quite high costs; really, sty should make the cost
+# correspond to the address mode cost, but it doesn't (yet!)
+
+#PII[cuc] { $1 $> }	"RR!1        mov.b   AR,A1\n":2;
+#PII[sus] { $1 $> }	"RR!1        mov.w   AR,A1\n":2;
+#PII[plul] { $1 $> }	"RR!1       mov.l   AR,A1\n":2;
+#DID[cuc] { $1 $> }	"RR!1        mov.b   AR,A1\n":2;
+#DID[sus] { $1 $> }	"RR!1        mov.w   AR,A1\n":2;
+#DID[plul] { $1 $> }	"RR!1       mov.l   AR,A1\n":2;
+IEEA[cuc] { $1 $> }	"RR!1\tmov.b   AR,A1\n":2;
+IEEA[sus] { $1 $> }	"RR!1\tmov.w   AR,A1\n":2;
+IEEA[plul] { $1 $> }	"RR!1\tmov.l   AR,A1\n":2;
+#DIND[cuc] { $1 $> }	"RR!1       mov.b   AR,A1\n":2;
+#DIND[sus] { $1 $> }	"RR!1       mov.w   AR,A1\n":2;
+#DIND[plul] { $1 $> }	"RR!1      mov.l   AR,A1\n":2;
+CAWD[cuc] {$1 $>}	"RR!1\tmov.b\tAR,A1\n" :2;
+SAWD[sus] {$> $1}	"RR!1\tmov.w\tAR,A1\n":2;
+LAWD[plul] {$> $1}	"RR!1\tmov.l\tAR,A1\n":2;
+
++[p] R[lul], R[p] {$1 $< $>}		"\tlea.l\tU.,A1\n" :2;
++[p] ('CONV' R[s]), R[p] {$1 $< $>}	"\tlea.l\tU.,A1\n" :2;
+# +[p] EEA, C {$1 $<}		"\tlea.l\tU.,A1\n" :1;  # plus 1 for constant
+# +[p] R[p], C {$1 $<}		"\tlea.l\tU.,A1\n" :1;  # plus 1 for constant
+-[p] R[p], C {$1 $<}		"\tlea.l\tU.,A1\n" :1;  # plus 1 for constant
+#+[p] IND, C { $1 $<}		"\tlea.l\tU.,A1\n":1;
+#+[p] SIR, C { $1 $<}		"\tlea.l\tU.,A1\n":1;
++[p] SIR, R {$1 $< $>}		"\tlea.l\tU.,A1\n":2;
+# +[p] IR, LVAL {$1 $< $>}"\tlea.l   U.,A1\n":2;   # d.t. These all match
+# +[p] SIR, LVAL {$1 $< $>}"\tlea.l   U.,A1\n":2;   # ones just below ????
+# +[p] IEEA, C {$1 $<}"\tlea.l   U.,A1\n":1;           # Redundant???
+
+# A strange way to get an add or subtract ( but efficient ) intended
+# for pointer arithmetic
+
++[p] R[p], C {$1 $<}		"\tlea.l\tU.,A1\n";
++[p] EEA, C {$1 $<}		"\tlea.l\tU.,A1\n";
++[p] SIR, C { $1 $<}		"\tlea.l\tU.,A1\n";
++[p] SIR, R[p] {$1 $< $>}	"\tlea.l\tU.,A1\n";
++[p] IR, LVAL {$1 $< $>}	"\tlea.l\tU.,A1\n";
++[p] SIR, LVAL {$1 $< $>}	"\tlea.l\tU.,A1\n";
+#+[p] IEEA, C {$1 $<}"\tlea.l\tU.,A1\n";
+
+'UAND' A {$1 $>} "\tlea.l\tAL,A1\n" :1;
+'UAND' P {$1 $>} "\tlea.l\tAL,A1\n" :1;
+'UAND' T {$1}	 "ZtALA1" :5; # must store to mem if register temp
+
+############################################################
+# bk: see notes for bit field assignment templates above
+SFLD[csl] { $< $1 $C } "\tbfexts\tAR{&ZhR:&SR},A1\n":7;
+SFLD[ucusul] { $< $1 $C } "\tbfextu\tAR{&ZhR:&SR},A1\n":7;
+############################################################
+
+'ARG' (&A) {$N}		"\tpea.l\tA(LL)Z0\n" ;
+'ARG' (&P) {$N} 	"\tpea.l\tA(LL)Z0\n" ;
+'ARG'[lulp] C0 {$N} 	"\tclr.l\tZ2\n";
+'ARG'[lul] Cs {$N} 	"\tpea.l\tZ3LZ0\n";
+'ARG'[lul] SHRT {$A $N} "\tmov.w\tAL,%a0\n\tmov.l\t%a0,Z2\n";
+'ARG'[lul] USHRT {$N} 	"\tmov.w\tAL,Z1\n\tclr.w\tZ1\n":5;
+# ? 'ARG'[sus] SAWD[sus] {$N} "\tmov.w\tAL,Z1\n" ;
+'ARG'[lul] SAWD[sus] {$N 1 $<}
+        "\tmov.w\tAL,A1\n\tmov.l\tA1,Z2\n" ; # short structures
+'ARG' LAWD[lulp]  {$N} 	"\tmov.l\tAL,Z2\n" ;
+'ARG' EA[p] {$N} 	"\tpea.l\tULZ0\n";
+#'ARG' INDD[p] {$N} "\tpea.l\tULZ0\n";
+'ARG' LVALD[p] {$N} 	"\tpea.l\tULZ0\n";
+'ARG' EEA[p] {$N} 	"\tpea.l\tULZ0\n";
+'ARG' CEEA[p] {$N} 	"\tpea.l\tULZ0\n";
+#'ARG' II[p] {$N} "pea.lULZ0\n";
+#'ARG' PID[p] {$N} "pea.lULZ0\n";
+
+'CMP' CAWDnC[c], Cc {$C}	 "\tcmp.b\tAL,AR\n" ;
+'CMP' CAWDnC[uc], Cuc {$C}	 "\tcmp.b\tAL,AR\n" ;
+'CMP' R[cuc], CAWDnC[cuc] {$C}	 "\tcmp.b\tAL,AR\n" ;
+'CMP' CAWDnC[s], Cs {$C}	 "\tcmp.w\tAL,AR\n" ;
+'CMP' CAWDnC[us], Cus {$C}	 "\tcmp.w\tAL,AR\n" ;
+'CMP' R[sus], SAWDnC[sus] {$C}	 "\tcmp.w\tAL,AR\n" ;
+'CMP' R[plul], LAWDnC[plul] {$C} "\tcmp.l\tAL,AR\n" ;
+'CMP' LAWDnC[plul], C {$C}	 "\tcmp.l\tAL,AR\n":2;# add 1 for long immediate
+'CMP' CPI, CPI {$C}		 "\tcmp.b\tAL,AR\n";
+'CMP' SPI, SPI {$C}		 "\tcmp.w\tAL,AR\n";
+'CMP' LPI, LPI {$C}		 "\tcmp.l\tAL,AR\n";
+
+   # The following 3 templates are for address registers containing INT,
+   # UNSIGNED, LONG, or ULONG. User need U8 - CC_AREG identifies 
+   # that these templates set condition code for address registers
+'CMP' R[plul], LAWDnC[plul] {$C $U8} "\tcmp.l\tAL,AR\n":2 ;
+'CMP' LAWDnC[plul], C {$C $U8}	"\tcmp.l\tAL,AR\n":3; # add 1 for long immediate
+'CMP' LPI, LPI {$C $U8}		"\tcmp.l\tAL,AR\n":2;
+
+'UMINUS' R[lul]  {$1 $[} "RL!1\tmov.l\tAL,A1\n\tneg.l\tA1\n" ;
+'UMINUS' R[sus]  {$1 $[} "RL!1\tmov.w\tAL,A1\n\tneg.w\tA1\n" ;
+'UMINUS' R[cuc]  {$1 $[} "RL!1\tmov.b\tAL,A1\n\tneg.b\tA1\n" ;
+
+~ R[lul]  {$1 $[} "RL!1\tmov.l\tAL,A1\n\tnot.l\tA1\n" ;
+~ R[sus]  {$1 $[} "RL!1\tmov.w\tAL,A1\n\tnot.w\tA1\n" ;
+~ R[cuc]  {$1 $[} "RL!1\tmov.b\tAL,A1\n\tnot.b\tA1\n" ;
+
+-- CAWD[cuc], C {$1 $l}	"F\tmov.b\tA-L,A1\n\tsub.b\tAR,AL\n" :2;
+++ CAWD[cuc], C {$1 $l} "F\tmov.b\tA-L,A1\n\tadd.b\tAR,AL\n" :2;
+-- SAWD[sus], C {$1 $l} "F\tmov.w\tA-L,A1\n\tsub.w\tAR,AL\n" :2;
+++ SAWD[sus], C {$1 $l} "F\tmov.w\tA-L,A1\n\tadd.w\tAR,AL\n" :2;
+-- LAWD[plul], C {$1 $l} "F\tmov.l\tA-L,A1\n\tsub.l\tAR,AL\n" :2;
+++ LAWD[plul], C {$1 $l} "F\tmov.l\tA-L,A1\n\tadd.l\tAR,AL\n" :2;
+
+& EXTEND[lul], CPOW2 {$C} "\tbtst\tZBARAL\n" : 1;
+& ('CONV' EXTEND[sus]), CPOW2 {$C} "\tbtst\tZBARA(LL)\n" : 1;
+
+& R[lulsuscuc], BSHFT {$C}	"\tbtst\tA(RR),AL\n" :2;
+& UCHR, BSHFT {$C}		"\tbtst\tA(RR),AL\n" :2;
+& R[lulsuscuc], CPOW2 {$C}	"\tbtst\tZbAR,AL\n" :3;
+& UCHR, CPOW2B {$C}		"\tbtst\tZbAR,AL\n" :3;
+& R[lul], Cc {1 $C}		"\tmov.l\tAR,A1\n\tand.l\tAL,A1\n" :2;# cost = 3
+& R[lulsus], C15BIT {1 $< $C}	"RL!1\tmov.l\tAL,A1\n\tand.w\tAR,A1\n" :2;        #  cost = 3
+
+&= CAWD[cuc], CR {$L $C}	"\tand.b   AR,AL\n" ;
+&= R[cuc], CAWD[cuc] {$L $C}	"\tand.b   AR,AL\n" ;
+&= SAWD[sus], CR {$L $C}	"\tand.w   AR,AL\n" ;
+&= R[sus], SAWD[sus] {$L $C}	"\tand.w   AR,AL\n" ;
+&= LAWD[lul], CR {$L $C}	"\tand.l   AR,AL\n" ;
+&= R[lul], LAWD[lul] {$L $C}	"\tand.l   AR,AL\n" ;
+
+## bk: commented out bset templates: caused problems "or"ing
+## processor registers, and it's less efficient than "or" anyway.
+##|= EXTEND[lulsuscuc], CPOW2 {$L} "\tbset\tZBARAL\n" : 1;
+|= CAWD[cuc], CR {$L $C}	"\tor.b    AR,AL\n" ;
+|= R[cuc], CAWD[cuc] {$L $C}	"\tor.b    AR,AL\n" ;
+|= SAWD[sus], CR {$L $C}	"\tor.w    AR,AL\n" ;
+|= R[sus], SAWD[sus] {$L $C}	"\tor.w    AR,AL\n" ;
+|= R[lulsus], Cus {$L}		"\tor.w\tAR,AL\n" :2;
+##|= R[lulsuscuc], CPOW2 {$L} 	"\tbset    ZbAR,AL\n" :3;
+##|= R[lulsuscuc], BSHFT {$L}	"\tbset    A(RR),AL\n" :2;
+|= LAWD[lul], CR {$L $C} 	"\tor.l    AR,AL\n" ;
+|= R[lul], LAWD[lul] {$L $C}	"\tor.l    AR,AL\n" ;
+
+        # ADDQ
++= CAWD[cuc], C1to8 {$L $C} "\tadd.b   AR,AL\n" ;
++= SAWD[sus], C1to8 {$L $C} "\tadd.w   AR,AL\n" ;
++= LAWD[lul], C1to8 {$L $C} "\tadd.l   AR,AL\n" ;
++= R[p], C1to8 {$L} "\tadd.l   AR,AL\n" :2; # 4 cy longer than D reg, no cc
+        # ordinary adds...
++= CAWD[cuc], CR {$L $C}	"\tadd.b   AR,AL\n" ;
++= R[cuc], CAWD[cuc] {$L $C}	"\tadd.b   AR,AL\n" ;
++= SAWD[sus], CR {$L $C}	"\tadd.w   AR,AL\n" ;
++= R[sus], SAWD[sus] {$L $C}	"\tadd.w   AR,AL\n" ;
++= LAWD[lul], CR {$L $C}	"\tadd.l   AR,AL\n" ;
++= R[lul], LAWD[lul] {$L $C}	"\tadd.l   AR,AL\n" ;
++= R[p], Cc 		"\tadd.w   AR,AL\n" :2;# 4 cycles longer than D register
++= R[p], ('CONV' R[s])		"\tadd.w   AR,AL\n" :2;
++= LAWD[p], CR[lul] 	 	"\tadd.l   AR,AL\n" :2;
++= R[p], LAWD[lul]   		"\tadd.l   AR,AL\n" :2;
++= R[p], SHRT			"\tadd.w   AR,AL\n" :2;
++= LAWD[p], C[lulsus]		"\tadd.l   AR,AL\n" :2;
+
+  # The following 3 templates are for Address registers used to hold INTs
++= LAWD[lul], CR {$L}		 "\tadd.l\tAR,AL\n" :2; # omit CC for Areg match
++= R[lul], LAWD[lul] {$L}	 "\tadd.l\tAR,AL\n" :2; # omit CC for Areg match
++= LAWD[lul], R[lul] {$1 $C $U8} "\tmov.l\tAR,A1\n\tadd.l\tA1,AL\n" :2;
+
+        # SUBQ
+-= CAWD[cuc], C1to8 {$L $C}	"\tsub.b   AR,AL\n" ;
+-= SAWD[sus], C1to8 {$L $C}	"\tsub.w   AR,AL\n" ;
+-= LAWD[lul], C1to8 {$L $C}	"\tsub.l   AR,AL\n" ;
+-= R[p], C1to8 {$L}  		"\tsub.l   AR,AL\n" :2;    #no cc
+-= CAWD[cuc], CR {$L $C}	"\tsub.b   AR,AL\n" ;
+-= SAWD[sus], R[suslul] {$L $C} "\tsub.w   AR,AL\n" ;
+-= R[sus], SAWD[sus] {$L $C}	"\tsub.w   AR,AL\n" ;
+-= SAWD[sus], C[suslul] {$L $C} "\tsub.w   AR,AL\n" ;
+-= LAWD[lul], R[lul] {$L $C}	"\tsub.l   AR,AL\n" ;
+-= R[lul], LAWD[lul] {$L $C}	"\tsub.l   AR,AL\n" ;
+-= LAWD[lul], C[lulsus] {$L $C} "\tsub.l   AR,AL\n" ;
+-= LAWD[p], R[lul]   		"\tsub.l   AR,AL\n" :2;
+-= R[p], LAWD[lul]   		"\tsub.l   AR,AL\n" :2;
+-= R[p], SHRT			"\tsub.w   AR,AL\n" :2;
+-= LAWD[p], C[lulsus]		"\tsub.l   AR,AL\n" :2;
+
+# pointer subtraction: note that A1 refers to a data register!
+-  LAWD[p], LAWD[p] {$1 $<} "\tmov.l   AL,A1\n sub.l   AR,A1\n" :3;
+
+  # The following 3 templates are for Address registers used to hold INTs
+-= LAWD[lul], R[lul] {$L} 	"\tsub.l   AR,AL\n" :2; # omit CC for Areg match
+-= R[lul], LAWD[lul] {$L}	"\tsub.l   AR,AL\n" :2; # omit CC for Areg match
+-= LAWD[lul], R[lul] {$1 $C $U8} "\tmov.l\tAR,A1\n\tsub.l\tA1,AL\n" :2;
+
+^= EXTEND[lulsuscuc], CPOW2 {$L} "\tbchg\tZBARAL\n" : 1;
+^= CAWD[cuc], CR {$L $C }	"\teor.b   AR,AL\n" ;
+^= SAWD[sus], CR {$L $C }	"\teor.w   AR,AL\n" ;
+^= R[lulsus], Cus {$L}		"\teor.w\tAR,AL\n" :2;
+^= R[lulsuscuc], CPOW2 {$L}	"\tbchg    ZbAR,AL\n" :3;
+^= R[lulsuscuc], BSHFT {$L}	"\tbchg    A(RR),AL\n" :2;
+^= LAWD[lul], R[lul] {$L $C}	"\teor.l   AR,AL\n" ;
+^= LAWD[lul], C {$L $C }	"\teor.l   AR,AL\n" ;
+
+*= R[lul], CPOW2MUL {1 $L $C}
+        "ZeARlALA1";
+*= R[sus], CPOW2MUL {1 $L $C}
+		"ZeARwALA1";
+*= R[cuc], CPOW2MUL {1 $L $C}
+		"ZeARbALA1";			# hoss: was ZeARcALA1: 'c' is illegal
+*= LAWD[lul], CPOW2MUL {2 $1 $C}
+		"\tmov.l\tA-L,A1\nZeARlA1A2\tmov.l\tA1,AL\n" :2;
+*= SAWD[sus], CPOW2MUL {2 $1 $C}
+		"\tmov.w\tA-L,A1\nZeARwA1A2\tmov.w\tA1,AL\n" :2;
+*= CAWD[cuc], CPOW2MUL {2 $1 $C}
+		"\tmov.b\tA-L,A1\nZeARbA1A2\tmov.b\tA1,AL\n" :2;
+*= R[s], SAWD[s] {$L   } "\tmuls.w  AR,AL\n" :10;
+*= R[sus], SAWD[sus]	 "\tmulu.w  AR,AL\n" :10;
+*= SAWD[s], SAWD[s] {$1}
+        "\tmov.w\tA-L,A1\n\tmuls.w\tAR,A1\n\tmov.w\tA1,AL\n" :13;
+*= SAWD[sus], SAWD[sus] {$1}
+        "\tmov.w\tA-L,A1\n\tmulu.w\tAR,A1\n\tmov.w\tA1,AL\n" :13;
+* SHRT[l], Cs {$1 $[} "R(LL)!1\tmov.w   A(LL),A1\n\tmuls.w  AR,A1\n" :10;
+* USHRT[ul], Cus {$1 $<} "R(LL)!1\tmov.w\tA(LL),A1\n\tmulu.w  AR,A1\n" :10;
+* SHRT[l], SHRT[l] {$1 $<} "R(LL)!1\tmov.w\tA(LL),A1\n\tmuls.w  AR,A1\n" :10;
+* USHRT[ul], USHRT[ul] {$1 $<} "R(LL)!1\tmov.w\tA(LL),A1\n\tmulu.w\tAR,A1\n":10;
+/ PTRSUB, CPOW2 {$1}
+        "R(LL)!1\tmov.l\tA(LL),A1\n\tsub.l\tA(LR),A1\n\tasr.l\tZbAR,A1\n" :2;
+/= LAWD[ul], CPOW2 {1 $L $C}
+                "RL!1\tmov.l\tA-L,A1\n\tlsr.l\tZbAR,A1\nRL!1\tmov.l\tA1,AL\n";
+/= SAWD[us], CPOW2 {1 $L $C}
+                "RL!1\tmov.w\tA-L,A1\n\tlsr.w\tZbAR,A1\nRL!1\tmov.w\tA1,AL\n";
+/= CAWD[uc], CPOW2 {1 $L $C} 
+                "RL!1\tmov.b\tA-L,A1\n\tlsr.b\tZbAR,A1\nRL!1\tmov.b\tA1,AL\n";
+/= R[l], CPOW2B {$L $C}
+        "\ttst.l\tAL\n\tbpl\tZL1\n\tneg.l\tAL\n\tlsr.l\tZbAR,AL\n\tneg.l\tAL\n\tbra\tZL2\nZl1:\tlsr.l\tZbAR,AL\nZl2:\n";
+/= R[s], CPOW2B {$L $C}
+        "\ttst.w\tAL\n\tbpl\tZL1\n\tneg.w\tAL\n\tlsr.w\tZbAR,AL\n\tneg.w\tAL\n\tbra\tZL2\nZl1:\tlsr.w\tZbAR,AL\nZl2:\n";
+/= R[c], CPOW2B {$L $C} 
+        "\ttst.b\tAL\n\tbpl\tZL1\n\tneg.b\tAL\n\tlsr.b\tZbAR,AL\n\tneg.b\tAL\n\tbra\tZL2\nZl1:\tlsr.b\tZbAR,AL\nZl2:\n";
+/= LAWD[l], CPOW2B {$1 $C}
+        "\tmov.l\tA-L,A1\n\tbpl\tZL1\n\tneg.l\tA1\n\tlsr.l\tZbAR,A1\n\tneg.l\tA1\n\tbra\tZL2\nZl1:\tlsr.l\tZbAR,A1\nZl2:\tmov.l\tA1,AL\n" :2;
+/= SAWD[s], CPOW2B {$1 $C}
+        "\tmov.w\tA-L,A1\n\tbpl\tZL1\n\tneg.w\tA1\n\tlsr.w\tZbAR,A1\n\tneg.w\tA1\n\tbra\tZL2\nZl1:\tlsr.w\tZbAR,A1\nZl2:\tmov.w\tA1,AL\n" :2;
+/= CAWD[c], CPOW2B {$1 $C}
+        "\tmov.b\tA-L,A1\n\tbpl\tZL1\n\tneg.b\tA1\n\tlsr.b\tZbAR,A1\n\tneg.b\tA1\n\tbra\tZL2\nZl1:\tlsr.b\tZbAR,A1\nZl2:\tmov.b\tA1,AL\n" :2;
+/= R[l], CPOW2 {1 $L $C}
+        "\tmov.l\tZbAR,A1\n\ttst.l\tAL\n\tbpl\tZL1\n\tneg.l\tAL\n\tlsr.l\tA1,AL\n\tneg.l\tAL\n\tbra\tZL2\nZl1:\tlsr.l\tA1,AL\nZl2:\n";
+/= R[s], CPOW2 {1 $L $C}
+        "\tmov.l\tZbAR,A1\n\ttst.w\tAL\n\tbpl\tZL1\n\tneg.w\tAL\n\tlsr.w\tA1,AL\n\tneg.w\tAL\n\tbra\tZL2\nZl1:\tlsr.w\tA1,AL\nZl2:\n";
+/= LAWD[l], CPOW2 {2 $1 $C}
+        "\tmov.l\tZbAR,A2\n\tmov.l\tA-L,A1\n\tbpl\tZL1\n\tneg.l\tA1\n\tlsr.l\tA2,A1\n\tneg.l\tA1\n\tbra\tZL2\nZl1:\tlsr.l\tA2,A1\nZl2:\tmov.l\tA1,AL\n":2;
+/= SAWD[s], CPOW2 {2 $1 $C}
+        "\tmov.l\tZbAR,A2\n\tmov.w\tA-L,A1\n\tbpl\tZL1\n\tneg.w\tA1\n\tlsr.w\tA2,A1\n\tneg.w\tA1\n\tbra\tZL2\nZl1:\tlsr.w\tA2,A1\nZl2:\tmov.w\tA1,AL\n":2;
+/= R[s], SAWD[s] {$L   } "\text.l\tAL\n\tdivs.w\tAR,AL\n" :22;
+/= R[sus], SAWD[sus] "\tswap.w\tAL\n\tclr.w\tAL\n\tswap.w\tAL\n divu.w  AR,AL\n" :23;
+/= SAWD[s], SAWD[s] {$1}
+        "\tmov.w\tA-L,A1\n\text.l\tA1\n\tdivs.w\tAR,A1\n\tmov.w\tA1,AL\n" :24;
+/= SAWD[sus], SAWD[sus] {$1}
+     "\tclr.l\tA1\n\tmov.w\tA-L,A1\n\tdivu.w\tAR,A1\n\tmov.w\tA1,AL\n"               :24;
+/[suscuc] R[l], SHRT {$1 $[} "RL!1\tmov.l\tAL,A1\n\tdivs.w\tAR,A1\n" :20;
+/[suscuc] R[lul], USHRT  {$1 $[} "RL!1\tmov.l\tAL,A1\n\tdivu.w\tAR,A1\n" :20;
+/[suscuc] R[ul], Cus {$1 $[} "RL!1\tmov.l\tAL,A1\n\tdivu.w\tAR,A1\n" :20;
+% LAWD[l], CPOW2 {$1 $< $C}
+        "RL=1\ttst.l\tA1\nRL!1\tmov.l\tAL,A1\n\tbpl\tZL1\n\tneg.l\tA1\n\tand.l\tAR-1,A1\n\tneg.l\tA1\n\tbra\tZL2\nZl1:\tand.l\tAR-1,A1\nZl2:\n";
+% SAWD[s], CPOW2 {$1 $< $C}
+        "RL=1\ttst.w\tA1\nRL!1\tmov.w\tAL,A1\n\tbpl\tZL1\n\tneg.w\tA1\n\tand.w\tAR-1,A1\n\tneg.w\tA1\n\tbra\tZL2\nZl1:\tand.w\tAR-1,A1\nZl2:\n";
+% CAWD[c], CPOW2 {$1 $< $C}
+        "RL=1\ttst.b\tA1\nRL!1\tmov.b\tAL,A1\n\tbpl\tZL1\n\tneg.b\tA1\n\tand.b\tAR-1,A1\n\tneg.b\tA1\n\tbra\tZL2\nZl1:\tand.b\tAR-1,A1\nZl2:\n";
+%= LAWD[ul], CPOW2 {$L $C}
+        "\tand.l\tAR-1,AL\n";
+%= SAWD[us], CPOW2 {$L $C}
+        "\tand.w\tAR-1,AL\n";
+%= CAWD[uc], CPOW2B {$L $C}
+        "\tand.b\tAR-1,AL\n";
+%= R[s], SAWD[s] "\text.l\tAL\n\tdivs.w\tAR,AL\n\tswap.w\tAL\n" :23;
+%= R[sus], SAWD[sus] "\tswap.w\tAL\n\tclr.w\tAL\n\tswap.w\tAL\n\tdivu.w\tAR,AL\n\tswap.w\tAL\n"
+        :24;
+
+/ LAWD[l], LAWD[l] {1 $1 $<}
+        "RL!1\tmov.l\tAL,A1\n\tdivs.l\tAR,A1\n" :30;
+% LAWD[l], LAWD[l] {2 $2 $<}
+        "RL!1\tmov.l\tAL,A1\n\ttdivs.l\tAR,A2:A1\n" :30;
+*= R[ul], LAWD[ul] {$L} "\tmulu.l\tAR,AL\n" :20;
+* LAWD[ul], LAWD[ul] {1 $1 $<}
+        "RL!1\tmov.l\tAL,A1\n\tmulu.l\tAR,A1\n" :20;
+*= R[l], LAWD[l] {$L}   "\tmuls.l\tAR,AL\n" :20;
+* LAWD[l], LAWD[l] {1 $1 $<}
+        "RL!1\tmov.l\tAL,A1\n\tmuls.l\tAR,A1\n" :20;
+/ LAWD[lul], LAWD[lul] {1 $1 $<}
+        "RL!1\tmov.l\tAL,A1\n\tdivu.l\tAR,A1\n" :30;
+% LAWD[lul], LAWD[lul] {2 $2 $<}
+        "RL!1\tmov.l\tAL,A1\n\ttdivu.l\tAR,A2:A1\n" :30;
+
+# The following floating point patterns generate M68881 coprocessor instructions
+# They must occur before the non-M68881 paterns because many of the costs are
+# the same as their non-M68881 counterparts.
+
+# cost memory to memory float moves better than using floating registers
+= AWDnR[d], AWDnR[d] {$A $< $> $R }
+					 "YZo0\tmov.l\tA-R,A-L\n\tmov.l\tZnAR,ZnAL\nZo1":0;
+= LAWDnR[f], LAWDnR[f] "Zo0\tmov.l\tAR,AL\nZo1":0;
+
+= R[d], FC[d] {$U1 $L $C}    "\tfmov.d\tAR,AL\n";
+= LAWDnR[d], FC[d] {$U1 $R}  "Zo0\tmov.l\tZwR,A-L\n\tmov.l\tZxR,ZnAL\nZo1";
+= LAWDnR[f], FC[f] {$U1 $R}  "Zo0\tmov.l\tAR,AL\nZo1";
+# jcl: commented out FLTDBL and created 4 new, more precise templates 
+#= R[df], FLTDBL {$U1 $L}   "RL!R\tfmov.ZTR\tAR,AL\n";
+= R[df], DAWD[df] {$U1 $L}	"RL!R\tfmov.ZTR\tAR,AL\n";
+= R[d], LAWDnC[d] {$U1 $L}	"RL!R\tfmov.ZTR\tAR,AL\n";
+= R[f], LAWDnC[f] {$U1 $L}	"RL!R\tfmov.ZTR\tAR,AL\n";
+= R[df], CVSLAWD {$U1 $L}	"RL!R\tfmov.ZTR\tAR,AL\n";
+# jcl: commented out FLTDBL and created 4 new, more precise templates 
+#= R[df], FLTDBL {$U1 $L $C}  "\tfmov.ZTR\tAR,AL\n";
+= R[df], DAWD[df] {$U1 $L $C}	"\tfmov.ZTR\tAR,AL\n";
+= R[d], LAWDnC[d] {$U1 $L $C}	"\tfmov.ZTR\tAR,AL\n";
+= R[f], LAWDnC[f] {$U1 $L $C}	"\tfmov.ZTR\tAR,AL\n";
+= R[df], CVSLAWD {$U1 $L $C}	"\tfmov.ZTR\tAR,AL\n";
+= FLTDBL, R[df] {$U1 $R}  "\tfmov.ZTL\tAR,AL\n";
+# jcl: commented out following template
+#= FLTDBL, ('CONV' R[fd]) {$U1 $L} "\tfmov.ZTL\tAR,AL\n";
+# jcl
+#= LAWDnC[lsc], FLTDBL {$U1 $A $L $>} 
+# Emulated pair #1
+= LAWDnC[l], FLTDBL {$U1 $U4 $A $L $>} 
+        "\tfmov.ZTR\tAR,%fp0\n\tfmov.ZTR\t%fp0,-(%sp)\n\tjsr\tfintrzZTR\n\tadd.w\t&ZUR,%sp\n\tfmov.ZTL\t%fp0,AL\n";
+= LAWDnC[l], FLTDBL {$U1 $A $L $>} 
+        "\tfintrz.ZTR\tAR,%fp0\n\tfmov.ZTL\t%fp0,AL\n";
+#jcl
+#= LAWDnC[usuc], FLTDBL {$U1 $A $L $>}
+= LAWDnC[suscuc], FLTDBL {$U1 $U4 $A $L $>}
+		"\tfmov.ZTR\tAR,%fp0\n\tfmov.ZTR\t%fp0,-(%sp)\n\tjsr\tfintrzZTR\n\tadd.w\t&ZUR,%sp\n\tfmov.l\t%fp0,%d0\n\tmov.ZTL\t%d0,AL\n";
+= LAWDnC[suscuc], FLTDBL {$U1 $A $L $>}
+		"\tfintrz.ZTR\tAR,%fp0\n\tfmov.l\t%fp0,%d0\n\tmov.ZTL\t%d0,AL\n";
+= LAWDnC[ul], FLTDBL {$U1 $U4 $A $L $>}
+		"\tfmov.ZTR\tAR,%fp0\n\tfcmp.s\t%fp0,&0x4f000000\n\tfbge\tZL1\n\tfmov.x\t%fp0,-(%sp)\n\tjsr\tfintrzx\n\tadd.w\t&12,%sp\n\tfmov.l\t%fp0,%d0\n\tbra\tZL2\nZl1:\tfsub.s\t&0x4f000000,%fp0\n\tfmov.x\t%fp0,-(%sp)\n\tjsr\tfintrzx\n\tadd.w\t&12,%sp\n\tfmov.l\t%fp0,%d0\n\tbchg\t&31,%d0\nZl2:\tmov.ZTL\t%d0,AL\n";
+= LAWDnC[ul], FLTDBL {$U1 $A $L $>}
+		"\tfmov.ZTR\tAR,%fp0\n\tfcmp.s\t%fp0,&0x4f000000\n\tfbge\tZL1\n\tfintrz.x\t%fp0,%fp0\n\tfmov.l\t%fp0,%d0\n\tbra\tZL2\nZl1:\tfsub.s\t&0x4f000000,%fp0\n\tfintrz.x\t%fp0,%fp0\n\tfmov.l\t%fp0,%d0\n\tbchg\t&31,%d0\nZl2:\tmov.ZTL\t%d0,AL\n";
+= FLTDBL, CVSLAWD {1 $U1 $L $C} "\tfmov.ZTR\tAR,A1\nRL!1\tfmov.ZTL\tA1,AL\n";
+
+# the following two patterns handle register TEMPS
+#  Note: the original templates below produced illegal memory/memory fmov's
+#= T[fd], FLTDBL {$U1 $U2 $R} "\tfmov.ZTR\tAR,AL\n";
+#= FLTDBL, T {$U1 $U2 $R} "\tfmov.ZTL\tAR,AL\n";
+
+= T[fd], R[fd] {$U1 $U2 $R} "\tfmov.ZTR\tAR,AL\n";
+= R[fd], T {$U1 $U2 $R} "\tfmov.ZTL\tAR,AL\n";
+
+# M68881 double point and floating point ops
+# jcl changed some more .d suffixes to .ZTR
+
+# += R[fd], FC   {$U1 $L $C}   "\tfadd.d\tAR,AL\n";  # ZTR does .d
++= R[fd], FLTDBL   {$U1 $L $C}   "\tfadd.ZTR\tAR,AL\n";
++= FLTDBL, R[df] {$1 $C}  
+        "\tfmov.ZTL\tA-L,A1\n\tfadd.ZTR\tAR,A1\n\tfmov.ZTL\tA1,AL\n":2;
++[df] FLTDBL, FLTDBL {$U1 $1 $C $<}
+        "RL!1\tfmov.ZTL\tAL,A1\n\tfadd.ZTR\tAR,A1\n";
+#+ FLTDBL, CVSLAWD {$U1 $1 $C $<}	#jcl
++ FLTDBL[df], CVSLAWD {$U1 $1 $C $<}
+        "RL!1\tfmov.ZTL\tAL,A1\n\tfadd.ZTR\tAR,A1\n";
+-= R[fd], FC  {$U1 $L $C}   "\tfsub.ZTR\tAR,AL\n";
+-= FLTDBL, R[df] {$1 $C}  
+        "\tfmov.ZTL\tA-L,A1\n\tfsub.ZTR\tAR,A1\n\tfmov.ZTL\tA1,AL\n":2;
+-[df] FLTDBL, FLTDBL {$U1 $1 $C $<}
+        "RL!1\tfmov.ZTL\tAL,A1\n\tfsub.ZTR\tAR,A1\n";
+#- FLTDBL, CVSLAWD {$U1 $1 $C $<}	#jcl
+- FLTDBL[df], CVSLAWD {$U1 $1 $C $<}
+        "RL!1\tfmov.ZTL\tAL,A1\n\tfsub.ZTR\tAR,A1\n";
+#- CVSLAWD, FLTDBL {$U1 $1 $C $<}	#jcl
+- CVSLAWD, FLTDBL[df] {$U1 $1 $C $<}
+        "RL!1\tfmov.ZTL\tAL,A1\n\tfsub.ZTR\tAR,A1\n";
+# *= R[fd], FC   {$U1 $L $C}   "\tfmul.d\tAR,AL\n";     # ZTR below does .d
+*= R[fd], FLTDBL   {$U1 $L $C}   "\tfmul.ZTR\tAR,AL\n";
+*= FLTDBL, R[df] {$1 $C}  
+        "\tfmov.ZTL\tA-L,A1\n\tfmul.ZTR\tAR,A1\n\tfmov.ZTL\tA1,AL\n":2;
+*[df] FLTDBL, FLTDBL {$U1 $1 $C $<}
+        "RL!1\tfmov.ZTL\tAL,A1\n\tfmul.ZTR\tAR,A1\n";
+#* FLTDBL, CVSLAWD {$U1 $1 $C $<}	#jcl
+* FLTDBL[df], CVSLAWD {$U1 $1 $C $<}
+        "RL!1\tfmov.ZTL\tAL,A1\n\tfmul.ZTR\tAR,A1\n";
+/= R[fd], FLTDBL   {$U1 $L $C}   "\tfdiv.ZTR\tAR,AL\n";
+/= FLTDBL, R[df] {$1 $C}  
+        "\tfmov.ZTL\tA-L,A1\n\tfdiv.ZTR\tAR,A1\n\tfmov.ZTL\tA1,AL\n":2;
+/[df] FLTDBL[fd], FLTDBL {$U1 $1 $C $<}
+        "RL!1\tfmov.ZTL\tAL,A1\n\tfdiv.ZTR\tAR,A1\n";
+#/ FLTDBL, CVSLAWD {$U1 $1 $C $<}	#jcl
+/ FLTDBL[df], CVSLAWD {$U1 $1 $C $<}
+        "RL!1\tfmov.ZTL\tAL,A1\n\tfdiv.ZTR\tAR,A1\n";
+#/ CVSLAWD, FLTDBL {$U1 $1 $C $<}	#jcl
+/ CVSLAWD, FLTDBL[df] {$U1 $1 $C $<}
+        "RL!1\tfmov.ZTL\tAL,A1\n\tfdiv.ZTR\tAR,A1\n";
+
+############################################################
+# Motorola 4.1 added these templates.  Before, we just
+# did moves from FPU regs to CPU regs, overlooking the fact
+# that such moves don't set the CPU's condition codes.
+#
+# test double/float
+R[df] {$U1 $C} "\tftest.x\tAR\n" :0;
+'CONV'[df] R[df] {$U1 $C} "\tftest.x\tAR\n" :0;
+# load double/float
+LAWDnC[f] {$U1 $< $1} "RR!1\tfmov.ZT.\tAR,A1\n";
+DAWD[df] {$U1 $< $1} "RR!1\tfmov.ZT.\tAR,A1\n";
+LAWDnC[f] {$U1 $C $< $1} "\tfmov.ZT.\tAR,A1\n";
+DAWD[df] {$U1 $C $< $1} "\tfmov.ZT.\tAR,A1\n";
+############################################################
+# M68881 Convert to/from double/float
+# added templates to force double-to-float conversions
+'CONV'[f] R[d] {$U1 $<} "\tfmov.s\tAL,-(%sp)\n\tfmov.s\t(%sp)+,AL\n" :0;
+'CONV'[df] R[df] {$U1 $<} "" :0;
+'CONV'[f] LAWD[d] {$U1 $1 $C $<}   "\tfmov.d\tAL,A1\n\tfmov.s\tA1,-(%sp)\n\tfmov.s\t(%sp)+,A1\n" :1;
+'CONV'[df] LAWD[dflsc] {$U1 $1 $C $<}   "\tfmov.ZT.\tAL,A1\n" :1;
+'CONV'[df] LAWD[ul] {$U1 $1 $C $<}
+	"\tfmov.l\tAL,A1\n\tfbge\tZL1\n\tfadd.s\t&0x4f800000,A1\nZl1:\n";
+'CONV'[df] SAWD[us] {$U1 $1 $C $A}
+        "\tclr.l\t%d0\n\tmov.w\tAL,%d0\n\tfmov.l\t%d0,A1\n";
+'CONV'[df] CAWD[uc] {$U1 $1 $C $A}
+        "\tclr.w\t%d0\n\tmov.b\tAL,%d0\n\tfmov.w\t%d0,A1\n";
+
+'CONV'[lussucc] LAWD[df] {$U1 $U4 $1 $< $A}
+	"\tfmov.ZT.\tAL,%fp0\n\tfmov.ZT.\t%fp0,-(%sp)\n\tjsr\tfintrzZT.\n\tadd.w\t&ZU.,%sp\n\tfmov.l\t%fp0,A1\n";
+'CONV'[lussucc] LAWD[df] {$U1 $1 $< $A}
+        "\tfintrz.ZT.\tAL,%fp0\n\tfmov.l\t%fp0,A1\n";
+'CONV'[ul] LAWDnC[df] {$U1 $U4 $1 $< $A}
+	"\tfmov.ZT.\tAL,%fp0\n\tfcmp.s\t%fp0,&0x4f000000\n\tfbge\tZL1\n\tfmov.x\t%fp0,-(%sp)\n\tjsr\tfintrzx\n\tadd.w\t&12,%sp\n\tfmov.l\t%fp0,A1\n\tbra\tZL2\nZl1:\tfsub.s\t&0x4f000000,%fp0\n\tfmov.x\t%fp0,-(%sp)\tjsr\tfintrzx\n\tadd.w\t&12,%sp\n\tfmov.l\t%fp0,A1\n\tbchg\t&31,A1\nZl2:\n";
+'CONV'[ul] LAWDnC[df] {$U1 $1 $< $A}
+		"\tfmov.ZT.\tAL,%fp0\n\tfcmp.s\t%fp0,&0x4f000000\n\tfbge\tZL1\n\tfintrz.x\t%fp0,%fp0\n\tfmov.l\t%fp0,A1\n\tbra\tZL2\nZl1:\tfsub.s\t&0x4f000000,%fp0\n\tfintrz.x\t%fp0,%fp0\n\tfmov.l\t%fp0,A1\n\tbchg\t&31,A1\nZl2:\n";
+#
+# M68881 misc
+#
+'ARG' R[df] {$U1 $N}		"\tfmov.d\tAL,ZF\n";   # 881 register arg
+'UMINUS' T[df] {$U1 $U2 $L $C}	"\tfneg.ZTL\tAL,AL\n";
+'UMINUS'[df] FLTDBL  {$U1 $1 $< $C} "\tfneg.ZTL\tAL,A1\n";
+#'CMP' R[df], FLTDBL {$U1 $C}	"\tfcmp.ZTR\tAL,AR\n";
+# jcl replaced above template with next 3 templates
+# to force comparison of appropriate precision
+'CMP' R[df], DAWD[df] {$U1 $C}	"\tfcmp.ZTR\tAL,AR\n";
+'CMP' R[d], LAWDnC[d] {$U1 $C}	"\tfcmp.ZTR\tAL,AR\n";
+'CMP' R[f], LAWDnC[f] {$U1 $C}	"\tfcmp.ZTR\tAL,AR\n";
+'CMP' R[df], CVSLAWD {$U1 $C}	"\tfcmp.ZTR\tAL,AR\n";
+'STAR'[d] AWD[p] {$A $U1 $1 $<} "\tmov.l\tAL,%a0\n\tfmov.d\t(%a0),A1\n";
+'STAR'[f] AWD[p] {$A $U1 $1 $<} "\tmov.l\tAL,%a0\n\tfmov.s\t(%a0),A1\n";
+
+'ARG' LAWD[f] {$N} "\tmov.l\tAL,Z2\n";
+'ARG' AWD[d] {$A $N $l} "\tmov.l\tZnA-L,Z2\n\tmov.l\tAL,Z2\n" ;
+
+##
+## non M68881 double point ops
+##
+#+ DAWD[d], DAWD[d] {$A $1 $< $> $l $r}
+#        "\tmov.l\tZnA-R,Z2\n\tmov.l\tAR,Z2\nRL!1\tmov.l\tA-L,A1\nRL!1\tmov.l\tZnAL,A2\n\tjsr\tdbadd%%\nZq" :3;
+#- DAWD[d], DAWD[d] {$A $1 $< $> $l $r}
+#        "\tmov.l\tZnA-R,Z2\n\tmov.l\tAR,Z2\nRL!1\tmov.l\tA-L,A1\nRL!1\tmov.l\tZnAL,A2\n\tjsr\tdbsub%%\nZq" :3;
+#* DAWD[d], DAWD[d] {$A $1 $< $> $l $r}
+#        "\tmov.l\tZnA-R,Z2\n\tmov.l\tAR,Z2\nRL!1\tmov.l\tA-L,A1\nRL!1\tmov.l\tZnAL,A2\n\tjsr\tdbmul%%\nZq" :3;
+#/ DAWD[d], DAWD[d] {$A $1 $< $> $l $r}
+#        "\tmov.l\tZnA-R,Z2\n\tmov.l\tAR,Z2\nRL!1\tmov.l\tA-L,A1\nRL!1\tmov.l\tZnAL,A2\n\tjsr\tdbdiv%%\nZq" :3;
+##
+## WARNING: the =[d] instruction shares with result side.  It assumes no
+##          double indexing so the left registers will be pointer registers
+##          while the right registers may use both d0 and d1.
+##
+#= DAWD[d], DAWD[d] {$A $< $> $R } "Y\tmov.l\tA-R,A-L\n\tmov.l\tZnAR,ZnAL\n";
+#'STAR'[d] AWD[p] {$A $1 $<} "RL!1\tmov.l\tA-.,A1\nRL!1\tmov.l\tZnA.,A2\n";
+#
+## for the moment, to support both 16 and 32-bit machines, the
+##       conversion ops for shorts are widened to longs
+#
+##
+##                       Convert to double.  Results in D0,D1
+##
+#'CONV'[d] LAWD[f] {$A $1 $P $<} "RL!1\tmov.l\tAL,A1\n   jsr\tfltodb%%\n";
+#'CONV'[d] LAWD[l] {$A $1 $<}            "RL!1\tmov.l\tAL,A1\n   jsr\tltodb%%\n" ;
+#'CONV'[d] LAWD[ul] {$A $1 $<}   "RL!1\tmov.l\tAL,A1\n   jsr\tultodb%%\n";
+#'CONV'[d] LAWD[s] {$A $1 $<}
+#        "RL!1\tmov.w\tAL,A1\n\text.l\tA1\n      jsr\tltodb%%\n" ;
+#'CONV'[d] LAWD[us] {$A $1 $<}
+#        "\tmov.w\tAL,%d0\n\tswap.w\t%d0\n\tclr.w\t%d0\n\tswap.w\t%d0\n  jsr\tultodb%%\n";
+#'CONV'[d] LAWD[c] {$A $1 $<}
+#        "\tmov.b\tAL,%d0\n\textb.l\t%d0\n       jsr\tltodb%%\n" ;
+#'CONV'[d] LAWD[uc] {$A $1 $<}
+#        "\tmov.b\tAL,%d0\n\tand.l\t&0377,%d0\n  jsr\tultodb%%\n";
+#'CONV'[f] DAWD[d] {$A $1 $< $l}         # Double to float result in D0
+#        "RL!1\tmov.l\tA-L,A1\nRL!1\tmov.l\tZnAL,A2\n    jsr\tdbtofl%%\n";
+#'CONV'[csl] DAWD[d] {$A $1 $< $l}
+#        "RL!1\tmov.l\tAL,A1\nRL!1\tmov.l\tZnAL,A2\n     jsr\tdbtol%%\n" ;
+#'CONV'[ucusul] DAWD[d] {$A $1 $< $l}
+#        "RL!1\tmov.l\tAL,A1\nRL!1\tmov.l\tZnAL,A2\n     jsr\tdbtoul%%\n" ;
+#DAWD[d] {$A $< $1} "RR!1\tmov.l\tA-R,A1\nRL!1\tmov.l\tZnAR,A2\n";
+#DAWD[d] {$A $C $< $r}
+#        "RR!1\tmov.l\tA-R,A1\nRR!1\tmov.l\tZnAR,A2\n    jsr\tdbtst%%\n\ttst.w\t%d0\n" ;
+#'UMINUS' DAWD[d]  {$1 $A $<}
+#        "RL!1\tmov.l\tA-L,A1\nRL!1\tmov.l\tZnAL,A2\n    jsr\tdbneg%%\n" ;
+#'CMP' DAWD[d], DAWD[d] {$A $C $< $> $l $r}
+#        "\tmov.l\tZnA-R,Z2\n\tmov.l\tAR,Z2\nRL!1\tmov.l\tA-L,A1\nRL!1\tmov.l\tZnAL,A2\n jsr\tdbcmp%%\nZq\ttst.w\t%d0\n" :4;
+#'ARG' DAWDnC[d]  {$A $N $l} "   mov.l   ZnA-L,Z2\n      mov.l   AL,Z2\n" ;
+>>= SAWD[s], C1 {$L $C}	"\tasr.w   AR,AL\n" ;
+>>= R[s], C1to8 {$L $C} "\tasr.w   AR,AL\n" ;
+>>= R[s], CRCR {$L $C}	"\tasr.w   AR,AL\n" ;
+>>= R[l], C1to8 {$L $C} "\tasr.l   AR,AL\n" ;
+>>= R[l], CRCR {$L $C}	"\tasr.l   AR,AL\n" ;
+>>= SAWD[us], C1 {$L $C} "\tlsr.w   AR,AL\n" ;
+>>= R[us], C1to8 {$L $C} "\tlsr.w   AR,AL\n" ;
+>>= R[sus], CRCR {$L $C} "\tlsr.w   AR,AL\n" ;
+>>= R[ul], C1to8 {$L $C} "\tlsr.l   AR,AL\n" ;
+>>= R[lul], CRCR {$L $C} "\tlsr.l   AR,AL\n" ;
+
+<<= R[sus], C1 {$L $C}		"\tadd.w   AL,AL\n" ;
+<<= SAWD[sus], C1 {$L $C}	"\tlsl.w   AR,AL\n" ;
+<<= R[sus], C1to8 {$L $C}	"\tlsl.w   AR,AL\n" :2;
+<<= R[sus], CRCR {$L $C}	"\tlsl.w   AR,AL\n" :2;
+<<= R[lul], C1 {$L $C}		"\tadd.l   AL,AL\n" :1;
+<<= R[lul], C1to8 {$L $C}	"\tlsl.l   AR,AL\n" :2;
+<<= R[lul], CRCR {$L $C}	"\tlsl.l   AR,AL\n" :2;
+
+'CONV'[lulcucsus] Cc {$1 $C}		"\tmov.l   AL,A1\n" :0;  # plus 1 for Cc
+'CONV'[cucsus] LAWD[lul] {$1 $<}	"RL!1\tmov.l   AL,A1\n" ;
+'CONV'[cucsus] SAWD[sus] {$1 $<}	"RL!1\tmov.w   AL,A1\n" ;
+'CONV'[cucsus] LAWD[lul] {$C $1 $<}	"\tmov.l   AL,A1\n" ;
+'CONV'[cucsus] SAWD[sus] {$C $1 $<}	"\tmov.w   AL,A1\n" ;
+'CONV'[cucsuslul] LAWD[p] {$C $< $1}	"\tmov.l   AL,A1\n" ;
+
+'CONV'[sus] CAWD[c] {$C $1 $[}	"RL!1\tmov.b\tAL,A1\n\text.w\tA1\n" :2;
+'CONV'[sus] R[uc] {$C $1 $<}	"RL!1\tmov.w   AL,A1\n\tand.w   &0377,A1\n" :3;
+'CONV'[sus] CAWDn2[uc] {$1}	"\tclr.w   A1\n\tmov.b   AL,A1\n" :2;
+'CONV'[sus] SEEA[uc] {$C $[ $1} "RL!1\tmov.b   AL,A1\n\tand.w   &0377,A1\n" :3;
+'CONV'[sus] SEEA[uc] {$1}	"\tclr.w   A1\n\tmov.b   AL,A1\n" :2;
+
+'CONV'[lul] CAWD[c] {$C $1 $[}
+        "RL!1\tmov.b\tAL,A1\n\textb.l\tA1\n" :2;
+'CONV'[lul] R[uc] {$C $1 $<}	"RL!1\tmov.w   AL,A1\n\tand.l   &0377,A1\n" :3;
+'CONV'[lul] CAWDn2[uc] {$1}	"\tclr.l   A1\n\tmov.b   AL,A1\n" :2;
+'CONV'[lul] SEEA[uc] {$C $[ $1} "RL!1\tmov.b   AL,A1\n\tand.l   &0377,A1\n" :3;
+'CONV'[lul] SEEA[uc] {$1}	"\tclr.l   A1\n\tmov.b   AL,A1\n" :2;
+'CONV'[lul] SAWD[s] {$C $1 $[}	"RL!1\tmov.w   AL,A1\n\text.l   A1\n" :2;
+'CONV'[lul] SAWD[us] {$1}	"\tclr.l   A1\n\tmov.w   AL,A1\n" :2;
+'CONV'[lul] SAWD[us] {$1 $[}	"RL!1\tmov.w\tAL,A1\n\tswap.w\tA1\n\tclr.w\tA1\n\tswap.w\tA1\n" :4;
+
+'CONV'[p] SAWD[s] {$< $1} "\tmov.w   AL,A1\n" ;
+'CONV'[p] R[us] {$< $1} "\tswap.w\tAL\n\tclr.w\tAL\n\tswap.w\tAL\n\tmov.l\tAL,A1\n" :4;
+'CONV'[p] LAWD[lul] {$< $1} "\tmov.l   AL,A1\n" ;
+
+'STARG' R  {2 $< $N} "ZS" ;
+## bk: changed to have result left
+#'STASG' R,R {1 $< $R} "ZSFZz" ;
+#'STASG' LAWD,R {1 $< $R} "\tmov.l   AL,A1\nZsFZz" :2;
+'STASG' R,R {1 $L} "ZSFZz" ;
+'STASG' LAWD,R {1 $L} "\tmov.l   AL,A1\nZsFZz" :2;
+
+# for f().x where f returns a simple structure
+'STAR' [sus] UREG {$1 $[} "\tswap.w  A1\n" ;
+'STAR' [sus] UHALF {$1 $[} "" :0;
+
+# 'INIT'[cuc] C {$N} "  byte    CL\n" ;
+# 'INIT'[sus] C {$N} "  short   CL\n" ;
+'INIT'[plul] C {$N} "\tlong    CL\n" ;
+
+## Convert to/from float
+#'CONV'[f] LAWD[l] {2 $1 $<} "\tmov.l\tAL,Z2\n   jsr\tltof%%\nZp" ;
+#'CONV'[f] LAWD[ul] {2 $1 $<} "\tmov.l\tAL,Z2\n  jsr\tultof%%\nZp" ;
+#'CONV'[f] LAWD[s] {2 $1 $<}
+#        "RL!1\tmov.w\tAL,A1\n\text.l\tA1\n\tmov.l\tA1,Z2\n      jsr\tltof%%\nZp" ;
+#'CONV'[f] LAWD[us] {2 $1 $<}
+#"\tmov.w\tAL,%d0\n\tswap.w\t%d0\n\tclr.w\t%d0\n\tswap.w\t%d0\n\tmov.l\t%d0,Z2\n jsr\tultof%%\nZp" ;
+#'CONV'[f] LAWD[c] {2 $1 $<}
+#"\tmov.b\tAL,%d0\n\textb.l\t%d0\n\tmov.l\t%d0,Z2\n      jsr\tltof%%\nZp" ;
+#'CONV'[f] LAWD[uc] {2 $1 $<}
+#     "\tmov.b\tAL,%d0\n\tand.l\t&0377,%d0\n\tmov.l\t%d0,Z2\n    jsr\tultof%%\nZp";
+#'CONV'[cucsuslul] LAWD[f] {2 $1 $<} "\tmov.l\tAL,Z2\n   jsr\tftol%%\nZp" ;
+#'CONV'[f] R[f] {$1 $<} "RL!1\tmov.l\tAL,%d0\n" :0;
+#LAWD[f] {$1 $<} "\tmov.l\tAR,A1\n";
+#LAWD[f] {2 $C $>} "\tmov.l\tAR,Z2\n     jsr\tfltst%%\nZp\ttst.w\t%d0\n" ;
+#'UMINUS' R[f]  {$1 2 $<} "\tmov.l\tAL,Z2\n      jsr\tflneg%%\nZp" ;
+#'CMP' LAWD[f], LAWD[f] {2 $C $< $>}
+#        "\tmov.l\tAR,Z2\n\tmov.l\tAL,Z2\n       jsr\tflcmp%%\nZq\ttst.w\t%d0\n" :4;
+#'ARG' LAWD[f]  {$N} "   mov.l   AL,Z2\n" ;
+#
+## floating point ops
+## NOTE: all arithmetic is performed on doubles.
+#= LAWD[f], LAWD[f]  "\tmov.l\tAR,AL\n" ;
+#- LAWD[f], LAWD[f] {2 $1 $< $>}
+#        "\tmov.l\tAR,Z2\n\tmov.l\tAL,Z2\n       jsr\tflsub%%\nZq" :3;
+#* LAWD[f], LAWD[f] {2 $1 $< $>}
+#        "\tmov.l\tAR,Z2\n\tmov.l\tAL,Z2\n       jsr\tflmul%%\nZq" :3;
+#/ LAWD[f], LAWD[f] {2 $1 $< $>}
+#        "\tmov.l\tAR,Z2\n\tmov.l\tAL,Z2\n       jsr\tfldiv%%\nZq" :3;
+#+ LAWD[f], LAWD[f] {2 $1 $< $>}
+#        "\tmov.l\tAR,Z2\n\tmov.l\tAL,Z2\n       jsr\tfladd%%\nZq" :3;
+#
+#********************************Descriptive Notes for me (d.t.)********
+# 1)
+# template sequence "A-L" the - means not to remove effective nodes since may
+# be re-accessed later in the same template.  This seems to only occur where
+# +=, -=, etc., and --(exp)++ would allow the same addressable unit to be
+# accessed twice. Manifest.h node types of INCR and DECR represent these.
+# [match.c rmside() not called if flag 'sideeff' off not on.]
+#
+# Also, sty.y if it doesn't see the dash checks to see if INCR or DECR
+# shape ops appear in the left (AL) or right (AR) shapes.  If so then it
+# won't allow another AL (AR) to appear in the code template sequence.
+# This guarantees that INCR DECR stuff is only executed once.
+
+# 2) The obsolete (deleted) entry below had an interesting note which read
+#    " the 1 $< should ensure that %d0 is used here"
+#    R[p] {$C 1 $<} " mov.l  AR,%d0\n"   # faster than compare
+#    In sty.y $< means the left side could be reused as AL.  (Looks wrong
+#    thoug, since isn't only the right side shared with a binary op? $>?)
+
+# 3) 11/86 Microsystems compiler does not have the templates for the & operator
+#    from & EXTEND[lul] ... to & UCHR CPOW2B.  Don't know why.
+################################################################################

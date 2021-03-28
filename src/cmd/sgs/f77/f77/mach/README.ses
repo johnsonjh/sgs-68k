@@ -1,0 +1,550 @@
+#	START NEW ARIX SCCS HEADER
+#
+#	@(#) README.ses: version 25.1 created on 12/2/91 at 17:35:52
+#
+#	Copyright (c) 1990 by Arix Corporation
+#	All Rights Reserved
+#
+#	@(#)README.ses	25.1	12/2/91 Copyright (c) 1990 by Arix Corporation
+#
+#	END NEW ARIX SCCS HEADER
+#
+
+#ident	"@(#)f77/f77:README.ses	25.1"
+
+ This is my changes to f77 compiler. These changes are intended to
+fixed the problems that detected by Fortran compiler validation  
+system prepared by Federal Software Testing Center.
+Please let me know, if you have a different understanding.
+
+--------------------------------------------------------------------
+1) The f77 failed in test which uses a value of the index of the 
+computed go to statement equal to zero. For example,(252)
+      I = 0
+      GO TO 0104
+ 0102 IVCOMP = 0
+ 0103 IVCOMP = 0
+ 0104 GO TO ( 0103, 0102 ), I
+      IVCOMP = 1
+The last statement can only be reached if the computed GO TO is
+executed as if it were a continue statement. Compiler forgot to check
+the case of zero.
+This problem was fixed in m68k.c by adding a compare with zero step.
+	cmp.l	%d0,&0
+	ble	L%xx
+
+---------------------------------------------------------------------
+2) Bug was in syntax of a do statement. For example 'DO 722, I = 1,6' 
+caused a syntax error.(256)
+This problem was fixed in grammer, 'SDO end_spec label dospec' was 
+changed to 'SDO end_spec intonlyon label intonlyoff opt_comma dospec'.
+
+---------------------------------------------------------------------
+3) Failed in test which is an assign statement in which the statement
+label is for a format statement. For example,(252)
+      I02 = 6
+      ASSIGN 0012 TO I
+ 0012 FORMAT (51H **************************************************)
+      WRITE (I02, I)
+This problem was fixed in gram.head and gram.dcl, I changed thislabel
+to fmtlabel in SFORMAT. This modification was based on the f77 grammer
+on VAX. The code was changed from
+	| SFORMAT
+		{ fmtstmt(thislabel); setfmt(thislabel); }
+to
+	| fmtlabel SFORMAT
+		{ fmtstmt(fmtlabel); setfmt(fmtlabel);}
+where fmtlabel defined as follows:
+fmtlabel:	SLABEL
+		{
+#ifdef SDB
+		char buff[10];
+		if (sdbflag) {
+			p2pi("\t.ln\t%d",f_lineno - fnstline);
+			}
+#endif
+		if (yystno != 0) {
+			$$ = fmtlabel = mklabel(yystno);
+			if (fmtlabel->labdefined)
+				execerr("label %s already defined",
+					convic(fmtlabel->stateno));
+			else {
+				fmtlabel->labdefined = YES;
+				fmtlabel->labtype = LABFORMAT;
+				fmtlabel->blklevel = blklevel;
+				}
+			}
+		}
+	;
+
+--------------------------------------------------------------------
+4) The f77 failed in test which the OPEN statement with unit number 
+equal to 25.
+For example,(910)
+        I11 = 25
+        KMVI = I11
+        OPEN(UNIT=KMVI, ACCESS='DIRECT', RECL=80, STATUS='SCRATCH')
+This problem was fixed in fio.h, the MXUNIT was changed to 26.
+
+--------------------------------------------------------------------
+5) Compiler generated wrong data format in setting float point data.
+For example,(021)
+      REAL IATN11(3)
+      DATA IATN11/2*32767., -32766./
+The compiler generated following wrong format of data:
+0v%1     	00000	00012	00008	4	long	0x46fffe00
+	long	0x46fffe00
+0v%1     	00008	00012	00004	4	long	0xc6fffc00
+instead of the following right data:
+0v%1     	00000	00012	00004	4	long	0x46fffe00
+0v%1     	00004	00012	00004	4	long	0x46fffe00
+0v%1     	00008	00012	00004	4	long	0xc6fffc00
+This problem was fixed in data.c by adding a line 'nperline =1;' and
+deleted the line 'nperline=(type==TYREAL) ? NPERLINE : NO2PERLINE;'.
+
+--------------------------------------------------------------------
+6) The f77 compiler failed in the Data Implied Do problem that no 
+variable can go before implied-do list.
+For example,(700)
+      INTEGER I3,I2N003(5,7)
+      DATA I3,(I2N003(I,7), I=1,5)
+     1     /3*19, 3*-4/
+In order to solve this problem, the grammer of dataimpldo was 
+modified based on the VAX f77. It was originally taking care by the
+datavar, as follows:
+datavar:	...
+		...
+	| SLPAR datavarlist SCOMMA dospec SRPAR
+		{ chainp p; struct Impldoblock *q;
+		q = ALLOC(Impldoblock);
+		q->tag = TIMPLDO;
+		q->varnp = (Namep) ($4->datap);
+		p = $4->nextp;
+		if(p)  { q->implb = (expptr)(p->datap); p = p->nextp; }
+		if(p)  { q->impub = (expptr)(p->datap); p = p->nextp; }
+		if(p)  { q->impstep = (expptr)(p->datap); p = p->nextp; }
+		frchain( & ($4) );
+		$$ = mkchain((tagptr) q, CHNULL);
+		q->datalist = hookup($2, $$);
+		}
+	;
+
+datavarlist: datavar
+		{ curdtp = $1; curdtelt = 0; }
+	| datavarlist SCOMMA datavar
+		{ $$ = hookup($1, $3); }
+	;
+Now, the grammer for data implied do is changed as follows:
+dataitems:	lhs
+		{
+		Namep np;
+		np = ( (struct Primblock *) $1) -> namep;
+		vardcl(np);
+		if (np->vstg == STGCOMMON)
+			extsymtab[np->vardesc.varno].extinit = YES;
+		else if (np->vstg==STGEQUIV)
+			eqvclass[np->vardesc.varno].eqvinit = YES;
+		else if(np->vstg!=STGINIT && np->vstg!=STGBSS)
+			dclerr("inconsistent storage classes", np);
+		$$ = mkchain((tagptr) $1, CHNULL);
+		}
+	|	dataitems SCOMMA lhs
+		{
+		Namep np;
+		chainp dtitem;
+		np = ( (struct Primblock *) $3) -> namep;
+		vardcl(np);
+		if (np->vstg == STGCOMMON)
+			extsymtab[np->vardesc.varno].extinit = YES;
+		else if (np->vstg==STGEQUIV)
+			eqvclass[np->vardesc.varno].eqvinit = YES;
+		else if(np->vstg!=STGINIT && np->vstg!=STGBSS)
+			dclerr("inconsistent storage classes", np);
+
+	/* Traverse the list of array references to be initialized in the
+	   data implied do loop so that a new one (for "lhs") may be added : */
+
+		for (dtitem = (chainp) $1; dtitem->nextp != CHNULL; dtitem = dtitem->nextp);
+		dtitem->nextp = mkchain((tagptr) $3, CHNULL);
+		$$ = $1;
+		}
+	;
+
+/* Need both productions. The chain list produced must have $$ pointing to
+ * the right-most node. Then this list can be returned to 'datavarlist' which
+ * will hook it up with other 'datavar's.
+ */
+
+dataimpldo:	SLPAR dataitems SCOMMA dospec SRPAR
+		{
+		chainp p;
+		struct Impldoblock *q;
+		q = ALLOC(Impldoblock);
+		q->tag = TIMPLDO;
+		q->varnp = (Namep) ($4->datap);
+		p = $4->nextp;
+		if (p)  { q->implb = (expptr)(p->datap); p = p->nextp; }
+		if (p)  { q->impub = (expptr)(p->datap); p = p->nextp; }
+		if (p)  { q->impstep = (expptr)(p->datap); p = p->nextp; }
+		frchain( & ($4) );
+		$$ = mkchain((tagptr) q, CHNULL);
+		q->datalist = hookup($2, $$);
+		}
+	|	SLPAR dataimpldo SCOMMA dospec SRPAR
+		{
+		chainp p;
+		struct Impldoblock *q;
+		q = ALLOC(Impldoblock);
+		q->tag = TIMPLDO;
+		q->varnp = (Namep) ($4->datap);
+		p = $4->nextp;
+		if (p)  { q->implb = (expptr)(p->datap); p = p->nextp; }
+		if (p)  { q->impub = (expptr)(p->datap); p = p->nextp; }
+		if (p)  { q->impstep = (expptr)(p->datap); p = p->nextp; }
+		frchain( & ($4) );
+		$$ = mkchain((tagptr) q, CHNULL);
+		q->datalist = hookup($2, $$);
+		}
+	;
+
+---------------------------------------------------------------------
+7) The f77 reported a compiler error 'can't deal with op name' when the
+assignment statement with the ICHAR instrinsic function. 
+For example,(204)
+      ...
+      ...
+      CHARACTER*1  CATN12(26)
+      DATA CATN12/'A','B','C','D','E','F','G','H','I','J','K','L','M',
+     1     'N','O','P','Q','R','S','T','U','V','W','X','Y','Z'/
+      ...
+      ...
+      IVON01 = 0
+      IVON02 = 0
+      IVCOMP = 0
+      IVCORR = 25
+      DO 812, I=1,25
+      J= I + 1
+      IVON01 = ICHAR(CATN12(J))
+      IVON02 = ICHAR(CATN12(I))
+      IF (IVON01 .GT. IVON02) IVCOMP = IVCOMP + 1
+  812 CONTINUE
+      ...
+This problem was fixed in fcgen.c by set a flag ASSIFLAG = 0; 
+added the codes
+ 		if (p->tn.op == ASSIGN && !ASSIFLAG) {
+ 			ASSIFLAG++;
+ 			goto ASSI;
+		}
+and reset the ASSIFLAG in fmatch.c.
+
+----------------------------------------------------------------------
+8) Undefined symbol L%0 caused ld fatal.(910,912,914,915,916,917,918,
+919,920,921,922)
+This problem was fixed in routine memname in m68k.c, the case of
+STGCONST was added a selection 'if mem==0 ...'.
+
+----------------------------------------------------------------------
+10) The test program created a compilation error that the variable
+leading with a character 'd' or 'e' and followed by a data statement
+not be able recognized by compiler. For example,(506)
+	CHARACTER D2XVK*3
+	DATA D2XVK /'GIH'/
+This problem was fixed by changing code in lex.c to
+(!intonly && (*nextch=='d' || *nextch =='e') and modifing the grammer 
+of lengspec in gram.dcl, it was without intonly flag, as follows:
+lengspec:
+		{ $$ = varleng; }
+	| SSTAR expr 
+		{
+		  expptr p;
+		  p = $2; 
+		  NO66("length specification *n");
+		  if( ! ISICON(p) || p->constblock.const.ci<0 )
+			{
+			$$ = 0;
+			dclerr("length must be a positive integer constant",
+				(Namep) NULL);
+			}
+		  else $$ = p->constblock.const.ci;
+		}
+	| SSTAR SLPAR SSTAR SRPAR 
+		{ NO66("length specification *(*)"); $$ = -1; }
+	;
+Now, the grammer of lengspec in gram.dcl is as follows:
+lengspec:
+		{ $$ = varleng; }
+	| SSTAR intonlyon expr intonlyoff
+		{
+		  expptr p;
+		  p = $3;
+		  NO66("length specification *n");
+		  if( ! ISICON(p) || p->constblock.const.ci<0 )
+			{
+			$$ = 0;
+			dclerr("length must be a positive integer constant",
+				(Namep) NULL);
+			}
+		  else $$ = p->constblock.const.ci;
+		}
+	| SSTAR intonlyon SLPAR SSTAR SRPAR intonlyoff
+		{ NO66("length specification *(*)"); $$ = -1; }
+	;
+----------------------------------------------------------------------
+11) The f77 generated VAX codes. For example,(917)
+	...
+	...
+	movl	8(ap),-4(fp)
+	addl3	$-20,fp,ap
+	movl	$3,(ap)
+	...
+	...
+These redundant codes were removed by deleting following two lines 
+from m68k.c:
+	p2pi("\taddl3\t$%d,fp,ap", argloc-ARGOFFSET); 
+	p2pi("\tmovl\t$%d,(ap)\n", lastargslot/SZADDR); 
+----------------------------------------------------------------------
+12) Bus errors in fm100, fm101, fm102, fm103, fm104, fm105, fm106,  
+fm107, fm108, fm401, fm402, fm404, fm405, fm407, fm411, fm413, fm901, 
+fm906, fm908, fm909, fm912, fm914, fm915, fm916, fm917, fm918, fm919, 
+fm920, fm921, fm922 and some compilation errors were removed due to 
+libraries (libF77 and libI77) changed.
+
+------------------------------------------------------------------------
+13) Errors (core dumped) in fm509, fm715 and fm719 need further 
+deubgged.
+------------------------------------------------------------------------
+14) In S system, compiler reports 'Termination code 138' (the sdb shows
+that the termination is at putop+0x02B8) on following files:
+barz, fspwid, legnfz, flengz, legndz, matplo, prsmf, starsy, tsline,
+chcopy, grzset, logaxz, plot1, stars, timaxz, setmf, stdaxz
+(the sdb shows that the termination is at putop+0x02B8).
+The f77 also reports 'can't deal with STAR' on ngetc and unpakl.
+
+------------------------------------------------------------------------
+15) As the last thing in the data file, "asmfile", print the
+assembler directive "text", so that when the data is concatenated
+with the text section a clear deliniation is made.
+The problem is: only the text section is sent to the optimizer
+(the data section is still in asmfile).  Because there is no
+data section in that sent to the optim, the optim strips out
+all the "text" directives. This would be fine if sent as is to
+the assembler, because the assembler assumes "text" if no directive
+is given. But, when the data section is added to the top of the
+optimized text(now w/o "text" directive), the assembler assumes
+the whole file is data!(hanna)
+This problem was fixed in driver.c. The code added to driver.c is
+as follows:
+	/* append the data file with a text directive before it is
+	   "cat"'d with the text file to prevent the text file 
+	   being assigned to the data section
+	 */
+	{
+	FILE * fp;
+	if( (fp = fopen(asmfname, "a")) == NULL)
+		badfile(asmfname);
+	fprintf(fp,"#B1b.cat\n\ttext\n\n");
+	fclose(fp);
+	}
+-------------------------------------------------------------------
+16) Compiler failure in the test of the do loop with initial value 
+equals to terminal value and with a negative increment parameter.
+For example, (fm256)
+      DO 0142, IVON03 = 100, 100, -2
+         IVCOMP = IVCOMP * 5
+ 0142 CONTINUE
+The above loop is a onetrip loop but not be executed at all.
+This problem was fixed in the routine exec.c by adding an checking
+before put out the branch to end of the loop. The checking is as
+follows:
+if(incsign != conssgn(q) && 
+!( ISICON(DOINIT) && ISICON(ctlstack->domax)&&
+(ctlstack->domax->constblock.const.ci == DOINIT->constblock.const.ci)))
+--------------------------------------------------------------------
+Item 17:
+DESCRIPTION:
+          The compiler cannot deal with conversions from short to long.
+          For example,(benchs.f)
+
+                INTEGER*2 it                    
+                DO 200 it=1,10000
+                ...
+                ...
+           200  CONTINUE
+FIX:
+          Following code was added into routine putp2.c:
+
+          if( ONEOF(pt,M(TYSHORT)) && ISINT(lt))
+          	nstack(p2op(P2CONV, P2SHORT));
+          	free((charptr) p);
+          	return;
+          }
+          if( ISINT(pt) && ONEOF(lt, M(TYSHORT)|MSKADDR|MSKCHAR) )
+          {	
+	    ......
+	    ......
+
+FILES:
+         /usr/src/sgs/sgs.020/cmd/fortran/f77/mach/putp2.c
+__________________________________________________________________
+Item 18:
+
+DESCRIPTION:
+          undefined symbols that reported by f77 when compile benchs.f.
+FIX:
+          We need these mil-standard calls defined in the unix manual
+	  pages 6-17,18. They include:
+	  ior		iand		not		ieor
+	  ishft		ishftc		ibits		btest
+	  ibset		ibclr		mvbits		
+
+	  They following subroutines are added in libF77 in order to
+	  generate above functions:
+
+          and_h.c       bext_l.c.z    btest_l.c.z   or_l.c       xor_h.c
+          and_l.c       bittab.c      mvbits.c      shift_h.c    xor_l.c
+          bclr_h.c      bset_h.c      not_h.c       shift_l.c
+          bclr_l.c      bset_l.c      not_l.c       shiftc_h.c.z
+	  They are made in subroutines.
+
+          Also, a section of code added into compiler routine intr.c
+	  as follows:
+	  
+           "not",		{ INTRGEN, 2, 107 },
+           "ior",		{ INTRBOOL, TYUNKNOWN, OPBITOR },
+           "iand",		{ INTRBOOL ,TYUNKNOWN, OPBITAND },
+           "ieor",		{ INTRBOOL, TYUNKNOWN, OPBITXOR },
+           "ishft",	{ INTRGEN, 2, 95  },
+           "ishftc",	{ INTRGEN, 2, 97  },
+           "ibits",	{ INTRGEN, 2, 99  },
+           "btest",	{ INTRGEN, 2, 101 },
+           "ibset",	{ INTRGEN, 2, 103 },
+           "ibclr",	{ INTRGEN, 2, 105 },
+               ..............
+	       ..............
+
+           	{ TYDREAL,TYDREAL,2,"d_scal" },
+           
+           	{ TYSHORT, TYSHORT, 2, "shft_h" },
+           	{ TYLONG,  TYLONG,  2, "shft_l" },
+           	{ TYSHORT, TYSHORT, 3, "shftc_h" },
+           	{ TYLONG,  TYLONG,  3, "shftc_l" },
+           	{ TYSHORT, TYSHORT, 3, "bext_h" },
+           	{ TYLONG,  TYLONG,  3, "bext_l" },
+           	{ TYSHORT, TYLOGICAL, 2, "btest_h" },
+           	{ TYLONG,  TYLOGICAL, 2, "btest_l" },
+           	{ TYSHORT, TYSHORT, 2, "bset_h" },
+           	{ TYLONG,  TYLONG,  2, "bset_l" },
+           	{ TYSHORT, TYSHORT, 2, "bclr_h" },
+           	{ TYLONG,  TYLONG,  2, "bclr_l" },
+           	{ TYSHORT, TYSHORT, 1, "not_h" },
+           	{ TYLONG,  TYLONG,  1, "not_l" },
+FILES:
+         /usr/src/sgs/sgs.020/cmd/fortran/f77/mach/intr.c
+
+=======================================================================
+Thu Feb 19 17:34:51 PST 1987
+sw19
+chang
+	DESCRIPTION: new cpp does not accept that a #ifdef(#if) without
+	#endif or share #endif with other #ifdef(#if).
+	FILES:
+	/usr/src/cmd/f77/f77/mach/gram.head
+	/usr/src/cmd/f77/f77/mach/proc.c
+=======================================================================
+Thu Mar 12 08:03:25 PST 1987
+sw20
+chang
+	DESCRIPTION: remove the undefined symbol that the new linker
+                     doesn't like.
+	FILES:
+	/usr/src/cmd/f77/f77/mach/driver.c
+=======================================================================
+Mon Dec 15 08:03:25 PST 1987
+f77.mk
+	DESCRIPTION: Temporarily, the FORTRAN compiler still uses the old
+	back end from the C compiler source /V.3.1/usr/src/cmd/sgs/pcc2
+	directory.  This is because the FORTRAN compiler has not been tested
+	with the 5.3.1 new back end from the C compiler source in
+	/V.3.1/usr/src/cmd/sgs/comp2 directory.
+
+	FILES:
+	/usr/src/cmd/f77/f77/mach/f77.mk
+=======================================================================
+unique id # in2.6-22
+Thu Jun 23 08:35:31 PDT 1988
+ken
+ken#0
+	DESCRIPTION:
+	FSI found this relatively obvious fortrash bug....
+		integer*2 init
+		data init/0/
+	(in other words, initializing a short) causes the fortrash compiler
+	to generate a "word 0", instead of a "short 0" as it should.
+
+	FIX/DISCUSSION:
+	changed both:
+		prnicon(fp, type, num, n)
+		prconi(fp, type, n)
+	so that they generate "short" instead of "word"
+
+	FILES:
+	usr/src/cmd/f77/f77/mach/m68k.c
+
+	RELEASE NOTE: (Document one or more of the following.)
+ENHANCEMENT:  
+PROBLEM_FIX:  
+	F77 will now generate correct instructions for initialization of 2
+	byte integers
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+===============================================================================
+unique id # n/a
+Mon May 15 09:04:57 PDT 1989
+hoss#20
+hossein raassi
+
+	DESCRIPTION:
+		The STOP statement used without a following integer
+		constant or a char string causes the compiler to blow
+		up. For example:
+			
+			STOP
+			END
+		will cause the compiler to abort with the following message:
+
+		Compiler error line 1 of ... : out of memory
+		compiler error
+
+
+	FIX/DISCUSSION:
+
+		In exec.c and when a "blank" STOP is encountered, a 
+		call is made to mkstrcon with the first argument as
+		zero. In expr.c ( and in mkstrcon ) this zero gets
+		passed on to calloc as the second argument denoting
+		a zero size for the array being requested.
+		This confuses calloc and it returns a NULL pointer
+		and hence the irrelevant message above.
+		(See also malloc(3C))
+
+	FILES:
+		prog/f77/f77/mach/exec.c
+
+	RELEASE NOTE: (Document one or more of the following.)
+ENHANCEMENT:  
+PROBLEM_FIX:  
+	F77 will not blow up when a "blank" STOP statement is used
+	in the source program.
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+===============================================================================

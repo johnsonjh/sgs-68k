@@ -1,0 +1,1173 @@
+Z =============================================================================
+C 80
+K LANG
+T Tue Feb 26 07:59:39 PST 1991
+U simon
+S Marked 020 specific ifdefs as m68k for 040
+D THe 68040 and 020 currently use the same alignment.  Changed the 020 ifdefs
+D to m68k.
+R util/src/cmd/sgs/comp2/common/common	 23.3
+R util/src/cmd/sgs/comp2/common/match.c	 23.3
+R util/src/cmd/sgs/comp2/common/mfile1.h	 23.3
+R util/src/cmd/sgs/comp2/common/mfile2.h	 23.3
+R util/src/cmd/sgs/comp2/common/optim.c	 23.6
+R util/src/cmd/sgs/comp2/common/pftn.c	 23.4
+R util/src/cmd/sgs/comp2/common/reader.c	 23.3
+R util/src/cmd/sgs/comp2/common/scan.c	 23.3
+Z =============================================================================
+Z =============================================================================
+C 100
+K LANG
+T Thu Feb 28 16:34:41 PST 1991
+U simon
+S Added ifdefs for m68k family.  For 040 additions
+S 
+R util/src/cmd/sgs/comp2/common/scan.c	 23.4
+R util/src/cmd/sgs/comp2/common/pftn.c	 23.5
+B /lib/c0
+B /lib/c1
+Z =============================================================================
+Z =============================================================================
+C 292
+K LANG
+T Mon Mar 25 11:00:41 PST 1991
+U simon
+S Changed default to writeable string literals
+D Could find no reason to read-only default for string literals. -Xnostrwrite
+D satisfies this.
+N As of 3.3 string literals are writable by default.  The user may use the pragma
+N -Xnostrwrite to put string literals in "text" to save space in runtime images.
+R util/src/cmd/sgs/comp2/common/scan.c	 23.8
+B /lib/c0
+Z =============================================================================
+Z =============================================================================
+C 315
+K LANG
+T Thu Mar 28 12:14:01 PST 1991
+U simon
+P 4952
+S Bit fields which crossed word boundries were broken.  They are now alligned as
+S to not cross word boundries.
+D In the case:
+D 	char *ptr = local.b3;
+D Where b3 is a bitfield which crosses a four byte boundry the data in the
+D fifth byte was lost.  Bitfields are now aligned on 32-bit boundries.
+N In the case where the contents of a pointer was being assigned a bitfield
+N which was aligned in such a manner as to cross a 32-bit boundry the data
+N in the second word was lost.  Bitfield are now aligned in a manner which
+N obviates this behavior.
+R util/src/cmd/sgs/comp2/common/pftn.c	 23.6
+B /lib/c0
+B 
+Z =============================================================================
+Z =============================================================================
+C 364
+K LANG
+T Wed Apr 10 09:46:56 PDT 1991
+U simon
+P 5017
+S The question operator was being incorrectly evaluated for grey expressions
+D The expression:
+D 	x ? i++ : i--;
+D 
+D 	was being marked as grey.  This is true from the sequence point
+D 	standpoint but not from the data flow standpoint.  Added the
+D 	COLON operator as a flag to suppress grey expression marking.
+R util/src/cmd/sgs/comp2/common/grey.c	 23.3
+B /lib/c0
+Z =============================================================================
+Z =============================================================================
+C 460
+K LANG
+T Wed May  8 12:14:42 PDT 1991
+U simon
+S Needed longer prototype lists for X
+D Prototypes only allowed 10 args to a function.  Increased this to 20.  X114 
+D uses 11.
+R util/src/cmd/sgs/comp2/common/proto.c	 23.3
+B /lib/c0
+Z =============================================================================
+Z =============================================================================
+C 587
+K LANG
+T Mon Jun 10 10:53:50 PDT 1991
+U simon
+S If'ed around deref of null pointer.
+D code dereferenced null pointer. Now it does not.
+R util/src/cmd/sgs/comp2/common/cgram.y	 23.4
+B /lib/c0
+Z =============================================================================
+Z =============================================================================
+C 694
+K LANG
+T Mon Jul  8 14:40:56 PDT 1991
+U simon
+S Stringized form not compatible with ansi cpp
+D As par usual AT&T used typically non-portable code to stringize arguements.
+D This did not conform to the standard ANSI ordering of pre-processor processing.
+D Ansized the grammar.
+R util/src/cmd/sgs/comp2/common/sty.y	 23.4
+B ./sty
+Z =============================================================================
+Z =============================================================================
+C 736
+K LANG
+T Tue Jul 23 11:32:25 PDT 1991
+U roger
+P 5291
+S 
+S Fixed an SPR reported on wrong compilation of function prototypes.
+D 
+D At the end of functin ProtoDeclare there was the following
+D statment:
+D 
+D        argno = 0
+D 
+D When dclargs was called (after Protodeclare) it never processed
+D the arguments and produced wrong code.
+R util/src/cmd/sgs/comp2/common/proto.c	 23.4
+B /lib/c0
+Z =============================================================================
+Z =============================================================================
+C 737
+K LANG
+T Thu Jul 25 16:11:37 PDT 1991
+U roger
+P 5016
+S c0 was not able to handle mixed declarations with types and
+S names (see spr #5016)
+D 
+D 
+D ******************   THE PROBLEM ***********************
+D This bug is due to incorrect parsing. 
+D What the parser was doing was:
+D 
+D  register unsigned time_t x   ;
+D    |         |       |    |   |
+D   CLASS    TYPE     NAME NAME SM
+D 
+D and what it was supposed to do was:
+D  
+D  register unsigned time_t x   ;
+D    |         |       |    |   |
+D   CLASS    TYPE     TYPE NAME SM
+D 
+D The reason for that behavior is that in the production 
+D type : TYPE  the flag seen_typespec was always set, and so as
+D soon as 'unsigned' was parsed seen_typespec equaled 1. 
+D In yylex , when an identifier of class TYPEDEF is seen it
+D returns the token TYPE if seen_typespec = 0 and NAME if 
+D seen_typespec=1 . So, when 'time_t' was parsed it was a NAME !!.
+D 
+D 
+D ******************   THE SOLUTION ***********************
+D 
+D 
+D Productions
+D  type : TYPE
+D  declspecs: decl_init bldspecs
+D  bldspecs: type obldspecs
+D 
+D have been modified, as well as procedures yylex and lxres in
+D scan.c.
+D 
+D First, seen_typespec is only set when a NAME corresponding to a
+D typedef is parsed (this is in yylex) and when a "true" type
+D (e.g. int, char, float, double ) is parsed (in lxres).
+D 
+D Also, when you reduce by type: TYPE and it turns out that it was
+D a typedef, you "decompose" the type. That is, you set the
+D appropiate flags in chktype looking for 'unsigned' types.
+D 
+D Productions bldspecs and declspecs have only changed to handle
+D correctly what comes from production type. 
+D In bldspecs only $$=-1; has been added.
+D In declspecs, when type_def is set you reconstruct the type
+D using types() and make a new node for it.
+R util/src/cmd/sgs/comp2/common/cgram.y	 23.5
+B /lib/c0
+Z =============================================================================
+Z =============================================================================
+C 738
+K LANG
+T Thu Jul 25 16:22:37 PDT 1991
+U roger
+P 5016
+S addressed spr #5016. see documentation on cgram.y delta 23.9
+D see comments on cgram.y delta 23.9
+R util/src/cmd/sgs/comp2/common/scan.c	 23.9
+B /lib/c0
+Z =============================================================================
+Z =============================================================================
+C 739
+K LANG
+T Mon Jul 29 08:02:36 PDT 1991
+U simon
+S define for NameV now is ifdef'ed for both ANSI and non-ANSI compiles.
+R util/src/cmd/sgs/comp2/common/sty.y	 23.5
+Z =============================================================================
+Z =============================================================================
+C 746
+K LANG
+T Tue Jul 30 10:00:22 PDT 1991
+U simon
+P 5016
+S Specifier before typdef'ed type was illegal.  Now works as advertized.
+D ******************   THE BUG     ***********************
+D see bug#5016-1
+D ******************   THE PROBLEM ***********************
+D 
+D 
+D  The solution proposed in the previous delta for scan.c and
+D  cgram.y introduced a new bug. The problem was that when
+D  "decomposing" types, no attention was paid to struct's. It is
+D  not possible to decompose struct's typedefs, and when trying to
+D  do so, types() complained about it producing a compiler error
+D 
+D   'compiler error: types: illegal case in switch ' (aprox.)
+D 
+D 
+D ******************   THE SOLUTION ***********************
+D 
+D  the solution is to treat struct's (and enum and union) typedefs
+D  separate from simpler typedefs. That is, if a struct enum or
+D  union typedef is seen we DONT'T decompose it and if a simple
+D  typedef is seen (unsigned char, int , double, ...) we decompose
+D  it.
+D 
+D Productions declspecs and bldspecs are again exactly what they
+D were before the last change.
+D Production type: TYPE has new changes and function decomp_type()
+D is improved.
+D 
+D yylex has also been modified so that whenever it sees an id that
+D is a type definition always returns token TYPE, without
+D considering the flag 'seen_typespec'.
+N A bug which dis-allowed qualifying of typedef'ed types has been fixed. Thus
+N 
+N 	typedef unsigned int UI;
+N 	main()
+N 	{
+N 		register UI biff;
+N 	}
+N now works.
+R util/src/cmd/sgs/comp2/common/cgram.y	 23.6
+B /lib/c0
+Z =============================================================================
+Z =============================================================================
+C 747
+K LANG
+T Tue Jul 30 10:10:53 PDT 1991
+U roger
+S Specifiers followed by typedefs were not correctly parsed.
+D see comments onn cgram.y release 23.6
+R util/src/cmd/sgs/comp2/common/scan.c	 23.10
+B /lib/c0
+Z =============================================================================
+Z =============================================================================
+C 750
+K LANG
+T Wed Jul 31 13:58:27 PDT 1991
+U roger
+S fixed  a bug that gave 'illegal combination of type and typedef'
+S when it should not.
+S 
+D the following program did not work:
+D 
+D typedef unsigned short ush;
+D typedef ush pep;
+D typedef int junk;   <--- 'illegal combination of type and
+D typedef'
+D 
+D 
+D There was a type_def = 0; missing in production type:TYPE.
+D 
+R util/src/cmd/sgs/comp2/common/cgram.y	 23.7
+B /lib/c0
+Z =============================================================================
+Z =============================================================================
+C 783
+K LANG
+T Tue Aug 20 16:36:32 PDT 1991
+U roger
+S addressed spr 4671
+D 
+D 
+D 
+D ******************   THE BUG     ***********************
+D 
+D #include <stdio.h>
+D struct sb
+D {
+D 	double x;
+D } bx = { 9.9 };
+D 
+D main()
+D {
+D 	int start = ( printf("started\n") );
+D 	struct sb;
+D 	struct sa
+D 	{
+D 		struct sb *pb;
+D 		int i;
+D 	} a;
+D 	struct sb
+D 	{
+D 		struct sa *pa;
+D 		int i;
+D 	} b;
+D 
+D 	b.i = 13;
+D 	a.pb = &b;
+D 
+D 	if ( a.pb->i == 13 )
+D 		printf("success\n");
+D 	
+D 	return( 0 );
+D }
+D 
+D ******************   THE PROBLEM ***********************
+D 
+D When seeing 'struct sb;' the parser reduces by 
+D struct_dcl: STRUCT NAME which calls rstruct. This routine thinks
+D the 'sb' just seen is the same as the external definition of
+D 'sb', which should not, as we just opened a new environtment.
+D 
+D ******************   THE SOLUTION ***********************
+D 
+D In rstruct() [pftn.c] I added a simple comparison to see if the
+D 'sb' we have seen is in the same scope level or not.
+D In cgram.y we have to keep track if we are seeing a type cast or an incomplete type
+D declaration through 'maybe_cast'.
+R util/src/cmd/sgs/comp2/common/cgram.y	 23.8
+B lib/c0
+Z =============================================================================
+Z =============================================================================
+C 784
+K LANG
+T Tue Aug 20 16:39:01 PDT 1991
+U roger
+P 4671
+S addressed spr 4671
+D 
+D 
+D 
+D ******************   THE BUG     ***********************
+D 
+D #include <stdio.h>
+D struct sb
+D {
+D 	double x;
+D } bx = { 9.9 };
+D 
+D main()
+D {
+D 	int start = ( printf("started\n") );
+D 	struct sb;
+D 	struct sa
+D 	{
+D 		struct sb *pb;
+D 		int i;
+D 	} a;
+D 	struct sb
+D 	{
+D 		struct sa *pa;
+D 		int i;
+D 	} b;
+D 
+D 	b.i = 13;
+D 	a.pb = &b;
+D 
+D 	if ( a.pb->i == 13 )
+D 		printf("success\n");
+D 	
+D 	return( 0 );
+D }
+D 
+D ******************   THE PROBLEM ***********************
+D 
+D When seeing 'struct sb;' the parser reduces by 
+D struct_dcl: STRUCT NAME which calls rstruct. This routine thinks
+D the 'sb' just seen is the same as the external definition of
+D 'sb', which should not, as we just opened a new environtment.
+D 
+D ******************   THE SOLUTION ***********************
+D 
+D In rstruct() [pftn.c] I added a simple comparison to see if the
+D 'sb' we have seen is in the same scope level or not.
+D In cgram.y we have to keep track if we are seeing a type cast or an incomplete type
+D declaration through 'maybe_cast'.
+R util/src/cmd/sgs/comp2/common/pftn.c	 23.7
+B lib/c0
+Z =============================================================================
+Z =============================================================================
+C 785
+K LANG
+T Tue Aug 20 16:58:34 PDT 1991
+U roger
+R util/src/cmd/sgs/comp2/common/trees.c	 23.3
+Z =============================================================================
+Z =============================================================================
+C 786
+K LANG
+T Wed Aug 21 09:23:53 PDT 1991
+U roger
+S typecasting an object with its own type produced an error.
+S 
+D 
+D ******************   THE BUG     ***********************
+D 
+D struct biff
+D {
+D 	int i;
+D 	int j;
+D } boff;
+D main()
+D {
+D 	(struct biff)boff = boff;
+D }
+D 
+D line 8: operands of CAST have incompatible types
+D 
+D ******************   THE PROBLEM ***********************
+D 
+D when building a node tree for the cast operation [buildtree] the
+D function opact() is called. This function finds out which
+D actions should be taken for the cast, BUT it did not consider
+D the case in which both the cast and the object casted are the
+D same type.
+D 
+D ******************   THE SOLUTION ***********************
+D 
+D In file trees.c , in function opact() [line 2378], when dealing
+D with the case CAST [in the switch ( o ) ] you have to add the
+D following line:
+D 
+D     if(o==CAST && mt1==mt2) return(NCVT);
+D 
+D which takes care of equal types and tells the caller to do
+D nothing (NCVT == no-conversion).
+D WARNING: if more bugs appear, watch out the order in which we
+D test if mt1 and mt2 are equal. This line introduced might have
+D to be placed in a different position.
+R util/src/cmd/sgs/comp2/common/trees.c	 23.4
+Z =============================================================================
+Z =============================================================================
+C 787
+K LANG
+T Wed Aug 21 09:31:34 PDT 1991
+U roger
+P 4933
+S mixing old and new prototyping produced wrong "type clashes"
+D 
+D 
+D 
+D ******************   THE BUG     ***********************
+D 
+D int junk( int a, char *b[]);
+D 
+D int junk(a,b)
+D  int a;
+D  char *b[];
+D {
+D }
+D gets the message: (aprox) 'b clashes with prototype definition'
+D 
+D ******************   THE PROBLEM ***********************
+D 
+D After processing the prototype, the type associated with param
+D 'b' is 226.
+D After processing the definition, the type associated with 'b' is
+D 162, and produces the clash.
+D 
+D 
+D ******************   THE SOLUTION ***********************
+D 
+D In function ProtoType [proto.c] there is a statment missing.
+D You have to add 'fixtype(pn, curclass);' before the type values
+D are stored in the prototype list.
+R util/src/cmd/sgs/comp2/common/proto.c	 23.5
+B 
+B /lib/c0
+Z =============================================================================
+Z =============================================================================
+C 788
+K LANG
+T Wed Aug 21 10:41:05 PDT 1991
+U roger
+P 5270
+S this change groups TWO problems: spr 5271 and a bug found by rob
+S about inconsistent initialization. SORRY.
+S 
+D 
+D ******************   THE BUG     ***********************
+D   Here follow different flavours of the same bug:
+D -----------------------------------------------------------------------
+D struct WINDOW
+D {
+D 	int i;
+D };
+D struct FORM
+D {
+D 	int i;
+D };
+D struct formsave
+D {
+D 	int i;
+D };
+D struct oa_form {
+D 	char		*title;			 
+D 	struct formdefine {
+D 		int	type;			 
+D 		int	limit;			 
+D 	} fields[ 52 ];
+D 	struct FORM	*form;			 
+D 	struct formsave	defaults;		 
+D 	struct WINDOW	*scroll[ 52 ];	 
+D };
+D static struct oa_form	UEE_forms[] = {
+D 	(char *)0, {
+D 		 {0 ,	0}, {0 ,	0},	 {0 ,	0},	 
+D 		 {1 ,	2}, {0 ,	0},	 {0 ,	0},	 
+D 		 {1 ,	2}, {0 ,	0},	 {0 ,	0},	 
+D 		 {1 ,	2}, {0 ,	0},	 {0 ,	0},	 
+D 		 {(-1),-1}
+D 	}
+D 	
+D };
+D static struct oa_form	UEE_forms_good[] = {
+D 	(char *)0,
+D 		 0 ,	0, 0 ,		0,	 0 ,	0,	 
+D 		 1 ,	2, 0 ,		0,	 0 ,	0,	 
+D 		 1 ,	2, 0 ,		0,	 0 ,	0,	 
+D 		 1 ,	2, 0 ,		0,	 0 ,	0,	 
+D 		 (-1),-1
+D };
+D 
+D -----------------------------------------------------------------------
+D a[4][3][2] = 
+D {
+D 	{ 1 },
+D 	{ 2, 3 },
+D 	{ 4, 5, 6 }
+D };
+D -----------------------------------------------------------------------
+D 
+D struct b { int r;
+D 	   int j;
+D 	   };
+D struct a { int i;
+D 	    struct b  pep[3];
+D 	   };
+D 
+D struct a c[]={
+D 	1,
+D 	{
+D 	 { 1,2 },
+D 	 { 3,4 },
+D 	 { 5,6 }
+D 	}
+D };
+D ******************   THE PROBLEM ***********************
+D 
+D All of them were getting wrong warning and/or error messages
+D such as "} missing" or "inconsistently-bracketed initialization". 
+D The reason is that the code for handling initializations and
+D 'counting' brackets was plainly wrong.
+D First, the test for 'inconsistently ...' was really a test for
+D 'incompletely-bracketed initialization' and second the bracket
+D counting was wrong, mainly in function ilbrace(), where we were
+D seting the wrong in_fl in most of the cases.
+D 
+D ******************   THE SOLUTION ***********************
+D 
+D Now we have two tests: one for 'incompletely ...' and another
+D for 'inconsistently ....'
+D The test for 'incomplete' is straightforward: you check if 
+D there is an enclosing bracket in the previous level in instack (
+D you can know it through the in_fl flag, set by ilbrace() ).If
+D there is, everything is fine, otherwise you issue a warning
+D message.
+D The test for 'inconsistent' needs a special data structure.
+D brack[STR_NEST] is an array of "booleans" which tells you at
+D which levels a "{" has been seen. As the contents of brack is
+D preserved across the parsing of different items of the same
+D structure/array, you can know if the bracketing is consistent at
+D all levels. ( There are a few minor cases which escape this
+D testing, but correct code is always produced ).
+D The current level of bracketing is hold in 'cur_level' which
+D must point to the same level as pstk does in instack.
+D 
+D 
+D ******************   THE BUG     ***********************
+D 
+D const struct biff { int i, j; } boff[] = {
+D 1,2,
+D 3,4,
+D 5,6
+D };
+D 
+D const struct junk { struct biff *ptr; int i; } trash[] = {
+D boff+0, 1,
+D boff+10,3
+D };
+D 
+D 
+D /* compile with M1 or M2 */
+D 
+D ******************   THE PROBLEM ***********************
+D 
+D This code was getting a 'invalid use of constant qualified
+D object '. The reason is that, according to ANSI, you should
+D propagate "const" to all the inner levels of struct junk, and 
+D gotscal(),instk() and doinit() were failing to do so.
+D The point is that when gotscal was changing instack from one
+D member of the struct to the next, it used the new member's typeq
+D field whithout considering if it had seen a "const" qualifier.
+D As the members of the struct NOT NECESSARILY have typeq set to
+D 1, after the first doinit(), the "const" qualifier was 'lost'.
+D 
+D ******************   THE SOLUTION ***********************
+D 
+D In file pftn.c , in function gotscal() I have added code to 
+D take care of propagating the 'const' flag through all the
+D structure initialization.
+D The code cheks if the new member we are pushing onto instack has
+D its own typeq. If so, you pass that typeq to instk , otherwise
+D you pass the typeq on top of the stack.
+R util/src/cmd/sgs/comp2/common/pftn.c	 23.8
+B /lib/c0
+Z =============================================================================
+Z =============================================================================
+C 789
+K LANG
+T Wed Aug 21 10:51:59 PDT 1991
+U roger
+S this change is related to changes in pftn.c to handle correctly
+S structure initialization.
+R util/src/cmd/sgs/comp2/common/cgram.y	 23.9
+B /lib/c0
+Z =============================================================================
+Z =============================================================================
+C 792
+K LANG
+T Wed Aug 21 16:46:32 PDT 1991
+U roger
+P 5235
+S changed again the solution to usless typecasts.
+D 
+D ******************   THE BUG     ***********************
+D typedef struct _W_OBJ {
+D         struct _W_OBJ *(**type)();
+D         unsigned int ref ;
+D } *W_OBJ;
+D typedef struct _W_Bar {
+D         struct _W_OBJ *(**type)();
+D         unsigned int ref ;
+D         W_OBJ     tile;
+D }              *W_Bar;
+D typedef struct _W_Atom {
+D         struct _W_OBJ *(**type)();
+D         unsigned int ref ;
+D } *W_Atom;
+D extern  W_Atom   WA_tile;
+D main()
+D {
+D         W_Bar        bar;
+D ( ( (W_OBJ)(bar->tile) = (*(((WA_tile)->type)[ 1 ])) (WA_tile))->ref) += 2;
+D ( (        (bar->tile) = (*(((WA_tile)->type)[ 1 ])) (WA_tile))->ref) += 2;
+D }
+D 
+D line 18: cast expression is not an lvalue
+D 
+D ******************   THE PROBLEM ***********************
+D 
+D when building a node tree for the cast operation [buildtree] the
+D function opact() is called. This function finds out which
+D actions should be taken for the cast, BUT it did not consider
+D the case in which both the cast and the object casted are the
+D same type.
+D 
+D ******************   THE SOLUTION ***********************
+D 
+D In file trees.c , in function opact() [line 2378], when dealing
+D with the case CAST [in the switch ( o ) ] you have to add the
+D following line:
+D 
+D     if(o==CAST && mt1==mt2) return(NCVT);
+D 
+D which takes care of equal types and tells the caller to do
+D nothing (NCVT == no-conversion).
+D WARNING: if more bugs appear, watch out the order in which we
+D test if mt1 and mt2 are equal. This line introduced might have
+D to be placed in a different position.
+R util/src/cmd/sgs/comp2/common/trees.c	 23.5
+B /lib/c0
+Z =============================================================================
+Z =============================================================================
+C 836
+K LANG
+T Fri Aug 23 15:36:43 PDT 1991
+U roger
+S typecasting an object with its own type produced an error.
+D 
+D ******************   THE BUG     ***********************
+D 
+D struct biff
+D {
+D 	int i;
+D 	int j;
+D } boff;
+D main()
+D {
+D 	(struct biff)boff = boff;
+D }
+D 
+D line 8: operands of CAST have incompatible types
+D 
+D ******************   THE PROBLEM ***********************
+D 
+D when building a node tree for the cast operation [buildtree] the
+D function opact() is called. This function finds out which
+D actions should be taken for the cast, BUT it did not consider
+D the case in which both the cast and the object casted are the
+D same type.
+D 
+D ******************   THE SOLUTION ***********************
+D 
+D In file trees.c , in function opact() [line 2378], when dealing
+D with the case CAST [in the switch ( o ) ] you have to add the
+D following line:
+D 
+D     if(o==CAST && p->in.right->in.type == p->in.left->in.type ) return(NCVT);
+D 
+D which takes care of equal types and tells the caller to do
+D nothing (NCVT == no-conversion).
+D WARNING: if more bugs appear, watch out the order in which we
+D test if mt1 and mt2 are equal. This line introduced might have
+D to be placed in a different position.
+R util/src/cmd/sgs/comp2/common/trees.c	 23.4
+B /lib/c0
+Z =============================================================================
+Z =============================================================================
+C 885
+K LANG
+T Fri Aug 30 12:18:22 PDT 1991
+U roger
+S fixed a previous fix to handle incomplete declarations.
+D the previous fix used 'maybe_cast' to try to distinguish between
+D an incomplete struct declaration and a type cast. The grammar
+D makes it impossible to handle all cases just using this flag ,
+D so I used a drastic method. To decide if we are in front of an
+D incomplete declaration we take a look to the current TOKEN -held
+D in yychar-. If yychar==62 (that is, a semi-colon) then it is
+D actually an incomplete declaration:
+D 
+D 	struct sb;
+D                  ^
+D 		 token held in yychar when we call rstruct()
+D 		 [pftn.c]
+D 
+R util/src/cmd/sgs/comp2/common/pftn.c	 23.9
+Z =============================================================================
+Z =============================================================================
+C 939
+K LANG
+T Tue Sep 10 10:46:17 PDT 1991
+U roger
+S undone all the changes introduced in version 23.9. The reason is
+S they were handling incorrectly structure initialization in SYSV
+S mode.
+D changed production 
+D   initdeclarator: xnfdeclarator ASSIGN ibrace init_list optcomma RC
+D back to
+D   initdeclarator: xnfdeclarator ASSIGN LC init_list optcomma RC
+R util/src/cmd/sgs/comp2/common/cgram.y	 23.10
+B /lib/c0
+Z =============================================================================
+Z =============================================================================
+C 940
+K LANG
+T Tue Sep 10 10:53:13 PDT 1991
+U roger
+S the change introduced in previous version was correct BUT still
+S could not handle some cases.
+D The test to check if an object eas being typecasted with its own
+D type was not strong enough and confused some typecasts. The
+D change is
+D              if(o==CAST && p->in.right->in.type == p->in.left->in.type )
+D to
+D                if(o==CAST && p->in.right->in.type == p->in.left->in.type
+D                        && p->in.right->fn.csiz==p->in.left->fn.csiz)
+D 
+R util/src/cmd/sgs/comp2/common/trees.c	 23.5
+B /lib/c0
+Z =============================================================================
+Z =============================================================================
+C 941
+K LANG
+T Tue Sep 10 11:01:34 PDT 1991
+U roger
+S undone  a lot of changes introduced in previous versions to
+S handle structure and array initialization. Reason: they handled
+S incorrectly array initialization in SYSV
+R util/src/cmd/sgs/comp2/common/pftn.c	 23.10
+B /lib/c0
+Z =============================================================================
+Z =============================================================================
+C 1028
+K LANG
+T Tue Sep 24 11:22:30 PDT 1991
+U roger
+P 5383
+S when parsing stuff like int *(junk)(int x,char c); c0 was
+S getting confused with the formals for junk.
+D when parsing 
+D 
+D int *(junk)(int x,char y);
+D 
+D c0 places an identifier "x" and an identifier "y" in the symbol
+D table. Once parsed this declaration, "x" and "y" should
+D disappear form the symbol table, but c0 was failing to do so.
+D The reason is that these optional names were not included in the
+D "scopestack" for junk, thus producing that, when cleaning up
+D actions were taken, these symbols remained untouched.
+D The code to include the scope information is added in ftnarg()
+D [pftn.c].
+R util/src/cmd/sgs/comp2/common/pftn.c	 23.11
+B /lib/c0
+Z =============================================================================
+Z =============================================================================
+C 1054
+K LANG
+T Wed Oct  2 13:11:27 PDT 1991
+U simon
+S Rearranged decl to include use of scopestack in more that one function.
+R util/src/cmd/sgs/comp2/common/pftn.c	 23.12
+B /lib/c0
+Z =============================================================================
+Z =============================================================================
+C 1115
+K LANG
+T Fri Oct 18 16:49:11 PDT 1991
+U roger
+P 5383
+S identifiers in function prototypes caused the compiler to get
+S lost and come out with a "Bad bigsize" error.
+R util/src/cmd/sgs/comp2/common/proto.c	 23.6
+B /lib/c0
+Z =============================================================================
+Z =============================================================================
+C 1116
+K LANG
+T Fri Oct 18 17:04:40 PDT 1991
+U roger
+S the fix for spr 5383 in proto.c ( 23.6 ) caused that when c0
+S optimized was optimizing strftime.c (libpansi) an inexistent set
+S of errors where issued.
+D  the problem was the following.
+D  The hash algorithm uses memory addresses as the basic number to
+D  hash on. By chance, when compiling that particular program ,
+D  the symbol table was falling on a very particular address
+D  (2860000 in decimal). That caused the first argument in a
+D  function to be given index 0 in stab. [2860000 % 10000] . So,
+D  yylex was returning an optid equal to 0. In the production that
+D  handles parameters, there was the following statment:
+D 
+D 	if (optind > 0) ftnarg(optid);
+D 
+D  Ovbiously, it didn't treat the first argument to the function and
+D  all kind of unexpected errors happened. The solutin is
+D  ovbious.
+D 
+R util/src/cmd/sgs/comp2/common/cgram.y	 23.11
+B /lib/c0
+Z =============================================================================
+Z =============================================================================
+C 1121
+K LANG
+T Tue Oct 22 12:05:51 PDT 1991
+U roger
+S included new option in the command line: now a '+' in the command line means "use your std input/output instead of a file".
+S This is needed to work with cc in CCPIPE mode.
+R util/src/cmd/sgs/comp2/common/scan.c	 23.11
+B /lib/c0
+Z =============================================================================
+Z =============================================================================
+C 1136
+K LANG
+T Fri Oct 25 11:19:10 PDT 1991
+U roger
+S repeating a prototype in a file caused the compiler to issue an
+S "incompatible function prototypes" message. (Found in the PCTS
+S test suite).
+D 
+D the following code
+D 
+D 
+D typedef int jmp_buf[13];
+D void longjmp (jmp_buf,int);
+D main()
+D {
+D 	void longjmp (jmp_buf,int);
+D }
+D 
+D caused the compiler to issue the message
+D line 5: incompatible function prototypes
+D 
+D The problem is that when seeing the second prototype c0 compares
+D it with the first one. The internal forms of the prototypes
+D should be identical, BUT they were not.
+D 
+D The problem was in the way c0 processes the two prototypes. The
+D first one is in the outermost scope, so when checked with
+D function fixtype() [proto.c], blevel equals 1 (for the
+D arguments), while when processing the second one blevel equals
+D 4.
+D If you look at the code in fixtype() you'll realize that
+D arguments need to be processed with "class=PARAM", otherwise no
+D actions are taken on their types. So, if blevel==1, class is set
+D to PARAM, but otherwise is set to NULL. This caused the
+D difference in the two prottypes.
+D Solution: when you call fixtype()  from ProtType() make sure you
+D call it with the class=PARAM .
+D 
+R util/src/cmd/sgs/comp2/common/proto.c	 23.7
+B /lib/c0
+Z =============================================================================
+Z =============================================================================
+C 1177
+K LANG
+T Thu Nov  7 10:38:56 PST 1991
+U roger
+S changed the user_need() function to handle multiple user needs
+S per templates. (Motivation: support the floating point emulation
+S in the 040 )
+D Now user_need checks all the bits in "need". If all the user
+D needs are satisfied, it returns staisfied; but if one fails, it
+D returns fail.
+D Also, a new user_need (EMU_FP) is included, that allows the user
+D to switch from "hard-coded" instructions (fintrz and fscale) to
+D subroutines that emulate them.
+D Note that EMU_FP is using the same user need (4) as INTR_881 (an
+D old fortran user need).
+R util/src/cmd/sgs/comp2/common/match.c	 24.2
+B /lib/c1
+Z =============================================================================
+Z =============================================================================
+C 1178
+K LANG
+T Thu Nov  7 10:51:58 PST 1991
+U roger
+S included the define for EMU_FP (floating point emulation of
+S fintrz and fscale )
+R util/src/cmd/sgs/comp2/common/mfile2.h	 24.2
+B /lib/c1
+Z =============================================================================
+Z =============================================================================
+C 1179
+K LANG
+T Thu Nov  7 11:10:03 PST 1991
+U roger
+S inlcuded the -F option for the floating point emulation.
+R util/src/cmd/sgs/comp2/common/reader.c	 24.2
+B /lib/c1
+Z =============================================================================
+Z =============================================================================
+C 1210
+K LANG
+T Mon Nov 18 16:06:55 PST 1991
+U roger
+S made even more restrictive the change in 23.5, needed for
+S typecasts.
+D The bug was found in plum hall: The following code:
+D 
+D main()
+D {
+D         int i;
+D         const int *pci = &i;
+D         int *pi;
+D 
+D         pi = (int *)pci;    <--------- ERROR
+D }
+D 
+D was getting a "illegal use of const qualified object"
+D 
+D The problem is that when building the tree for the cast 
+D [ a tree like         CAST
+D 		    /      \
+D 		int *     const int *  ]
+D 
+D opact was not considering the typeq field of both subtrees, so
+D it was seeing them as equal and returning a "DONOTHING".
+D Now, for deciding that both subtrees have the same type, typeq
+D is also checked.
+D 
+D 		
+D 
+R util/src/cmd/sgs/comp2/common/trees.c	 24.2
+B /lib/c0
+Z =============================================================================
+Z =============================================================================
+C 1211
+K LANG
+T Mon Nov 18 16:14:09 PST 1991
+U roger
+S introduced 2 changes that deal with scopes and redeclaring the
+S same name as a typedef, argument and variable.
+D Change 1:
+D 
+D The following code
+D 
+D sub()
+D {
+D 	typedef short X;
+D 	X i;
+D 	{
+D 		typedef int X;    <----ERROR
+D 		{
+D 			X X = 3;    <----ERROR
+D 		}
+D 	}
+D }
+D 
+D was getting unexisting errors
+D Proble was that when seeing the 'X' in "typedef int X;" yylex
+D was inconditionally returning a TYPE token instead of a NAME
+D token.
+D The solution is to have the test in yylex to decide wheter an
+D identifier is a NAME or a TYPE include a check for seen_typespec.
+D If we have already seen a TYPE then we have to return a NAME,
+D otherwise it is a type!
+D 
+D 2) The following code
+D 
+D typedef void D;
+D junk(long D)  <----------- ERROR
+D {
+D 	dequals(D);
+D }
+D 
+D was getting a similar error.
+D Here the deal was a "typo" error. In lxres, when deciding if the
+D word just processed was a TYPE, it was using the test
+D  (p->lxresval <= INT)
+D thus leaving out FLOATS and DOUBLES, thus not setting seen_typespec,
+D thus getting again in the previous bug!.
+D 
+R util/src/cmd/sgs/comp2/common/scan.c	 24.2
+B /lib/c0
+Z =============================================================================
+Z =============================================================================
+C 1213
+K LANG
+T Tue Nov 19 16:13:16 PST 1991
+U roger
+S Addressed two bugs shown by plum hall, concerning pointers to
+S const objects and undefined static functions.
+D Change 1) The following code
+D 
+D main() {
+D int i = 1;
+D * (const int *) &i = 2;
+D }
+D 
+D was not getting an error message for attempting to modify a constant object.
+D 
+D In tymerge(), when merging the type and id (not present in this
+D example), nobody was copying the typeq field of type onto the
+D typeq field of the resulting object.
+D 
+D Change 2) The following code
+D static int f1();
+D 
+D f2()
+D {
+D 	f1();
+D 	f3();
+D }
+D was not getting an error message for not defining f1().
+D 
+D Included a little loop in yyaccpt() - executed once we have
+D finished processing the file- that checks for this situation.
+R util/src/cmd/sgs/comp2/common/pftn.c	 24.2
+B /lib/c0
+Z =============================================================================
+Z =============================================================================
+C 1214
+K LANG
+T Tue Nov 19 16:28:46 PST 1991
+U roger
+S OOPS! forgot "register int i;"
+R util/src/cmd/sgs/comp2/common/pftn.c	 24.3
+B /lib/c0
+Z =============================================================================
+Z =============================================================================
+C 1215
+K LANG
+T Tue Nov 19 16:30:17 PST 1991
+U roger
+S fixed a plum hall bug.
+D when reducing by :  declspecs:  decl_init bldspecs
+D and building the final type using "mkty()", we where not passing
+D it the current typequal (type qualifier) thus loosing all
+D information about const objects.
+R util/src/cmd/sgs/comp2/common/cgram.y	 24.2
+B /lib/c0
+Z =============================================================================
+Z =============================================================================
+C 1231
+K LANG
+T Thu Nov 21 16:47:05 PST 1991
+U roger
+S changed to be able to issue a warning when someone has a
+S prototype with a float as one of its parameters. (It's against
+S ANSI 3.5.4.3 lines 19-22)
+D The solution is not very nice. When the parameters are
+D processed (whether in a prototype or in a definition) they go
+D through ProtoType(), where fixtype() is called. fixtype() does
+D all the necessary type conversions and promotions, so after
+D fixtype() there are no more "floats" as parameters, but only
+D "doubles". So, to be able to issue the warning against "floats
+D in prototypes" you have to do it somehow before fixtype(). You
+D CAN NOT do it in ProtoType() because then you get a warning for
+D the prototype AND ALSO for the function definition!!!!!(which
+D should not happen). The solution I came up with is: in
+D fixtype(), whenever you do a promotion from FLOAT to DOUBLE set
+D a flag ( prmoted_floats ) and then, in ProtoDeclare() [ which is
+D only reached for prototypes and never for functin definitions!  ]
+D , at the end of processing the whole prototype, test that flag:
+D if it is set, issue a warning.
+R util/src/cmd/sgs/comp2/common/proto.c	 24.2
+B /lib/c0
+Z =============================================================================
+Z =============================================================================
+C 1232
+K LANG
+T Thu Nov 21 17:00:50 PST 1991
+U roger
+S changed to be able to issue a warning when someone has a prototype with a float as one of its parameters. (It's against ANSI 3.5.4.3 lines 19-22)
+S 
+D please see explantion for proto.c 24.2
+R util/src/cmd/sgs/comp2/common/pftn.c	 24.4
+B /lib/c0
+Z =============================================================================
+Z =============================================================================
+C 1251
+K LANG
+T Tue Nov 26 14:32:06 PST 1991
+U roger
+S Now c0 parses correctly the following code
+S typedef void (*boff)();
+S myfun( boff callback);
+D When parsing boff in the second line of the following code
+D typdef (*boff)();
+D myfun(boff callback);
+D 
+D yylex() recognises it is a Type. In order to have ProtoType()
+D work properly, if the type is a function or a POINTER TO A
+D FUNCTION you have to set stab->proto  to -1. The part that was
+D missing eas the pointer to a function test.
+R util/src/cmd/sgs/comp2/common/scan.c	 24.3
+B /lib/c0
+Z =============================================================================

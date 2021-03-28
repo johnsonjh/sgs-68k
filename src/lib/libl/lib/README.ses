@@ -1,0 +1,35 @@
+#	START NEW ARIX SCCS HEADER
+#
+#	@(#) README.ses: version 25.1 created on 12/2/91 at 19:37:09
+#
+#	Copyright (c) 1990 by Arix Corporation
+#	All Rights Reserved
+#
+#	@(#)README.ses	25.1	12/2/91 Copyright (c) 1990 by Arix Corporation
+#
+#	END NEW ARIX SCCS HEADER
+#
+
+#ident	"@(#)libl/lib:README.ses	25.1"
+
+========================================================================
+Thu Aug 21 10:13:00 PDT 1986				
+Chang
+									
+	DESCRIPTION: Original port of libl routines.
+	Nothing was changed in this directory.
+
+	FIX: tmplib.a generated. Not able to test.
+
+	FILES:
+===============================================================================
+Tue Sep 30 13:31:54 PDT 1986
+hanna
+
+	DESCRIPTION:
+		the old ncform declared "int yyleng".  The new doesn't.
+		Leave it until you confirm it's a problem.
+	FIX:
+	TECHNOTE:
+	FILES:
+===============================================================================

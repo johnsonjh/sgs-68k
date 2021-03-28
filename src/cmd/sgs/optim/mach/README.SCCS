@@ -1,0 +1,116 @@
+Z =============================================================================
+X 32
+X Thu Feb 14 14:14:51 PST 1991
+X simon
+X -b use with fcmp to ftest conversion failed
+X .
+Z =============================================================================
+Z =============================================================================
+C 88
+K LANG
+T Wed Feb 27 11:59:35 PST 1991
+U simon
+S Changed ifdefs for m68k family and 68040 processor
+R util/src/cmd/sgs/optim/mach/mach.mk	 23.3
+R util/src/cmd/sgs/optim/mach/motopt.c	 23.3
+R util/src/cmd/sgs/optim/mach/motopt2.c	 23.4
+R util/src/cmd/sgs/optim/mach/optab.awk	 23.3
+R util/src/cmd/sgs/optim/mach/parse.c	 23.3
+R util/src/cmd/sgs/optim/mach/rand.c	 23.3
+R util/src/cmd/sgs/optim/mach/m68k/mipsup.c	 23.3
+R util/src/cmd/sgs/optim/mach/m68k/optab.base	 23.5
+R util/src/cmd/sgs/optim/mach/m68k/peep.c	 23.3
+R util/src/cmd/sgs/optim/mach/m68k/rand.h	 23.3
+R util/src/cmd/sgs/optim/mach/m68k/scan.c	 23.3
+R util/src/cmd/sgs/optim/mach/m68k/vtrace.c	 23.3
+B /lib/optim
+B 
+Z =============================================================================
+Z =============================================================================
+C 503
+K LANG
+T Tue May 21 11:17:57 PDT 1991
+U simon
+P 4353
+S Added checks for inline code.  Optimizations should not occur
+D rmframe.c was checking inline code for consistant usage.  This should
+D not happen on code marked #ASM.  These check are now skipped.  Also
+D skip the addition of "stack bias" in the case of #ASM.  In general the
+D optimizer in not well suited to optimizing ( or deciding not to optimize )
+D inline code.
+R util/src/cmd/sgs/optim/mach/rmframe.c	 23.3
+B /lib/optim
+Z =============================================================================
+Z =============================================================================
+C 555
+K LANG
+T Tue Jun  4 10:58:25 PDT 1991
+U simon
+S ininline used for both inline code AND volatile code.  Added
+S flag to mark different optims.  
+D Kludge on top of a hack.  Change to not optimize inline code
+D conflicted with volatile non-optimizations.  This was because
+D the ininline flag was used to mark both!!  Added new flag
+D involatile to differentiate the two.
+R util/src/cmd/sgs/optim/common/optim.h	 23.3
+R util/src/cmd/sgs/optim/mach/defs	 23.3
+R util/src/cmd/sgs/optim/mach/parse.c	 23.4
+R util/src/cmd/sgs/optim/mach/rmframe.c	 23.4
+R util/src/cmd/sgs/optim/mach/m68k/mipsup.c	 23.4
+B /lib/optim
+Z =============================================================================
+Z =============================================================================
+C 629
+K LANG
+T Sat Jun 15 14:20:32 PDT 1991
+U gjw
+S Added rules for awk to ignore #ifndef rules in the optab.base file.
+D This awk script knew how to handle #ifdef and #endif statements and would
+D ignore sections between #ifdef and #endif if it wasn't relevant. However it
+D didn't know about #ifndef #endif pairs. Added rules to cope.
+R util/src/cmd/sgs/optim/mach/optab.awk	 23.4
+Z =============================================================================
+Z =============================================================================
+C 637
+K LANG
+T Tue Jun 18 14:38:19 PDT 1991
+U simon
+P 5220
+S Reject optimizations for mov which create mixed register operations
+D optim allowed optimizations of the form:
+D 	mov %a0, %d1
+D 	or  %d0, %d1
+D 	    
+D 	    to
+D 
+D 	or %a0, %d1
+D 
+D The output "or" is illegal.  Now it does not do that!!
+R util/src/cmd/sgs/optim/mach/motopt.c	 23.4
+B /lib/optim
+Z =============================================================================
+Z =============================================================================
+C 714
+K LANG
+T Fri Jul 12 09:57:39 PDT 1991
+U roger
+S Added rules to generate 2 optimizers, one for the 020 and one for the 040
+D 
+D  There are now two new rules that call recursively make, defining 
+D  M68020 and M68040 for the MACH macro.
+D  Between each invocation of make we MUST do a clean to remove the old object
+D  files so that everything is recompiled again.
+D 
+R util/src/cmd/sgs/optim/mach/mach.mk	 23.4
+B /src/build/util/src/cmd/sgs/cpp/mach/cpp2
+B /src/build/util/src/cmd/sgs/cpp/mach/cpp4
+Z =============================================================================
+Z =============================================================================
+C 1014
+K LANG
+T Mon Sep 23 15:43:57 PDT 1991
+U roger
+S clean and clobber were one single rule. Made two different
+S rules.
+R util/src/cmd/sgs/optim/mach/mach.mk	 23.5
+Z =============================================================================

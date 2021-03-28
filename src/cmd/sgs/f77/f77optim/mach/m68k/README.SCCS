@@ -1,0 +1,16 @@
+Z =============================================================================
+C 98
+K LANG
+T Thu Feb 28 16:15:15 PST 1991
+U simon
+S added m68k defines to replace 020 specific ifdefs.  For 040
+R util/src/cmd/sgs/f77/f77optim/mach/m68k/makefile	 23.2
+R util/src/cmd/sgs/f77/f77optim/mach/m68k/mipsup.c	 23.2
+R util/src/cmd/sgs/f77/f77optim/mach/m68k/peep.c	 23.2
+R util/src/cmd/sgs/f77/f77optim/mach/m68k/rand.h	 23.2
+R util/src/cmd/sgs/f77/f77optim/mach/m68k/scan.c	 23.2
+R util/src/cmd/sgs/f77/f77optim/mach/m68k/vtrace.c	 23.2
+R util/src/cmd/sgs/f77/f77optim/mach/mach.mk	 23.4
+R util/src/cmd/sgs/f77/f77optim/mach/optab.awk	 23.2
+B /usr/bin/f77
+Z =============================================================================

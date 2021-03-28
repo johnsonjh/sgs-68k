@@ -1,0 +1,86 @@
+#	START NEW ARIX SCCS HEADER
+#
+#	@(#) README.ses: version 25.1 created on 12/2/91 at 17:40:37
+#
+#	Copyright (c) 1990 by Arix Corporation
+#	All Rights Reserved
+#
+#	@(#)README.ses	25.1	12/2/91 Copyright (c) 1990 by Arix Corporation
+#
+#	END NEW ARIX SCCS HEADER
+#
+
+#ident	"@(#)f77/f77optim:README.ses	25.1"
+
+===============================================================================
+optim	(sgs.000 sgs.020)						826
+
+Fri Feb 28 17:47:58 PST 1986					hanna/baumann
+	DESCRIPTION:
+	Optimizer tries to do logical operations with address registers.
+	This results in an assembler error: 
+	"attempt to use incorrect addressing mode (%an)"
+
+	FIX:
+	/usr/src/sgs/sgs.0[02]0/cmd/cc/optim/mach/{M68020|.}/vtrace.c:
+	add cases to "switch(node->op)" in vtrace routine.
+
+	case AND_L:	case AND_W:	case AND_B:
+	case EOR_L:	case EOR_W:	case EOR_B:
+	case OR_L:	case OR_W:	case OR_B:
+		size = node->userdata.ud_op->op_ssize[0];
+		newrand = vfind(rands[0], size); /* try to find replacement */
+		if (newrand == RNULL )
+		    goto normal;	/* no replacement possible */
+		if (!isareg(newrand)){
+			setrand(node, 1, newrand);
+			changedto(tflag);	/* report change */
+		}
+					/* we have a replacement */
+		vkill(rands[0], src); /* destination is changed */
+		vkill(rands[1], dest); /* destination is changed */
+		break;
+
+	/usr/src/sgs/sgs.0[02]0/cmd/cc/optim/mach/{M68020|.}/optab.base:
+	add "| OF_VTRACE" to {AND | OR | EOR}_[BWL] lines.
+	
+	FILES:
+	/usr/src/sgs/sgs.0[02]0/cmd/cc/optim/mach/{M68020|.}/optab.base
+	/usr/src/sgs/sgs.0[02]0/cmd/cc/optim/mach/{M68020|.}/vtrace.c
+===============================================================================
+Wed Jun 18 08:22:06 PDT 1986
+hanna
+sw0
+	DESCRIPTION:
+	      The code sequence:
+		char *a,*m(); a=m(); if(a);
+	      generated:
+		jsr	m
+		mov.l	%d0,%a0
+		mov.l	%a0,-4+S%1(%fp)
+		tst.l	-4+S%1(%fp)		#optim: mov.l	%a0,%d7
+	     The optimizer tries to find an empty register to do a move to 
+	     generate current CC for the test (moves with addr registers do
+	     not change CC in some cases).  The optimizer chooses an unused
+	     data register from the set d0 -- d7.  However, if it chooses >d1,
+	     it does not save the original contents of the reg, but clobbers
+	     whatever the user had in it. (d2--d7 are reserved for C level
+	     register variables).
+	     This showed itself in the 68020 libI77/open.c .  It's always been
+	     there.  We've been lucky (don't use register vars much) to not
+	     see it.
+	FIX:
+		Comment out the references to d7 -- d2 in the nlist and dlist
+	 	arrays.
+	TECHNOTE:
+	FILES:
+		/usr/src/sgs/sgs.000/cmd/cc/optim/mach/M68020/vtrace.c
+===============================================================================
+date
+name
+sw#
+	DESCRIPTION:
+	FIX:
+	TECHNOTE:
+	FILES:
+===============================================================================

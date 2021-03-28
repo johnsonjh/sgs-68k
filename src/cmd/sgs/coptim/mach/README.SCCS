@@ -1,0 +1,12 @@
+Z =============================================================================
+C 91
+K LANG
+T Wed Feb 27 15:41:45 PST 1991
+U simon
+S Added use of family variable instead of just M68020
+R util/src/cmd/sgs/coptim/common/declar.h	 23.3
+R util/src/cmd/sgs/coptim/common/defin.h	 23.3
+R util/src/cmd/sgs/coptim/common/main.c	 23.3
+R util/src/cmd/sgs/coptim/mach/makefile	 23.3
+B /lib/coptim
+Z =============================================================================

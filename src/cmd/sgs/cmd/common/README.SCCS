@@ -1,0 +1,157 @@
+Z =============================================================================
+C 484
+K LANG
+T Tue May 14 10:45:54 PDT 1991
+U gjw
+S Added -T option to cc. User can specify 020, 030 or 040 version of as to use.
+D The -T option to cc allows a user to specify which as to use. The default
+D is to use /bin/as. Arguments to -T are :
+D 	-T 2|3|4
+D 
+D This allows you to build machine specific code. E.g. You can compile 040 code
+D on an 020.
+R util/src/cmd/sgs/cmd/common/cc.c	 23.3
+B /bin/cc
+Z =============================================================================
+Z =============================================================================
+C 578
+K UTIL
+T Thu Jun  6 10:17:53 PDT 1991
+U gjw
+S Added code to ask for path to people optimizer (optim).
+D Gencc was not providing a path to optim. Added code that now asks for a
+D pathname to be provided. The option created in the cc script is the
+D -Y3,<path> option.
+R util/src/cmd/sgs/cmd/common/gencc	 23.3
+B gencc
+Z =============================================================================
+Z =============================================================================
+C 656
+K LANG
+T Tue Jun 25 10:23:53 PDT 1991
+U simon
+S Added new options for "read 0 ok" and "compile and link with NONDYNAMIC"
+R util/src/cmd/sgs/cmd/common/cc.c	 23.4
+Z =============================================================================
+Z =============================================================================
+C 729
+K LANG
+T Thu Jul 18 13:59:27 PDT 1991
+U roger
+S Fixed a bug that caused a Memory Fault while building the names for the C libs.
+D The bug was in the switch around line 1020, where the names for the 3 possible
+D C libraries were built.
+D The bug was caused by incorrect use of strcat: it didn't allocate enough
+D memory in the default case. Now it has been replaced by strspl, that takes care of allocating memory.
+R util/src/cmd/sgs/cmd/common/cc.c	 23.5
+Z =============================================================================
+Z =============================================================================
+C 756
+K LANG
+T Mon Aug  5 12:47:22 PDT 1991
+U roger
+S cc was not handling correctly the -Yp, -Y3 flags
+D 
+D cc just ignored the arguments tp the -Yp -Y3 flags.
+D Now it saves them in PATHcpp PATHoptim.
+R util/src/cmd/sgs/cmd/common/cc.c	 23.6
+B /lib/cc
+Z =============================================================================
+Z =============================================================================
+C 1001
+K LANG
+T Mon Sep 23 09:02:27 PDT 1991
+U roger
+S changed the default directory for cpp and optim from BINDIR to LIBDIR
+R util/src/cmd/sgs/cmd/common/cc.c	 23.7
+B /bin/cc
+Z =============================================================================
+Z =============================================================================
+C 1065
+K LANG
+T Thu Oct  3 08:25:02 PDT 1991
+U simon
+P 5345
+S added warning if no input files supplied on command line.
+R util/src/cmd/sgs/cmd/common/cc.c	 23.8
+B /bin/cc
+Z =============================================================================
+Z =============================================================================
+C 1066
+K LANG
+T Thu Oct  3 10:14:42 PDT 1991
+U simon
+N A major change has been made which affects link level ( .o ) compatibility
+N between 3.3 and previous systems.  The structures and methods used to 
+N maintain standard I/O (stdio) file descriptors has been updated to allow
+N a dynamically configurable number of file descriptors.  This is the stdio
+N equivalent to the nofiles changes documented elsewhere.  Be aware that the
+N default is the new method.  To compile and link for and with pre-change
+N libraries and object modules use the '-i' flag to cc(1).  Please see the
+N documentation in the cc(1) manual page.  For a more detailed look into the
+N changes you may edit /usr/include/stdio.h and examine the sections of the
+N include file ifdef'ed with DYNAMIC and _NODYNAMIC.
+Z =============================================================================
+Z =============================================================================
+C 1067
+K LANG
+T Fri Oct  4 07:42:55 PDT 1991
+U simon
+S Updated cc to complain if no files supplied on the command line.
+R util/src/cmd/sgs/cmd/common/cc.c	 23.8
+Z =============================================================================
+Z =============================================================================
+C 1122
+K LANG
+T Tue Oct 22 12:11:13 PDT 1991
+U roger
+S modified cc.c to work with th CCPIPE option.
+D Changes done include:
+D 
+D 1) The debugging in the CCPIPE mode is done BEFORE kicking off
+D the pipeline; that way, the messages on the screen don't get
+D mixed.
+D 2) When -G (prototype only) is used, the pipeline finishes in
+D c0. That needed a way to tell c0 "use your stdin as the input
+D file, disregard your normal output and asm-macro files, and use
+D 'file'.p as output for the prototypes." That's why we pass to c0
+D the following arguments "+ + + file.p".
+D 3) When -S option is used the pipeline finishes in c1 or optim
+D (depending on the -O flag). So whe need to redirect the output
+D of these processes to the output file ('file'.s) rather than
+D send it to a pipe.
+D 
+D 
+D 
+R util/src/cmd/sgs/cmd/common/cc.c	 23.9
+B /bin/cc
+Z =============================================================================
+Z =============================================================================
+C 1175
+K LANG
+T Thu Nov  7 09:51:34 PST 1991
+U roger
+S included -f flag, to support the math emulated libraries.
+D For ansi and POSIX , the math part of the libraries is Part of
+D their definitions, so now we allways pass a "-lcm" (POSIX) and a
+D "-lcam" (ansi) to ld. Whit the -f flag turned on, these two
+D libraries become "-lcme" and "-lcame".
+D For SYSV, the user has to specifiy the -lm flag, but if he sets
+D the -f flag, the "-lm" will be automatically turned into a "-lme".
+N -f : causes the compiler to generate calls to emulation subroutines
+N      hinstead of direct floating point instructions. Also it
+N      instructs cc to use the emulated versions of the math libraries.
+N 
+R util/src/cmd/sgs/cmd/common/cc.c	 24.2
+B /bin/cc
+Z =============================================================================
+Z =============================================================================
+C 1221
+K LANG
+T Wed Nov 20 10:31:07 PST 1991
+U roger
+S changed the order in which the math libraries are supplied to "ld".
+S Now, first we pass libc, and then its corresponding math library.
+R util/src/cmd/sgs/cmd/common/cc.c	 24.3
+B /bin/cc
+Z =============================================================================

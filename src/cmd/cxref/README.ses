@@ -1,0 +1,62 @@
+#	START NEW ARIX SCCS HEADER
+#
+#	@(#) README.ses: version 25.1 created on 12/2/91 at 14:10:49
+#
+#	Copyright (c) 1990 by Arix Corporation
+#	All Rights Reserved
+#
+#	@(#)README.ses	25.1	12/2/91 Copyright (c) 1990 by Arix Corporation
+#
+#	END NEW ARIX SCCS HEADER
+#
+========================================================================
+Wed Oct  8 09:10:42 PDT 1986
+Chang
+									
+	DESCRIPTION: Original port of cxref routines.
+
+	FIX: 
+
+	FILES:
+========================================================================
+cxref								V.3.1 port
+Fri Sep 11 10:10:26 PDT 1987
+judy
+									
+	DESCRIPTION: New files from 5.3.1 release tape.
+
+	FIX: 
+
+	FILES:  /usr/src/cmd/cxref/other/cpp.c
+		/usr/src/cmd/cxref/other/yylex.c
+========================================================================
+unique id # n/a
+Mon Apr 18 15:11:00 PDT 1988
+hans 
+sw#hh1
+	DESCRIPTION: If cxref is given an illegal option, it says it will 
+	ignore it, then prints 
+	#1 "" 
+	and waits for input from the console.
+
+	FIX/DISCUSSION: cxref failed to continue (i.e. skip; to the end of 
+	the while{}do loop) after handling an illegal option, which caused it 
+	to exec xcpp with insufficient arguments.  xcpp then waited for 
+	arguments from stdin.  The fix consists of adding a continue statement 
+	to end of the default section of the option switch statement.
+
+	FILES:	/usr/src/cmd/cxref/cxr.c
+
+	RELEASE NOTE: (Document one or more of the following.)
+ENHANCEMENT:  
+PROBLEM_FIX:  
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+	Cxref no longer prints #1 "" and waits for input when given an
+	illegal option. Instead, it ignores it properly.
+===============================================================================

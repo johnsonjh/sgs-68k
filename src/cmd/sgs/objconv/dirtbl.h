@@ -1,0 +1,11 @@
+	#ident	"@(#)dirtbl.h	25.1	12/2/91 Copyright (c) 1991 by Arix Corp."
+	".file",
+	".text",
+	".data",
+	".bss",
+	".bb",
+	".eos",
+	".eb",
+	".bf",
+	".ef",
+	0,

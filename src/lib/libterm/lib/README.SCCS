@@ -1,0 +1,8 @@
+Z =============================================================================
+C 1238
+K LANG
+T Fri Nov 22 15:43:12 PST 1991
+U simon
+S Added ar to restore symbol table after any install nasties.
+R util/src/lib/libterm/lib/lib.mk	 24.2
+Z =============================================================================

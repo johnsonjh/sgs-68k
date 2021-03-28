@@ -1,0 +1,11 @@
+Z =============================================================================
+C 85
+K UTIL
+T Wed Feb 27 09:19:24 PST 1991
+U simon
+S Changed M68020 ifdef to m68k family ifdef.  Alignment for all 68k processors
+S 
+D Changed M68020 ifdef to m68k family ifdef.  Alignment for all 68k processors
+R util/src/lib/libns/canon.c	 23.2
+B /lib/libns.a
+Z =============================================================================

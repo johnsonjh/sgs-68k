@@ -1,0 +1,61 @@
+Z =============================================================================
+X 175
+X Mon Mar 11 18:04:08 PST 1991
+X gjw
+X Changes made for dynamically allocated stdio. See DESRIPTION.
+X util/src/lib
+Z =============================================================================
+Z =============================================================================
+C 182
+K LANG
+T Tue Mar 12 09:49:41 PST 1991
+U gjw
+S Added -DDYNAMIC to DEFLIST variable to compile dynamic stdio.
+R util/src/lib/libposansi/port/stdio/stdio.mk	 23.3
+Z =============================================================================
+Z =============================================================================
+C 183
+K LANG
+T Tue Mar 12 09:53:57 PST 1991
+U gjw
+S Added code to allow for dynamic allocation of file structures when opening a\
+S new pipe.
+D When a pipe is opened a file structure is grabbed. In the popen code an array
+D representing the _iob array of file structures stores the process id of the
+D pipe. This is no longer possible to have this array since we can now dynamically
+D allocate file structures. Therefore we now just maintain a doubly linked list
+D of structures containing the file descriptor of the pipe and the process id of
+D the pipe.
+R util/src/lib/libposansi/port/stdio/popen.c	 23.4
+B popen
+Z =============================================================================
+Z =============================================================================
+C 202
+K LANG
+T Wed Mar 13 09:54:47 PST 1991
+U gjw
+S Added NULL argument to _findiop call.
+R util/src/lib/libposansi/port/stdio/fdopen.c	 23.4
+Z =============================================================================
+Z =============================================================================
+C 311
+K LANG
+T Wed Mar 27 18:17:56 PST 1991
+U gjw
+S Corrected use of poptr structure. I.e. we assign it to something before using \
+S it.
+D We have to malloc a structure for poptr so that it will be around for
+D first_pipe to point to it when popen exits. We free this structure when we
+D do a pclose.
+R util/src/lib/libposansi/port/stdio/popen.c	 23.5
+B popen
+B pclose
+Z =============================================================================
+Z =============================================================================
+C 490
+K LANG
+T Thu May 16 09:21:11 PDT 1991
+U gjw
+S Missed out an #ifdef DYNAMIC around the declaration of poptr in pclose.
+R util/src/lib/libpansi/port/stdio/popen.c	 23.6
+Z =============================================================================

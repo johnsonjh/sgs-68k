@@ -1,0 +1,57 @@
+Z =============================================================================
+X 89
+X Wed Feb 27 15:32:36 PST 1991
+X simon
+X Changed defines to include 68040 processor.  Removed hard coded 020.
+X util/src/cmd/sgs/dis/mach/m68k
+Z =============================================================================
+Z =============================================================================
+C 149
+K LANG
+T Thu Mar  7 15:39:53 PST 1991
+U gjw
+S Forced as to be compiled as a POSIX binary
+R util/src/cmd/sgs/dis/mach/mach.mk	 23.4
+Z =============================================================================
+Z =============================================================================
+C 553
+K UTIL
+T Mon Jun  3 14:51:02 PDT 1991
+U gjw
+S Needed to get the right filehdr.h from sgs/inc/common.
+D filehdr.h exists in two places, as a local sgs header file and in the
+D usr include directory. We need to use the local sgs copy.
+R util/src/cmd/sgs/dis/mach/mach.mk	 23.5
+Z =============================================================================
+Z =============================================================================
+C 662
+K LANG
+T Tue Jun 25 11:15:09 PDT 1991
+U gjw
+S Make now creates two versions of dis, dis2 and dis4, to disassemble 020 and
+S 040 code respectively.
+D Two versions of dis are required to disassemble 020 and 040 code. Here we
+D create dis2 and dis4 to do this. One of these two is linked to dis depending
+D on the value of $(MACH).
+R util/src/cmd/sgs/dis/mach/mach.mk	 23.6
+Z =============================================================================
+Z =============================================================================
+C 710
+K LANG
+T Wed Jul 10 15:00:35 PDT 1991
+U simon
+S The 020 dissambler was being made for the 040.  OOPS!!  Typo in the make file
+R util/src/cmd/sgs/dis/mach/mach.mk	 23.7
+Z =============================================================================
+Z =============================================================================
+C 1188
+K UTIL
+T Mon Nov 11 10:00:56 PST 1991
+U roger
+S changed the "all" rule: It only produced the disassembler for the 020!.
+D Between the 020 and 040 dependencies, you have to clean all the
+D object files, to make sure the 040 disassembler will be rebuilt
+D again from scratch ( and not using the 020 objects! as it was
+D doing right now ) .
+R util/src/cmd/sgs/dis/mach/mach.mk	 24.2
+Z =============================================================================

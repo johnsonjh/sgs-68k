@@ -1,0 +1,26 @@
+Z =============================================================================
+C 542
+K LANG
+T Fri May 31 09:07:13 PDT 1991
+U simon
+P 5160
+S Reinvented the use of the -z flag ( now the default ) and added -0.
+D The use of the -z flags ( documented ) was no longer there.  Added the effect
+D (The default).  Also added a new flag, -0, which turns off the -z affect.
+D The default is to now dump core on deref of 0 ( or anywhere in the first 4K ).
+N The documented -z flag to the linker, ld(1), was not available.  It is now the
+N default.  The effect is that a reference to a null pointer will now cause a
+N segmentation violation.  To disable this flag use the new option, -0.
+R util/src/cmd/sgs/ld/common/globs.c	 23.3
+R util/src/cmd/sgs/ld/common/ld00.c	 23.3
+R util/src/cmd/sgs/ld/mach/params.h	 23.3
+B /bin/ld
+Z =============================================================================
+Z =============================================================================
+C 701
+K LANG
+T Tue Jul  9 07:41:55 PDT 1991
+U simon
+S lex needs to be a variable so it may be defined in macdefs/sgsdefs.
+R util/src/cmd/sgs/ld/mach/mach.mk	 23.3
+Z =============================================================================

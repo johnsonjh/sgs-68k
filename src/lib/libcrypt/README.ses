@@ -1,0 +1,73 @@
+#	START NEW ARIX SCCS HEADER
+#
+#	@(#) README.ses: version 25.1 created on 12/2/91 at 19:07:29
+#
+#	Copyright (c) 1990 by Arix Corporation
+#	All Rights Reserved
+#
+#	@(#)README.ses	25.1	12/2/91 Copyright (c) 1990 by Arix Corporation
+#
+#	END NEW ARIX SCCS HEADER
+#
+========================================================================
+Mon Aug 25 14:25:28 PDT 1986			
+Chang
+	DESCRIPTION: Original port of libscrypt routines.
+	In comparison with V.2, there are a lots of differences in the
+	crypt.c. The files cryptio.c, des_crypt.c, des_decrypt.c,
+	des_encrypt.c and p2open.c are new.
+	FIX: libscrypt.a generated. Not able to test.
+	FILES:
+========================================================================
+Tue Sep  9 09:46:36 PDT 1986					
+kelly
+	DESCRIPTION: If des_decrypt.c is present in the directory, then the
+	libcrypt.a is made for Domestic. If not then INTERNATIONAL is set
+	by libcrypt.mk.
+===============================================================================
+Mon Sep 29 08:34:49 PDT 1986
+hanna
+
+	DESCRIPTION:
+		the makefile makes reference to libcrypt_x.a. 
+		TO ATT: what is libcrypt_x.a -- should we have this?
+	FIX:
+	TECHNOTE:
+	FILES:
+===============================================================================
+Mon Sep 29 08:51:53 PDT 1986
+hanna
+
+	DESCRIPTION:
+		. I separated the makefiles as we did the 5.2.  
+		  The libcrypt.mk makes the international crypt.
+		  The dlibcrypt.mk makes the domestic crypt.
+		. The des_(en)/(de)crypt.c files were too long for sccs, so i
+		  shortened them (des is now d).
+		. The des_decrypt.c file is actually a null file for the
+		  international case.
+	FIX:
+	TECHNOTE:
+	FILES:
+===============================================================================
+Mon Jun  8 16:18:28 PDT 1987
+chang
+sw0
+	DESCRIPTION:
+		In popen.c the array popen_pid is hardcoded 20 so that
+		it can open at most 20 pipes.  But we want to support 64
+		open files.
+	FIX:
+		Change the the number 20 in popen.c to be _NFILE.
+	TECHNOTE:
+		none
+	FILES:
+                usr/src/lib/libcrypt/p2open.c
+===============================================================================
+Fri Aug 21 11:13:21 PDT 1987
+kelly
+	DESCRIPTION: ported 5.3.1 changes. No significant changes.
+	FILES:
+	usr/src/lib/libcrypt/cryptio.c
+	usr/src/lib/libcrypt/p2open.c
+===============================================================================

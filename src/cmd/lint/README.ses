@@ -1,0 +1,148 @@
+#	START NEW ARIX SCCS HEADER
+#
+#	@(#) README.ses: version 25.1 created on 12/2/91 at 16:01:22
+#
+#	Copyright (c) 1990 by Arix Corporation
+#	All Rights Reserved
+#
+#	@(#)README.ses	25.1	12/2/91 Copyright (c) 1990 by Arix Corporation
+#
+#	END NEW ARIX SCCS HEADER
+#
+========================================================================
+Wed Oct  8 09:04:47 PDT 1986
+chang
+									
+	DESCRIPTION: Original port of lint routines.
+
+	FIX: 
+
+	FILES:
+========================================================================
+lpass2.c
+
+Wed Oct  8 09:08:08 PDT 1986
+chang
+sw0
+	DESCRIPTION: The size of NSZ TYSZ and FSZ are multiplied by 3,
+		     this will make it more flexible (applied from V.2).
+
+	FIX:
+
+	FILES:
+		/usr/src/sgs/cmd/lint.c
+=======================================================================
+lpass2.c                                          
+
+Thu Oct  9 13:24:42 PDT 1986
+Chang
+sw0
+	DESCRIPTION: (4-0552)
+            bug fixed. give argument warning when function call has an
+            int constant where a double should be.
+
+	FIX:
+
+	FILES:
+		/usr/src/sgs/cmd/lint/lpass2.c
+========================================================================
+unique id #300
+Mon May 11 14:53:23 PDT 1987
+chang
+sw1
+att call # 229683
+
+	DESCRIPTION:
+	The program with a line that starts with a "#line" and
+	containing a quoted string will not work correctly.
+	The following program will illustrate the program.
+
+	#line 23 "xyxxy"
+	main()
+	{
+	}
+
+	FIX/DISCUSSION:
+	The problem is due to the function werror() is called in
+	"lint.c" with less arguments than it has. 
+	Now the line "WERROR(WARNING(127));" in lint.c is changed to 
+	"WERROR(WARNING(127), "", "");".
+
+        
+
+	FILES:
+	usr/src/cmd/lint/lint.c
+
+	RELEASE NOTE: (Document one or more of the following.)
+ENHANCEMENT:  
+PROBLEM_FIX:  
+	Now the line "WERROR(WARNING(127));" in lint.c is changed to 
+	"WERROR(WARNING(127), "", "");".
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+========================================================================
+lint							
+Mon Sep  14 09:04:47 PDT 1987
+judy
+									
+	DESCRIPTION: Syntax error from <sys/shm.h> during the 
+			compiler time.
+
+	FIX: Add <sys/immu.h> at llib-lc.
+
+	FILES: /usr/src/cmd/lint/llib-lc
+===============================================================================
+unique id # n/a
+Thu Nov 19 08:53:03 PST 1987
+kelly
+	DESCRIPTION: Ported 5.3.1 changes. Nothing very exciting.
+
+	FILES:
+	usr/src/cmd/lint/lint.c
+	usr/src/cmd/lint/lint.sh
+	usr/src/cmd/lint/llib-lc
+	usr/src/cmd/lint/llib-port
+
+	RELEASE NOTE: (Document one or more of the following.)
+No technote necessary
+===============================================================================
+SPR# 1795
+Thu Mar 30 10:45:14 PST 1989
+hossein
+	DESCRIPTION: lint flags as erroneous file names containing
+			non-ascii characters (i.e. characters with
+			the eight-bit set).
+
+	FIX: remove isacii portion from scanning
+		file names.
+		
+			
+	FILES:
+		prog/lint/lpass2.c
+		prog/lint/README.ses
+
+	RELEASE NOTE: (Document one or more of the following.)
+No technote necessary
+===============================================================================
+SPR #  n/a
+Tue May  9 14:01:53 PDT 1989
+J. Curtis
+sw# n/a
+	DESCRIPTION: make lint use "/bin/cc" instead of "cc" for compile to
+		run on host
+		also, make sure it uses /usr/include for that job
+
+	FIX/DISCUSSION: n/a
+
+	FILES: usr/src/cmd/lint/lint.mk
+
+	RELEASE NOTE: (Document one or more of the following.)
+
+No release note is needed because: the customer will never know
+
+===============================================================================

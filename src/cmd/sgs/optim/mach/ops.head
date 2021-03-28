@@ -1,0 +1,83 @@
+#ident	"@(#)ops.head	25.1	12/2/91 Copyright (c) 1991 by Arix Corp."
+/*			*/
+/*	@(#)ops.head	7.1		*/
+/*			*/
+/*	@(#) ops.head:	4.1 84/06/27	*/
+
+/* MC68000 Optimizer */
+
+/* Definitions of opcode related things. */
+
+
+#define	MAXOPS	2		/* Two operands per instruction, max. */
+typedef	unsigned short OPCODE;	/* Object holding opcode number */
+
+typedef unsigned short FLAGS;	/* holds operation flag bits */
+
+/* This structure contains the invariant information for each instruction.
+** For transfers of control (jumps, branches, subroutine calls, etc.), the
+** highest numbered operand is assumed to contain the control target.
+*/
+
+typedef struct op
+{
+    char * op_name;		/* pointer to instruction print-name */
+    OPCODE op_code;		/* operation code number for instruction */
+    unsigned char op_nsrc;	/* number of source operands.  Source operands
+				** are those for which the processor does a
+				** read cycle.  For example, add.w has two
+				** source operands, while mov.w has just one.
+				** Source operands are assumed to be consec-
+				** utive, starting with the first operand.
+				*/
+    unsigned char op_dnum;	/* Destination operand number.  If the op has
+				** no destination, value is NODEST.  A desti-
+				** nation operand is one whose value is changed.
+				** In add.l, the second operand is both a source
+				** AND a destination operand, whereas the
+				** second operand of mov.l is just a dest.
+				*/
+    unsigned char op_ssize[MAXOPS];
+				/* size of each source operand, addressed as
+				** 0 - MAXOPS-1, in bytes.
+				*/
+    unsigned char op_dsize;	/* size of destination operand, in bytes */
+    OPCODE op_opposite;		/* op code of "opposite" instruction, in
+				** some sense.  For example, for conditional
+				** jumps, this is the "reversed" branch.
+				*/
+    FLAGS op_flags;		/* various flag bits for inst. -- see below */
+} OP;
+
+
+#define	NODEST	0xFF		/* value meaning no destination */
+#define	NOOPP	'\0'		/* value meaning no opposite instruction */
+
+/* Define flags for op_flags field.  These are bit flags. */
+
+#define	OF_LAB		0x001	/* op is normal label */
+#define	OF_UBRA		0x002	/* op is unconditional branch */
+#define	OF_HLAB		0x004	/* op is hard label */
+#define	OF_HBRA		0x008	/* op is hard branch */
+#define	OF_CBRA		0x010	/* op is conditional branch */
+#define	OF_NCBRA	0x020	/* op is conditional branch with null
+				** destination (e.g., trapv)
+				*/
+#define	OF_RCBRA	0x040	/* op is reversible conditional branch */
+#define	OF_CC		0x080	/* op affects condition codes */
+#define	OF_CCA		0x100	/* op affects condition codes, except if
+				** destination is address register
+				*/
+#define	OF_COMUOP	0x200	/* op is a communative operator */
+#define	OF_LD		0x400	/* op has funny live/dead characteristics */
+#define	OF_VTRACE	0x800	/* op has funny value trace behavior */
+#define	OF_FLOAT	0x1000	/* op supports floating-point registers */
+#define	OF_PSEUDO	0x2000	/* op is a pseudo-op */
+#define OF_RT4		0x4000	/* op has a base size of 4 bytes */
+#define OF_NOLEAF	0x8000	/* op calls another procedure */
+/* Define op code numbers.  These numbers form a 1 to 1
+** correspondence with the op code names in optab.c .  The order must
+** be identical: the ASCII collating sequence for the op names.  The
+** numbers must be sequential.
+*/
+

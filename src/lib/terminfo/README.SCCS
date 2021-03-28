@@ -1,0 +1,26 @@
+Z =============================================================================
+C 1107
+K UTIL
+T Tue Oct 15 10:21:18 PDT 1991
+U simon
+S Changed cursor sequences into what our X terminal generate.
+R util/src/lib/terminfo/xterm.ti	 23.2
+B /usr/lib/terminfo/x/xterm
+Z =============================================================================
+Z =============================================================================
+C 1108
+K UTIL
+T Tue Oct 15 10:22:43 PDT 1991
+U simon
+N The recognized cursor sequence for the xterm terminfo entry has been changed.
+N The original recognized were:
+N 	UP:	OA
+N 	DOWN:	OB
+N 	LEFT:	OC
+N 	RIGHT:	OD
+N The new sequences are:
+N 	UP:	ESC [ A
+N 	DOWN:	ESC [ B
+N 	LEFT:	ESC [ C
+N 	RIGHT:	ESC [ D
+Z =============================================================================

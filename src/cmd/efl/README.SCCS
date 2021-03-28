@@ -1,0 +1,8 @@
+Z =============================================================================
+C 703
+K LANG
+T Tue Jul  9 07:44:53 PDT 1991
+U simon
+S lex needs to be a variable so it may be defined in macdefs/sgsdefs.
+R util/src/cmd/efl/efl.mk	 23.2
+Z =============================================================================

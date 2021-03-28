@@ -1,0 +1,225 @@
+Z =============================================================================
+C 790
+K LANG
+T Wed Aug 21 11:16:42 PDT 1991
+U simon
+P 5344
+S Added -M2 to cause the compiler to generate _mcount% for profiled .c .
+R util/src/lib/libpansi/ansi/math/math.mk	 23.3
+B /lib/libp/libca.a
+Z =============================================================================
+Z =============================================================================
+C 797
+K LANG
+T Thu Aug 22 09:54:10 PDT 1991
+U salete
+S replaced 'XX' with '_POSIX_SOURCE' 
+R util/src/lib/libpansi/ansi/math/_asin881.s	 23.3
+Z =============================================================================
+Z =============================================================================
+C 798
+K LANG
+T Thu Aug 22 10:00:40 PDT 1991
+U salete
+S replaced 'XX' with _POSIX_SOURCE in _m4_idef_('...
+R util/src/lib/libpansi/ansi/math/_atan881.s	 23.3
+Z =============================================================================
+Z =============================================================================
+C 799
+K LANG
+T Thu Aug 22 10:08:58 PDT 1991
+U salete
+S replaced 'XX' with _POSIX_SOURCE (in _m4_idef)
+R util/src/lib/libpansi/ansi/math/_etox881.s	 23.3
+Z =============================================================================
+Z =============================================================================
+C 800
+K LANG
+T Thu Aug 22 10:27:10 PDT 1991
+U salete
+S replaced 'XX' with '_POSIX_SOURCE' in _m4_idef 
+R util/src/lib/libpansi/ansi/math/_log881.s	 23.3
+Z =============================================================================
+Z =============================================================================
+C 801
+K LANG
+T Thu Aug 22 10:34:46 PDT 1991
+U salete
+S replaced 'XX' with '_POSIX_SOURCE' in _m4_idef_
+R util/src/lib/libpansi/ansi/math/_sin881.s	 23.3
+Z =============================================================================
+Z =============================================================================
+C 802
+K LANG
+T Thu Aug 22 10:42:52 PDT 1991
+U salete
+S replaced 'XX' with '_POSIX_SOURCE' IN _m4_idef_
+R util/src/lib/libpansi/ansi/math/_sinh881.s	 23.3
+Z =============================================================================
+Z =============================================================================
+C 803
+K LANG
+T Thu Aug 22 10:47:42 PDT 1991
+U salete
+S replaced 'XX' with '_POSIX_SOURCE' in _m4_idef_
+R util/src/lib/libpansi/ansi/math/_sqrt881.s	 23.3
+Z =============================================================================
+Z =============================================================================
+C 804
+K LANG
+T Thu Aug 22 10:51:48 PDT 1991
+U salete
+S replaced 'XX' with '_POSIX_SOURCE' in _m4_idef_
+R util/src/lib/libpansi/ansi/math/_tan881.s	 23.3
+Z =============================================================================
+Z =============================================================================
+C 805
+K LANG
+T Thu Aug 22 10:55:36 PDT 1991
+U salete
+S replaced 'XX' with '_POSIX_SOURCE' in _m4_idef_
+R util/src/lib/libpansi/ansi/math/_tanh881.s	 23.3
+Z =============================================================================
+Z =============================================================================
+C 806
+K LANG
+T Thu Aug 22 11:00:43 PDT 1991
+U salete
+S replaced idef XX with idef _POSIX_SOURCE
+R util/src/lib/libpansi/ansi/math/asin.c	 23.3
+Z =============================================================================
+Z =============================================================================
+C 807
+K LANG
+T Thu Aug 22 11:18:35 PDT 1991
+U salete
+S replaced idef XX with idef _POSIX_SOURCE 
+R util/src/lib/libpansi/ansi/math/log.c	 23.3
+Z =============================================================================
+Z =============================================================================
+C 808
+K LANG
+T Thu Aug 22 11:34:20 PDT 1991
+U salete
+S replaced idef XX with idef _POSIX_SOURCE
+R util/src/lib/libpansi/ansi/math/sinh.c	 23.3
+Z =============================================================================
+Z =============================================================================
+C 809
+K LANG
+T Thu Aug 22 12:39:14 PDT 1991
+U salete
+S replaced XX with _POSIX_SOURCE
+R util/src/lib/libpansi/ansi/math/sqrt.c	 23.3
+Z =============================================================================
+Z =============================================================================
+C 810
+K LANG
+T Thu Aug 22 13:21:35 PDT 1991
+U salete
+S replaced XX with _POSIX_SOURCE
+R util/src/lib/libpansi/ansi/math/tan.c	 23.3
+R util/src/lib/libpansi/ansi/math/tanh.c	 23.3
+Z =============================================================================
+Z =============================================================================
+C 854
+K LANG
+T Tue Aug 27 10:17:04 PDT 1991
+U salete
+P SPR number 5344
+S add M2 when ansi, delete -DXX when posix, add M2 and __STRICT_STDC__ when M4&ansi
+R util/src/lib/libpansi/ansi/math/math.mk	 23.3
+Z =============================================================================
+Z =============================================================================
+C 862
+K LANG
+T Tue Aug 27 11:21:09 PDT 1991
+U salete
+S changed _POSIX_SOURCE with __STRICT_STDC__ and the position in ifdef of the un
+S derscore variable with no underscore variable
+R util/src/lib/libpansi/ansi/math/_asin881.s	 23.3
+R util/src/lib/libpansi/ansi/math/_atan881.s	 23.4
+R util/src/lib/libpansi/ansi/math/_etox881.s	 23.4
+R util/src/lib/libpansi/ansi/math/_log881.s	 23.4
+R util/src/lib/libpansi/ansi/math/_sin881.s	 23.4
+R util/src/lib/libpansi/ansi/math/_sinh881.s	 23.4
+R util/src/lib/libpansi/ansi/math/_sqrt881.s	 23.4
+R util/src/lib/libpansi/ansi/math/_tan881.s	 23.4
+R util/src/lib/libpansi/ansi/math/_tanh881.s	 23.4
+R util/src/lib/libpansi/ansi/math/asin.c	 23.4
+R util/src/lib/libpansi/ansi/math/log.c	 23.4
+R util/src/lib/libpansi/ansi/math/sinh.c	 23.4
+R util/src/lib/libpansi/ansi/math/sqrt.c	 23.4
+R util/src/lib/libpansi/ansi/math/tan.c	 23.4
+R util/src/lib/libpansi/ansi/math/tanh.c	 23.4
+Z =============================================================================
+Z =============================================================================
+C 866
+K LANG
+T Tue Aug 27 14:12:34 PDT 1991
+U salete
+P SPR 5344
+S deleted one DXX that was forgotten in the file
+R util/src/lib/libpansi/ansi/math/math.mk	 23.4
+Z =============================================================================
+Z =============================================================================
+C 909
+K LANG
+T Tue Sep  3 15:20:18 PDT 1991
+U salete
+S deleted the flag __STRICT_STDC_ from the line that compile posix.
+R util/src/lib/libpansi/ansi/math/math.mk	 23.5
+Z =============================================================================
+Z =============================================================================
+C 1172
+K LANG
+T Thu Nov  7 09:22:39 PST 1991
+U roger
+S included "ifdef's" to produce emulated code ( calling subroutines in libFPSP.a ) and the usual non-emulated code.
+R util/src/lib/libpansi/ansi/math/_asin881.s	 24.2
+R util/src/lib/libpansi/ansi/math/_atan881.s	 24.2
+R util/src/lib/libpansi/ansi/math/_etox881.s	 24.2
+R util/src/lib/libpansi/ansi/math/_log881.s	 24.2
+R util/src/lib/libpansi/ansi/math/_sin881.s	 24.2
+R util/src/lib/libpansi/ansi/math/_sinh881.s	 24.2
+R util/src/lib/libpansi/ansi/math/_sqrt881.s	 24.2
+R util/src/lib/libpansi/ansi/math/_tan881.s	 24.2
+R util/src/lib/libpansi/ansi/math/_tanh881.s	 24.2
+B /lib/libcme
+B /lib/libcame
+B /libp/libcme
+B /libp/libcame
+Z =============================================================================
+Z =============================================================================
+C 1176
+K LANG
+T Thu Nov  7 10:00:03 PST 1991
+U roger
+S changed to produce the new emulated math libraries ( both for
+S POSIX and ANSI) (profiled and non-profiled)
+D Note that all the math libraries are produced by this makefile,
+D and nor libpansi.mk nor ansi.mk deal anymore with the math part of the
+D libraries.
+D 
+D We have 8 libraries in total (4 profiled and 4 non-profiled )
+D 
+D Library			Suffix for object files
+D -------			-----------------------
+D libcm			.O		Posix non emulated
+D libcme			.E		Posix emulated
+D libcam			.o		Ansi non-emulated
+D libcame			.e		Ansi emulated
+D libp.libcm		.P		Profiled Posix non emulated
+D libp.libcme		.F		Profiled Posix emulated
+D libp.libcam		.p		Profiled Ansi non emulated
+D libp.libcame		.f		Profiled Ansi emulated
+R util/src/lib/libpansi/ansi/math/math.mk	 24.2
+B /lib/libcm.a
+B /lib/libcme.a
+B /lib/libcam.a
+B /lib/libcame.a
+B /lib/libp/libcm.a
+B /lib/libp/libcme.a
+B /lib/libp/libcam.a
+B /lib/libp/libcame.a
+Z =============================================================================

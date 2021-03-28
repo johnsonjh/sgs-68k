@@ -1,0 +1,20 @@
+Z =============================================================================
+C 32
+K LANG
+T Thu Feb 14 14:14:51 PST 1991
+U simon
+S -b use with fcmp to ftest conversion failed
+D When using the -b option to cc the optimizer converts fcmp.d REG,&0x0000
+D instruction to ftest.x REG.  Before this fix the &0x0000 was not stripped and
+D thus caused a syntax error during assembly.  FIXED!!??!!@@##
+R util/src/cmd/sgs/optim/mach/motopt2.c	 23.3
+B /lib/optim
+Z =============================================================================
+Z =============================================================================
+C 168
+K LANG
+T Thu Mar  7 16:14:54 PST 1991
+U gjw
+S Forced as to be compiled as a POSIX binary
+R util/src/cmd/sgs/optim/optim.mk	 23.3
+Z =============================================================================

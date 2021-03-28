@@ -1,0 +1,9 @@
+Z =============================================================================
+C 97
+K LANG
+T Thu Feb 28 16:12:22 PST 1991
+U simon
+S added m68k ifdefs in place of 020
+R util/src/cmd/sgs/f77/pcc2/mach/mach.mk	 23.3
+R util/src/cmd/sgs/f77/pcc2/mach/m68k/local2.c	 23.2
+Z =============================================================================

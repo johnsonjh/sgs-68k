@@ -1,0 +1,20 @@
+#ATT:	ident	"curses:demo/.menu.data	1.2"
+#ident	"@(#)libcurses/demo:menu.data	25.1"
+vmd	vi .menu.data
+d	date
+c	ls -asl
+w	who
+q	EXIT
+x	EXIT
+END
+				Sample Menu
+				-----------
+
+
+	vmd	vi .menu.data			d	date and time
+
+	c	ls -asl				w	who 
+
+		q/x	to terminate the menu processor
+
+

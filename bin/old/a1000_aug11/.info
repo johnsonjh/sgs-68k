@@ -1,0 +1,46 @@
+8/28/1989	Languages Group
+-------------------------------
+
+This is the .info file for the V3_3.0 (a1000_aug11) SGS set.
+This SGS contains one native (5on5) compiler and two cross-compilers (5on4
+and 5on90).
+
+Include files:		V.3 rel 3.0 for arix a1000 BRU tape
+			tape 1 of 3 date may 31, 1989.
+			Eng. Rel. #228; Pre-Rel #1 
+			(</dev/rmt1; </dev/rmt0; </dev/rmt0;
+			 cpio -idBmuva "include/*" )
+
+Libraries:		V.3 rel 3.0 for arix a1000 BRU tape
+			tape 1 of 3 date may 31, 1989.
+			Eng. Rel. #228; Pre-Rel #1 
+			for /lib --->> (</dev/rmt1; </dev/rmt0;
+			 cpio -idBmuva "./lib/*" )
+			for usr/lib --->> (</dev/rmt1; </dev/rmt0; </dev/rmt0;
+			 cpio -idBmuva "lib/*" )
+
+Source:			castra:/utilities_sccs/cmd/sgs (as of 8/14/89)
+			Refer to logs in castra:/mnt/barryk/sgs/aug11/sccslog
+
+Build directory:	castra:/mnt/barryk/sgs/aug11/a1000
+
+Tools used in building the sgs
+------------------------------
+
+Built with above library, include, and source files and 
+using the following SGSs:
+
+	castra:/sgs/4.24   	SGS  for the cross  5on4  binaries  
+	castra:/sgs/V3_2.1+   	SGS  for the native 5on5  binaries  
+	castra:/sgs/s90p8a   	SGS  for the cross  5on90 binaries  
+
+The other tools used were:
+	ar, make, yacc, lex: V.3 release 2.0		(castra:/bin)
+
+Build directory was castra:/mnt/barryk/sgs/aug11/a1000
+
+Overlays:
+	Recompiled "ld"; it was setting file header flag to F_POSIX.
+	Recompiled "cc"; 1) conflict between -YS and -p flags
+			 2) silently turned off coptim if file not found
+

@@ -1,0 +1,70 @@
+#	START NEW ARIX SCCS HEADER
+#
+#	@(#) README.ses: version 25.1 created on 12/2/91 at 19:41:30
+#
+#	Copyright (c) 1990 by Arix Corporation
+#	All Rights Reserved
+#
+#	@(#)README.ses	25.1	12/2/91 Copyright (c) 1990 by Arix Corporation
+#
+#	END NEW ARIX SCCS HEADER
+#
+
+#ident	"@(#)libns:README.ses	25.1"
+
+========================================================================
+Wed Aug 27 17:24:48 PDT 1986
+Chang
+									
+	DESCRIPTION: Original port of libns routines.
+	FIX: libns.a generated. Not able to test.
+	     No this directory in V.2.
+	FILES:
+===============================================================================
+Wed Oct  1 07:45:18 PDT 1986
+hanna
+
+	DESCRIPTION:
+		Some Notes:
+		. Define the ?ALIGN macros in canon.c to default
+		. This could use a nice bcopy in place of memcpy.
+		. References to RIGHT_TO_LEFT in rtoken.c refers to the syntax
+		  of the domain??? what is this, and are we left-to-right?
+		. looks like some places in .h files are configurable...???
+	FIX:
+	TECHNOTE:
+	FILES:
+===============================================================================
+Wed Oct  1 07:56:31 PDT 1986
+hanna
+
+	DESCRIPTION:
+	 Install this library in $SROOT/usr/src for access by the other 
+	 utility makes.
+	 Rel.mk must remember to remove it.
+	 The note up in libns.mk says it is not to be installed for general use.
+	 I take this to mean -- no installation in $(ROOT) and no distribution
+	 to customers
+	FIX:
+	TECHNOTE:
+	FILES:
+===============================================================================
+Mon Aug 24 11:24:12 PDT 1987
+kelly
+	DESCRIPTION: port of 5.3.1 stuff; only a few changes.
+===============================================================================
+SPR #  n/a
+Mon May  8 17:35:29 PDT 1989
+J. Curtis
+sw# n/a
+	DESCRIPTION:  libns.a was installed in $SROOT/usr/src.  Removed
+		the usr/src part.
+
+	FIX/DISCUSSION: n/a
+
+	FILES: libns.mk
+
+	RELEASE NOTE: (Document one or more of the following.)
+
+No release note is needed because: customer will never know
+===============================================================================

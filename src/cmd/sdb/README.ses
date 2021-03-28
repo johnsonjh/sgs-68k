@@ -1,0 +1,326 @@
+#	START NEW ARIX SCCS HEADER
+#
+#	@(#) README.ses: version 25.1 created on 12/2/91 at 17:13:09
+#
+#	Copyright (c) 1990 by Arix Corporation
+#	All Rights Reserved
+#
+#	@(#)README.ses	25.1	12/2/91 Copyright (c) 1990 by Arix Corporation
+#
+#	END NEW ARIX SCCS HEADER
+#
+#ident	"@(#)sdb:README.ses	25.1"
+
+===============================================================================
+Fri Feb 28 11:30:27 PST 1986
+hanna
+	Update makefile to use 68020 disassembler files.
+	M68881 not yet supported.
+===============================================================================
+Mon Nov  3 09:39:28 PST 1986
+hanna
+
+	DESCRIPTION:
+		Use our old sdb.
+		Glancing at the differences, I could not find anything of
+		great importance.
+	*	The 5.3 makefile refers to three files:
+		/usr/bin/sdb: a shell file to call the proper executable sdb[ps]
+		/usr/lib/sdbp: sdb compiled for paging systems
+		/usr/lib/sdbs: sdb compiled for swapping systems
+	*	The paging kind is made by default. The swapping kind is made
+		by defining SWAPPING. Defining SWAPPING computes the datbas
+		and maps differently (com/setup.c) according to magic number,
+		and includes pcb.h (com/machdefs.h).
+		setup.c makes references to the pcb structure.
+		There is a special copy of user.h in directory swinc.
+	*	For now we will have a single sdb, but the above will need to
+		be considered for release.
+	*	Our sdb currently has two flaws (at the very least):
+		1. We cannot yet read/modify... floating point registers
+		2. We cannot trace args/local vars well on a 68000 stack (that
+		   looks different than 68020 stack).
+	FIX:
+	TECHNOTE:
+	FILES:
+===============================================================================
+Mon Nov  3 10:49:51 PST 1986
+hanna
+
+	DESCRIPTION:
+		Can't completely put together until "dis" is ported.
+	FIX:
+	TECHNOTE:
+	FILES:
+===============================================================================
+========================================================================
+unique id # 578
+Mon Apr 11 13:43:13 PDT 1988
+ken
+kh#1 (SUR: 50302199)
+	DESCRIPTION:
+		register values get messed up after a core dump when
+		running a program in sdb
+	FIX/DISCUSSION:
+		every time we read registers ("readregs()"), we call ptrace to
+		get the address of register 0.  Previously, we only got ar0
+		in "setup()"
+		This is because the stack frame size changes with different
+		errors. (see M68020 book, page 6-21)  This changes the address
+		of register 0.
+	FILES:
+		com/runpcs.c
+
+	RELEASE NOTE: (Document one or more of the following.)
+ENHANCEMENT:  
+PROBLEM_FIX:  
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+	register values are no longer trashed by a core dump when
+	running a program in sdb
+===============================================================================
+unique id # n/a
+Thu May  5 15:52:14 PDT 1988
+hans 
+sw#hh1
+	DESCRIPTION: sdb is like, totally hosed with core files. It knows
+	the PC, so it will tell you the procedure the program died in, but
+	it can't do a trace successfully, nor tell you the values of variables.
+
+	FIX/DISCUSSION: The problem rested almost entirely in the core file map.
+	For different reasons, the data map and the stack map were nonsense.
+	Data map problem :
+		setup was getting the internal address of the data segment
+		from the text section header.
+	Stack map problems :
+		1. USERSTACK (origin address of user stack) was determined
+		   incorrectly. Getustk() was looking at the value of userstack
+		   in /syst, but this does not work because userstack is set
+		   at run-time. Getustack() now determines the proper value
+		   for USERSTACK by looking at the address of a variable on
+		   the stack (automatic) and deciding whether the origin is
+		   0x1000000, 0x4000000, or 0x10000000. If there are more
+		   possible values in the future, getustk() will have to be
+		   modified.
+		2. The value of the low end of the stack map (datmap.b2) into 
+	  	   the core was being calculated incorrectly.  Apparently, the 
+		   vax uarea variable u_stksiz includes the size of the uarea, 
+		   and setup was only checking for 3b2 or not. Now, if m68k or 
+		   68020 is def'd, datmap.b2 is set to USERSTACK - u_ssize (from
+		   the uarea).
+	Non-Map Problems :
+		1. After these issues were resolved, everything seemed bitchin'
+		   except that stack tracebacks failed to stop at main.  The
+		   reason for this turns out to be that the kernel does not
+		   clear the frame pointer on exec (as sdb expects). This should
+		   be cleared up in the kernel soon, but to make things a little
+		   smoother, when getting a frame in a trace, the value is 
+		   checked for reasonableness (i.e. between the previous frame
+		   pointer (or current stack pointer if we're talking about
+		   the last function called) and the stack origin (USERSTACK)).
+		2. All declarations of USRSTACK have been changed from
+		   long to ADDR (unsigned long) so that there won't be problems
+		   with the 3000 port, where USERSTACK is 0x80000000 (which is
+		   negative). 
+
+	FILES:  com/main.c
+		com/machdep.c
+		com/machdep.h
+		com/setup.c
+		com/xeq.c
+
+	RELEASE NOTE: (Document one or more of the following.)
+no release note needed because:
+ENHANCEMENT:  
+PROBLEM_FIX:  
+	sdb now maps core files correctly.  This allows stack traces to work
+	correctly and permits access to program variables when working from 
+	a core file.
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+===============================================================================
+unique id # n/a
+Thu Jul 28 14:58:30 PDT 1988
+hans 
+sw#hh1
+	DESCRIPTION: s3000 port / source consolidation.
+
+	FIX/DISCUSSION: no longer use our own copy of reg.h in the mach/sys
+	directory.  there is now an sdbreg.h file in com which does the 
+	necessary redefines.  this allows us to use the same source for the
+	a1000 and s3000 machines.  several other changes also accompany this,
+	such as the dynamic setting of ADDR_U according to stack value (along
+	w/ USRSTACK) etc.
+
+	FILES:	usr/src/cmd/sdb/com/machdep.c
+		usr/src/cmd/sdb/com/machdep.h
+		usr/src/cmd/sdb/com/sdbreg.h
+
+	RELEASE NOTE: (Document one or more of the following.)
+no release note needed because: no functional change to released product.
+ENHANCEMENT:  
+PROBLEM_FIX:  
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+===============================================================================
+
+===============================================================================
+Tue Sep 13 16:01:04 PDT 1988
+jsaunder
+JAS#1 
+
+	DESCRIPTION:  Port sdb to use S3000 system namefile.
+
+	FIX/DISCUSSION: machdep.c - SYSTEM define inserted though the code
+                        using it does not work (and is not used), setrup.c -
+                        SYSTEM define giving system namelist option ("/arix")
+			for s3000.
+
+	FILES:
+	/usr/src/cmd/sdb/com/machdep.c
+	/usr/src/cmd/sdb/com/setup.c 
+				       
+
+	RELEASE NOTE: (Document one or more of the following.)
+no release note needed because: Port stuff.  Does not affect utility
+				functioning.
+ENHANCEMENT:  
+PROBLEM_FIX:  
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+===============================================================================
+Wed Nov 16 21:42:19 PST 1988
+hans 
+
+	DESCRIPTION: sdb on s90 broken.
+
+	FIX/DISCUSSION: well, it wasn't really very broken.. we got lucky,
+	and i merely adjusted the value of ADDR_U that gets set in 
+	getvalues().  Interestingly enough, although the real address of the
+	user structure is now 0x600 into the user page, ptrace requires that
+	we consider it to begin at the beginning of the user page (0x801a0000).
+	this is currently hardcoded for simplicity of modification, but should
+	be fixed eventually.
+
+	FILES: usr/src/cmd/sdb/com/machdep.c
+
+	RELEASE NOTE: (Document one or more of the following.)
+
+NO RELEASE NOTE NEEDED BECAUSE: unreleased product.
+===============================================================================
+Wed Nov 23 00:25:18 PST 1988
+hans 
+
+	DESCRIPTION: S90 fix : floating point save area has changed in the 
+	kernel.  Both ptrace calls and core reads need to reflect this.
+
+	FIX/DISCUSSION: added #ifdef'd code sections to handle the different
+	floating point save area.
+
+	FILES:  usr/src/cmd/sdb/com/machdep.h
+		usr/src/cmd/sdb/com/display.c
+		usr/src/cmd/sdb/com/prvar.c
+
+	RELEASE NOTE: (Document one or more of the following.)
+
+NO RELEASE NOTE NEEDED BECAUSE: no change to released product.
+===============================================================================
+Fri Jan 27 19:11:00 PDT 1989
+shen
+	DESCRIPTION:   Ported for NFS 5.3. 1.1 P2 release 
+
+	FIX/DISCUSSION: 
+
+	FILES:	usr/src/cmd/sdb/mach/mach.mk
+
+	RELEASE NOTE: (Document one or more of the following.)
+no release note required because:
+	resubmit due to loss of source by integration orignally submitted 
+	to integration in November 1988.
+ENHANCEMENT:  
+PROBLEM_FIX:  
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+===============================================================================
+Thur Sep 28 12:11:00 PDT 1989
+misha/shen
+	DESCRIPTION:   sdb for a1000 assumes stack frame of s90.
+
+	FIX/DISCUSSION: fix register X for a1000 
+
+	FILES:	cmd/sdb/com/machdep.h
+		cmd/sdb/com/main.c
+		cmd/sdb/com/setup.c
+
+	RELEASE NOTE: (Document one or more of the following.)
+no release note required because:
+ENHANCEMENT:  
+PROBLEM_FIX:  
+	sdb for a1000 no longer assumes stack frame of s90.
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+===============================================================================
+Wed Dec  6 13:54:55 PST 1989
+dougd
+dd0
+	DESCRIPTION:   misc debugging and other minor fixes
+
+	FIX/DISCUSSION: fix FLEXNAMES in debugging;
+			cosmetic changes (machdep.c);
+			gil found several improper uses of `=' and `=='
+			(opset.c, xeq.c)
+
+	FILES:	
+		cmd/sdb/com/debug.c
+		cmd/sdb/mach/dis_utils.c
+		cmd/sdb/com/head.h
+		cmd/sdb/com/machdep.c
+		cmd/sdb/com/opset.c
+		cmd/sdb/com/prvar.c
+		cmd/sdb/com/symt.c
+		cmd/sdb/com/udef.c
+		cmd/sdb/com/xeq.c
+
+	RELEASE NOTE: (Document one or more of the following.)
+no release note required because Not a released product
+ENHANCEMENT:  
+PROBLEM_FIX:  
+	minor debugging and other cleanup.
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+===============================================================================

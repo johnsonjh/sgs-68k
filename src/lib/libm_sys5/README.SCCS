@@ -1,0 +1,53 @@
+Z =============================================================================
+C 1141
+K UTIL
+T Fri Oct 25 16:36:58 PDT 1991
+U roger
+S "ifdefed" (using m4 macro preprocessor) to have an emulating
+S library and a non-emulating library.
+D for the nonemulated code, we have a direct use of a 881
+D instruction like:
+D 
+D 	facos.d ......
+D 
+D while for the emulated call we jump to a subroutine:
+D 
+D 	mov.d -8(%fp),-(%sp)
+D 	jsr facosd
+D 	addw &8,(%sp)
+R util/src/lib/libm_sys5/asin881.s	 23.3
+R util/src/lib/libm_sys5/atan881.s	 23.3
+R util/src/lib/libm_sys5/etox881.s	 23.3
+R util/src/lib/libm_sys5/log881.s	 23.3
+R util/src/lib/libm_sys5/sin881.s	 23.3
+R util/src/lib/libm_sys5/sinh881.s	 23.3
+R util/src/lib/libm_sys5/sqrt881.s	 23.3
+R util/src/lib/libm_sys5/tan881.s	 23.3
+R util/src/lib/libm_sys5/tanh881.s	 23.3
+B /libme
+B /libp/libme
+Z =============================================================================
+Z =============================================================================
+C 1142
+K UTIL
+T Fri Oct 25 16:43:31 PDT 1991
+U roger
+S changed makefile to build the new emulated libraries (libme.a
+S and libp/libme.a )
+R util/src/lib/libm_sys5/libm_sys5.mk	 23.3
+Z =============================================================================
+Z =============================================================================
+C 1166
+K LANG
+T Wed Nov  6 13:25:48 PST 1991
+U roger
+S changed the size of a mov from double to extended
+D when calling flognp1x, it assumes an Xtended argument, so we
+D have to push with mov.x the argument, and pop it from the stack
+D with add.w &12,%sp
+R util/src/lib/libm_sys5/log881.s	 24.2
+B /lib/libm.a
+B /lib/libme.a
+B /lib/libp/libm.a
+B /lib/libp/libme.a
+Z =============================================================================

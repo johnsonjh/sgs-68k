@@ -1,0 +1,85 @@
+Z =============================================================================
+C 75
+K UTIL
+T Fri Feb 22 13:03:08 PST 1991
+U simon
+S added 68040 version type
+D Version was hard coded to 020.  Added compile option to set version
+R util/src/cmd/sdb/com/version.c	 23.2
+B /bin/sdb
+Z =============================================================================
+Z =============================================================================
+C 454
+K UTIL
+T Wed May  8 10:36:30 PDT 1991
+U simon
+S Finished conversion to 020/040 combined src
+S 
+R util/src/cmd/sdb/com/docomm.c	 23.2
+R util/src/cmd/sdb/com/machdep.c	 23.2
+R util/src/cmd/sdb/com/machdep.h	 23.2
+R util/src/cmd/sdb/com/xeq.c	 23.2
+Z =============================================================================
+Z =============================================================================
+C 544
+K UTIL
+T Fri May 31 12:39:19 PDT 1991
+U simon
+S Check to see if value writable or not busted.
+D The method used to check in a value was in range to be modified was changed
+D sometime in the past and was made WRONG.  This dis-allowed modification of
+D data in programs which had no core file.  Changed the test to include
+D the b2 section of the text map as "data".
+R util/src/cmd/sdb/com/access.c	 23.2
+B /bin/sdb
+Z =============================================================================
+Z =============================================================================
+C 668
+K UTIL
+T Tue Jun 25 14:20:43 PDT 1991
+U hans
+S Modified sdb to work with new scheme for ptrace register reading.
+D The ptrace() system call has been changed with respect to reading the registers
+D from the uarea.  The primary change that affects sdb is that u_ar0 is no longer
+D an absolute address.  Sdb used to calculate the value of ar0 to use in ptrace
+D calls as the offset into the uarea, i.e. it subtracted the address of the uarea
+D from the value returned by ptrace.  Ptrace now returns a value from which 
+D offsets of the register in the save area may be calculated.  The definition of
+D the variable 'uu' has also been modified.  It used to be a character array which
+D was frequently cast to be a struct user pointer.  uu is now a define of
+D the user_t element of a union whose other element is a character array of size
+D XTOB(USIZE).  Several processor dependencies have been removed, including
+D knowledge of the location of the uarea.  We can now use a single sdb binary
+D for 68020 and 68040 based systems.  A large number of ifdefs have also been
+D removed.
+D 
+R util/src/cmd/sdb/com/access.c	 23.3
+R util/src/cmd/sdb/com/bio.c	 23.2
+R util/src/cmd/sdb/com/debug.c	 23.2
+R util/src/cmd/sdb/com/decode.c	 23.2
+R util/src/cmd/sdb/com/display.c	 23.2
+R util/src/cmd/sdb/com/docomm.c	 23.3
+R util/src/cmd/sdb/com/fio.c	 23.2
+R util/src/cmd/sdb/com/machdep.c	 23.3
+R util/src/cmd/sdb/com/main.c	 23.4
+R util/src/cmd/sdb/com/message.c	 23.2
+R util/src/cmd/sdb/com/opset.c	 23.2
+R util/src/cmd/sdb/com/optab.c	 23.2
+R util/src/cmd/sdb/com/pcs.c	 23.2
+R util/src/cmd/sdb/com/prvar.c	 23.3
+R util/src/cmd/sdb/com/re.c	 23.2
+R util/src/cmd/sdb/com/runpcs.c	 23.3
+R util/src/cmd/sdb/com/setup.c	 23.2
+R util/src/cmd/sdb/com/sub.c	 23.2
+R util/src/cmd/sdb/com/symt.c	 23.2
+R util/src/cmd/sdb/com/udef.c	 23.3
+R util/src/cmd/sdb/com/version.c	 23.3
+R util/src/cmd/sdb/com/xeq.c	 23.3
+R util/src/cmd/sdb/com/bio.h	 23.2
+R util/src/cmd/sdb/com/coff.h	 23.2
+R util/src/cmd/sdb/com/head.h	 23.3
+R util/src/cmd/sdb/com/machdep.h	 23.3
+R util/src/cmd/sdb/com/mode.h	 23.2
+R util/src/cmd/sdb/com/sdbreg.h	 23.2
+B /bin/sdb
+Z =============================================================================

@@ -1,0 +1,83 @@
+Z =============================================================================
+C 83
+K LANG
+T Tue Feb 26 15:19:49 PST 1991
+U simon
+S Added ifdefs for m68k family.  In the case of 020 the 030 is automatically
+S defined.  For the 040 040 and m68k is used
+D Added 040 specific ifdefs.  The 020 and 030 will be done at the same time
+D or 020/040 combo.
+R util/src/cmd/sgs/as/mach/mach.mk	 23.3
+R util/src/cmd/sgs/as/mach/m68k/gencode.c	 23.3
+B /bin/as
+Z =============================================================================
+Z =============================================================================
+C 84
+K LANG
+T Wed Feb 27 09:16:45 PST 1991
+U simon
+S More updates for 040.  Ifdefs
+D More updates for 040.  Ifdefs
+R util/src/cmd/sgs/as/mach/m68k/instab.h	 23.3
+R util/src/cmd/sgs/as/mach/m68k/ops.out	 23.3
+B /lib/c0
+B /lib/c1
+Z =============================================================================
+Z =============================================================================
+C 480
+K LANG
+T Mon May 13 15:45:15 PDT 1991
+U simon
+P 4929492949294929
+S Removed -r flag from use.  Conflicts with -Xnostrwrite.
+D Homey don't play -r no more.
+D The -r option ( make data readonly ) conflicts with the -Xnostrwrite flag to
+D cc.  The -r is no longer required and cannot be used with any success anyway.
+N The -r option has been removed.  To create read-only data use the const
+N qualifier in data declaration or the more general -Xnostrwrite flag to
+N the C compiler.  Read only data allows programs to run with more information
+N shared between processes, thus reducing per-process overhead.  For more
+N information refer to the CC(1) manual page.
+N 
+R util/src/cmd/sgs/as/mach/m68k/gencode.c	 23.4
+B /bin/as
+Z =============================================================================
+Z =============================================================================
+X 588
+X Mon Jun 10 11:31:24 PDT 1991
+X simon
+X Added 040 instructions for floating point
+X util/src/cmd/sgs/as/mach/.
+Z =============================================================================
+Z =============================================================================
+C 657
+K LANG
+T Tue Jun 25 10:26:27 PDT 1991
+U simon
+S Added proper parens on check of NULL pointer.
+D The "no read 0 " option found a bug in the check of a NULL pointer.
+R util/src/cmd/sgs/as/mach/m68k/parse.y	 23.4
+B /lib/c0
+Z =============================================================================
+Z =============================================================================
+C 658
+K LANG
+T Tue Jun 25 10:29:05 PDT 1991
+U simon
+S Added proper #if's for 040 additions
+R util/src/cmd/sgs/as/mach/m68k/gencode.c	 23.7
+B /lib/c0
+Z =============================================================================
+Z =============================================================================
+C 1164
+K LANG
+T Fri Nov  1 07:57:49 PST 1991
+U simon
+S Fixed generation of machine language for cache instructions.
+D The precessing of cache instructions, CINV* and CPUSH*, was never finished
+D by the original implementors.  Because of this the affected cache for these
+D instructions always turned out to be a noop.  The assembler now examines the
+D instruction properly and generates the correct code.
+R util/src/cmd/sgs/as/mach/m68k/gencode.c	 24.2
+B /bin/as4
+Z =============================================================================

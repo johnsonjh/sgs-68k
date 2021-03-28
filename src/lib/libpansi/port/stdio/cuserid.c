@@ -1,0 +1,37 @@
+#ident	"@(#)cuserid.c	25.1	12/2/91 Copyright (c) 1991 by Arix Corp."
+/*	Copyright (c) 1984 AT&T	*/
+/*	  All Rights Reserved  	*/
+
+/*	THIS IS UNPUBLISHED PROPRIETARY SOURCE CODE OF AT&T	*/
+/*	The copyright notice above does not evidence any   	*/
+/*	actual or intended publication of such source code.	*/
+
+/*	ATT:#ident	"libc-port:stdio/cuserid.c	1.8"	*/
+	
+
+/*	3.0 SID #	1.2	*/
+/*LINTLIBRARY*/
+#include <stdio.h>
+#include <pwd.h>
+
+extern char *strcpy();
+extern int geteuid();
+extern struct passwd *getpwuid();
+static char res[L_cuserid];
+
+char *
+cuserid(s)
+char	*s;
+{
+	register struct passwd *pw;
+	register char *p;
+
+	if (s == NULL)
+		s = res;
+	pw = getpwuid(geteuid());		/* barryk: POSIX: must use effective id */
+	endpwent();
+	if (pw != NULL)
+		return (strcpy(s, pw->pw_name));
+	*s = '\0';
+	return (NULL);
+}

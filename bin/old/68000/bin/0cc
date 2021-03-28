@@ -1,0 +1,2 @@
+SGS=/src1/a1000/sgs/68000
+$SGS/bin/bin/0cc -YS,$SGS/lib -Yp,$SGS/lib -Y0,$SGS/lib  -Y2,$SGS/lib -Ya,$SGS/bin -Yl,$SGS/bin -YL,$SGS/lib -YU,$SGS/usr/lib -YI,$SGS/usr/include       $@

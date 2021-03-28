@@ -1,0 +1,8 @@
+Z =============================================================================
+C 164
+K LANG
+T Thu Mar  7 16:08:45 PST 1991
+U gjw
+S Forced as to be compiled as a POSIX binary
+R util/src/cmd/sgs/mkshlib/mach/makefile	 23.3
+Z =============================================================================

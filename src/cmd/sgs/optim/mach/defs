@@ -1,0 +1,142 @@
+#ident	"@(#)defs	25.1	12/2/91 Copyright (c) 1991 by Arix Corp."
+/*			*/
+/*	@(#)defs	7.1		*/
+/*			*/
+
+/* MC68000 Optimizer */
+
+/* Collected machine-dependent definitions for the optimizer. */
+
+#include "rand.h"		/* operand definitions */
+#include "ops.h"		/* operator definitions */
+
+
+#define	MEMFCN			/* enable use of memory functions */
+
+/* Declare predicates */
+
+#define isfloat(p)	((p->userdata.ud_flags & UD_FLOAT) != 0)
+#define	islabel(p)	(p->op == LABEL)
+#define isinline(p)	((p->userdata.ud_nattr & UDN_INLINE) != 0)
+#define	ishl(p)		((p->userdata.ud_flags & UD_HLAB) != 0)
+int ishlp();			/* actually boolean */
+#define	isbr(p) \
+		((p->userdata.ud_flags & (UD_UBRA | UD_CBRA | UD_HBRA)) != 0)
+#define	ishb(p)		((p->userdata.ud_flags & UD_HBRA) != 0)
+#define	isuncbr(p)	((p->userdata.ud_flags & UD_UBRA) != 0)
+#define	isrev(p)	((p->userdata.ud_flags & UD_RCBRA) != 0)
+#define	is4bytes(p)	((p->userdata.ud_flags & UD_RT4) != 0)
+#define	isret(p)	(p->op == RTS)
+
+/* Declare compile time options */
+
+#define	IDTYPE	int		/* type to hold line number */
+#define	IDVAL	(-1)		/* "not a line number" number */
+#undef	PEEPHOLE			/* no peephole yet */
+#define NUMLBLS         1429            /* label table size */
+#define	USERDATA			/* there is a user-data field */
+#define	CC		'#'		/* comment character for assembler */
+
+
+/* Define USERDATA field for instruction nodes. */
+
+struct ud
+{
+	FLAGS ud_nattr;		/* node attribute flags (permanent) */
+    FLAGS ud_flags;		/* copy of op_flags, plus others */
+    OP * ud_op;			/* op code information */
+    RAND * ud_rand[MAXOPS];	/* pointers to operand info., addressed
+				** as 0 - MAXOPS-1.
+				*/
+};
+/* Declare data for ud_nattr field */
+#define UDN_INLINE		0x0001			/* node from in-line asm code */
+#define UDN_ENDINLINE		0x0002			/* last node for inline function */
+#define UDN_OPTF		0x0004			/* node 'mov.l's floating-point data */
+#define UDN_ZEROBIAS		0x0008			/* force zero bias before node */
+#define UDN_LOCALBIASS		0x0010			/* this node starts local bias */
+#define UDN_INVOLATILE		0x0100			/* node from volatile code */
+#define UDN_fmask		0xf000			/* function mask */
+/* ud_nattr functions */
+#define UDN_strcpy		0x1000			/* strcpy optimization trigger */
+
+/* Declare data for ud_flags field */
+/* These are renamings of the OF_ flags */
+#define	UD_LAB		OF_LAB
+#define	UD_UBRA		OF_UBRA
+#define	UD_HLAB		OF_HLAB
+#define	UD_HBRA		OF_HBRA
+#define	UD_CBRA		OF_CBRA
+#define	UD_NCBRA	OF_NCBRA
+#define	UD_RCBRA	OF_RCBRA
+#define	UD_CC		OF_CC
+#define	UD_CCA		OF_CCA
+#define	UD_LD		OF_LD
+#define	UD_VTRACE	OF_VTRACE
+#define	UD_FLOAT	OF_FLOAT
+#define	UD_PSEUDO	OF_PSEUDO
+#define UD_RT4		OF_RT4
+
+
+typedef struct ud USERTYPE;	/* declare USERTYPE field */
+
+/* Declare support routines; some of them are macros */
+
+char * newlab();		/* generate new label */
+char * getp();			/* get branch destination */
+void setlab();			/* make node a label */
+void setbr();			/* make node a branch */
+#define	putp(p,s) \
+	setrand(p, (int) (p->userdata.ud_op->op_nsrc), findrand(s, true))
+				/* put branch destination */
+				/* destination goes in last source operand
+				** position
+				*/
+void revbr();			/* reverse a reversible branch */
+#ifdef	LIVEDEAD
+REG uses();			/* registers used by instruction */
+REG sets();			/* registers set by instruction */
+#endif
+#define	bboptim(f,l)	0	/* do nothing within block */
+
+/* Definitions for branch shortening */
+
+#define	BSHORTEN		/* we want to shorten branches */
+/* BSPAN is chosen conservatively.  The exact number of bytes for
+** short branch spans is 128.  However, we allow some slop because
+** some of our long branches may end up being turned into branches
+** around jumps (see instsize() in mipsup.c).
+*/
+#define	BSPAN	120		/* max. short span is 120 bytes */
+void bshortsub();		/* define routines */
+int instsize();
+#define	bshorten(node,dist) if (-BSPAN < dist && dist < BSPAN) bshortsub(node)
+
+/* Other routines to help */
+
+OP * getOP();			/* get OP pointer for opcode */
+void setrand();			/* set operand into node */
+				/* fill in both the standard and userdata
+				** fields
+				*/
+void setop();			/* set opcode into node */
+
+void serr();			/* output error at input scanning time */
+void oerr();			/* output error at other times */
+
+/* Predicates for machine dependent improvements */
+
+/* These three test whether a RAND structure is, respectively,
+** a register, an A register, or a D register
+*/
+
+#define	isreg(rand)	((rand)->rtype == RT_REG)
+#define	isareg(rand)	(isreg(rand) && ((rand)->ruses & REG_AREG) != 0)
+#define	isdreg(rand)	(isreg(rand) && ((rand)->ruses & REG_DREG) != 0)
+#ifdef M68881
+#define	isfpreg(rand)	(isreg(rand) && ((rand)->ruses & REG_FPREG) != 0)
+#endif
+
+/* Test whether the register(s) whose bit(s) are reg is dead after node. */
+
+#define	isdead(reg,node)	(((reg) & (node)->nlive) == 0)

@@ -1,0 +1,42 @@
+#	START NEW ARIX SCCS HEADER
+#
+#	@(#) README.ses: version 25.1 created on 12/2/91 at 19:08:04
+#
+#	Copyright (c) 1990 by Arix Corporation
+#	All Rights Reserved
+#
+#	@(#)README.ses	25.1	12/2/91 Copyright (c) 1990 by Arix Corporation
+#
+#	END NEW ARIX SCCS HEADER
+#
+
+#ident	"@(#)libcurses/demo:README.ses	25.1"
+
+===============================================================================
+Mon Aug 25 17:19:10 PDT 1986				
+Chang
+
+	DESCRIPTION: Original port of /usr/src/lib/libcurses/demo
+                     routines.
+	FIX: aliens menu rain worms were compiled and executed.
+	FILES:
+	/usr/src/lib/libcurses/demo/aliens.c
+	/usr/src/lib/libcurses/demo/menu.c
+	/usr/src/lib/libcurses/demo/rain.c
+	/usr/src/lib/libcurses/demo/worms.c
+===============================================================================
+Tue Sep 30 10:58:35 PDT 1986
+hanna
+
+	DESCRIPTION:
+		Some notes. 
+		. aliens will log you out if you delete out of it.
+		. i cant figure out how aliens works
+		. mv'd .menu.data to menu.data, because i'm not sure we can
+		  handle files that begin with . in sccs.
+		. Not a lot of effort is put into this demo directory now.
+		  The main thrust is to get the library going!
+	FIX:
+	TECHNOTE:
+	FILES:
+===============================================================================

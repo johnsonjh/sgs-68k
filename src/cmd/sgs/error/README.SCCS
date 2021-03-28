@@ -1,0 +1,27 @@
+Z =============================================================================
+C 389
+K LANG
+T Tue Apr 16 11:47:16 PDT 1991
+U gjw
+S Initial admin of the error utility.
+D Error is a new utility from Berkerley that takes the stderr from cc and feeds
+D it back into the C file in comment form at the line the error occurred.
+D 
+D Neat eh ?!
+R util/src/cmd/sgs/error/error.mk	 23.1
+R util/src/cmd/sgs/error/error.h	 23.1
+R util/src/cmd/sgs/error/errorfltr.c	 23.1
+R util/src/cmd/sgs/error/errorinput.c	 23.1
+R util/src/cmd/sgs/error/errormain.c	 23.1
+R util/src/cmd/sgs/error/errorpi.c	 23.1
+R util/src/cmd/sgs/error/errorsubr.c	 23.1
+R util/src/cmd/sgs/error/errortouch.c	 23.1
+Z =============================================================================
+Z =============================================================================
+C 400
+K LANG
+T Thu Apr 18 09:27:22 PDT 1991
+U gjw
+S Added all rule because it's needed !
+R util/src/cmd/sgs/error/error.mk	 23.2
+Z =============================================================================

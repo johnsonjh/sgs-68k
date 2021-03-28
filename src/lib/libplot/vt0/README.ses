@@ -1,0 +1,22 @@
+#	START NEW ARIX SCCS HEADER
+#
+#	@(#) README.ses: version 25.1 created on 12/2/91 at 20:13:00
+#
+#	Copyright (c) 1990 by Arix Corporation
+#	All Rights Reserved
+#
+#	@(#)README.ses	25.1	12/2/91 Copyright (c) 1990 by Arix Corporation
+#
+#	END NEW ARIX SCCS HEADER
+#
+
+#ident	"@(#)libplot/vt0:README.ses	25.1"
+
+========================================================================
+Thu Aug 21 16:16:11 PDT 1986				
+Chang
+	DESCRIPTION: Original port of libvt0 routines.
+	Nothing was changed in this directory.
+	FIX: libvt0.a generated. Not able to test.
+	FILES:
+========================================================================

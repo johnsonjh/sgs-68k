@@ -1,0 +1,18 @@
+Z =============================================================================
+X 1249
+X Tue Nov 26 13:16:00 PST 1991
+X simon
+X Fixed what strings
+X util/src/lib/libc_sys5/rpc
+Z =============================================================================
+Z =============================================================================
+C 1250
+K LANG
+T Tue Nov 26 13:19:41 PST 1991
+U simon
+S Fixed what strings
+R util/src/lib/libc_sys5/yp/ypv1_xdr.c	 24.2
+R util/src/lib/libc_sys5/yp/ypxdr.c	 24.2
+R util/src/lib/libcurses/screen/captoinfo.c	 24.2
+R util/src/lib/libpansi/port/gen/getpwent.c	 24.2
+Z =============================================================================

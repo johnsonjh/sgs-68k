@@ -1,0 +1,19 @@
+Z =============================================================================
+C 617
+K LANG
+T Thu Jun 13 09:03:26 PDT 1991
+U simon
+P 4637
+S Changed startup to leave fpu as IEEE default ( no exceptions ).  log( -1 )
+S won't dump core now. 
+D log(-1) and other Out Of Range requests caused a Floating Point exception.  
+D This was different under -SYSV.  All of the POSIX documentation states that
+D errno would be set and the lib routines would return something soooo...
+D The setup for ANSI/POSIX and SYSV are now the same.
+N Exception processing for Floating Point Exceptions under the ANSI or POSIX
+N mode of the C compiler has been changed to conform to IEEE as it does under
+N the -M0/-SYSV mode of the C compiler.  Returns from math calls such as log()
+N should always be checked for validity using a test of errno.  
+R util/src/lib/libpansi/ansi/startup/crt1.s	 23.3
+B /lib/crt1.o
+Z =============================================================================

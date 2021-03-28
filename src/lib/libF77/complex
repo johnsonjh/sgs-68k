@@ -1,0 +1,6 @@
+/*	ATT:#ident	"libF77:complex	1.3"	*/
+	
+#ident	"@(#)libF77:complex	25.1"
+
+typedef struct { float real, imag; } complex;
+typedef struct { double dreal, dimag; } dcomplex;

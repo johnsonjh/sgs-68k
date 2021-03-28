@@ -1,0 +1,7 @@
+Z =============================================================================
+X 964
+X Sat Sep 21 13:22:45 PDT 1991
+X simon
+X Shortened name of lint lib to allow build in POSIX environment.  15 chars!!
+X util/src/lib/libcurses/screen
+Z =============================================================================

@@ -1,0 +1,7 @@
+#ident	"@(#)ENVIRONMENT	25.1	12/2/91 Copyright (c) 1991 by Arix Corp."
+
+
+PROCESSOR=M68020
+FP=M68881
+FPU=M68881
+export FP FPU PROCESSOR

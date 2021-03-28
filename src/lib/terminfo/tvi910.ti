@@ -1,0 +1,8 @@
+tv910|tvi910|kludge quick televideo,
+	cr=^M, cud1=^J, ind=^J, bel=^G, am,
+	cub1=^H, el=\ET, cup=\E=%p1%' '%+%c%p2%' '%+%c,
+	cols#80, clear=\E+,
+	kbs=^h, kcuu1=^K, kcud1=^J, kcub1=^H, kcuf1=^L,
+	home=^^, lines#24, cuf1=^L, ht=^I,
+	rmso=\E(, smso=\E), cuu1=^K, smul=\El, rmul=\Em, xmc#1,
+# was:	rmso=\Ej, smso=\Ek, cuu1=^K, smul=\El, rmul=\Em, xmc#1,

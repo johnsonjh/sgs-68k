@@ -1,0 +1,34 @@
+#	START NEW ARIX SCCS HEADER
+#
+#	@(#) README.ses: version 25.1 created on 12/2/91 at 20:15:40
+#
+#	Copyright (c) 1990 by Arix Corporation
+#	All Rights Reserved
+#
+#	@(#)README.ses	25.1	12/2/91 Copyright (c) 1990 by Arix Corporation
+#
+#	END NEW ARIX SCCS HEADER
+#
+
+#ident	"@(#)libwin:README.ses	25.1"
+
+========================================================================
+Fri Aug 22 08:33:59 PDT 1986			
+Chang
+
+	DESCRIPTION: Original port of libwindows routine.
+	     libwindows.a was generated. Not able to test.
+	     No directory lib/libwindows is in V.2.
+	FIX: 
+	FILES:
+===============================================================================
+Wed Oct  1 09:56:38 PDT 1986
+hanna
+sw#
+	DESCRIPTION:
+		libwindows.c has #if's for vax to swab bytes.
+		we shouldn't have to worry.
+	FIX:
+	TECHNOTE:
+	FILES:
+===============================================================================

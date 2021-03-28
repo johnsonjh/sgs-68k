@@ -1,0 +1,38 @@
+#	START NEW ARIX SCCS HEADER
+#
+#	@(#) README.ses: version 25.1 created on 12/2/91 at 16:01:29
+#
+#	Copyright (c) 1990 by Arix Corporation
+#	All Rights Reserved
+#
+#	@(#)README.ses	25.1	12/2/91 Copyright (c) 1990 by Arix Corporation
+#
+#	END NEW ARIX SCCS HEADER
+#
+
+#ident	"@(#)lint/comp:README.ses	25.1"
+
+========================================================================
+Wed Oct  8 09:27:41 PDT 1986
+Chang
+									
+	DESCRIPTION: Original port of lint/comp routines.
+
+	FIX: 
+
+	FILES:
+========================================================================
+mfile1
+
+Wed Oct  8 10:46:38 PDT 1986
+chang
+sw0
+
+	DESCRIPTION: Symbol table size is changed from 1500 to 2000.
+                     This is applied from V.2.
+
+	FIX: 
+
+	FILES:
+	/usr/src/cmd/lint/comp/mfile1
+========================================================================

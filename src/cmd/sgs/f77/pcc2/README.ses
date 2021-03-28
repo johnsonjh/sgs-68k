@@ -1,0 +1,1171 @@
+#	START NEW ARIX SCCS HEADER
+#
+#	@(#) README.ses: version 25.1 created on 12/2/91 at 17:42:03
+#
+#	Copyright (c) 1990 by Arix Corporation
+#	All Rights Reserved
+#
+#	@(#)README.ses	25.1	12/2/91 Copyright (c) 1990 by Arix Corporation
+#
+#	END NEW ARIX SCCS HEADER
+#
+
+#ident	"@(#)sgs/comp2:README.ses	1.1"
+
+===============================================================================
+*
+ccom (sgs.000, sgs.020)							sur.837
+
+Fri Feb 28 17:47:58 PST 1986					hanna/baumann
+									
+	DESCRIPTION:
+	"compiler error: can't deal with op REG"
+
+	FIX:
+	This is known as the ASSIFLAG fix.
+	When a question mark operator used and has side effects (such as
+	some term does an autoincrement (i++)), but returns (void), that is
+	it is marked as not returning any result, it may not evaluate the
+	entire tree correctly, and not find a match in the table. We give it
+	another chance (grep for ASSIF in cgen.c), then reset this flag in
+	match.c.
+	This is related to another QUEST op fix done by ernie, where the
+	void type QUEST was optimized to no code.
+	(hanna: take out ernie's fix and see if it still goes through here
+	 before sending the fix to att)
+
+	FILES:
+	/usr/src/sgs/sgs.0[02]0/common/match.c:
+	/usr/src/sgs/sgs.0[02]0/common/cgen.c:
+	
+===============================================================================
+
+ccom (sgs.0[02]0)						837
+
+	Files:
+
+===============================================================================
+ccom (sgs.020)
+utility									
+									
+									
+	DESCRIPTION:
+	Floating point bug in qbench
+
+	FIX:
+
+	FILES:
+	/usr/src/sgs/sgs.020/cmd/cc/pcc2/mach/M68020/stin:
+	
+===============================================================================
+	DESCRIPTION:
+		When a Data register is used as a temporary pointer,
+		it generates a (%dx.w) instead of a (%dx.l).
+	FIX:
+		add TPOINT to the if when a Data register is used as a pointer
+	FILES:
+	/usr/src/sgs/sgs.020/cmd/cc/pcc2/mach/M68020/local2.c
+===============================================================================
+Mon Apr 28 12:14:13 PDT 1986
+hanna
+	DESCRIPTION:
+		If a conversion from float/double to int is done in a 
+		conditional, the floating point condition codes are set, not
+		the 68020 condition codes, but the compiler will branch on
+		the 020 condition codes.
+		Also, an fmov to memory will not set condition codes anywhere.
+		Currently, the compiler takes for granted that the condition
+		codes are proper.
+	FIX:
+		Remove $C (valid condition codes after execution) option from
+		selected productions.
+	FILES:
+	/usr/src/sgs/sgs.020/cmd/cc/pcc2/mach/M68020/stin
+===============================================================================
+Wed Jun 18 06:51:14 PDT 1986
+hanna
+sw3
+	DESCRIPTION:
+		Giant (I don't know the exact limit) switch tables would not
+		compile.  An example is some yacc output from ESVEL that would
+		compile on the vax but not on an arete.  
+	FIX:
+		I seems reasonable to increase the table size to match the vax.
+		So I increased SWITSZ from 250 to 500.
+	TECHNOTE:
+		none.
+	FILES:
+		/usr/src/sgs/sgs.000/cmd/cc/pcc2/common/manifest.h
+===============================================================================
+Thu Aug 21 14:09:39 PDT 1986
+hanna
+	DESCRIPTION:
+		Sperry pfr says that unions and structures containing the
+		same elements are of different size.
+	FIX:
+		That is correct.  Structures were being aligned and allocated
+		mod(2 bytes), unions were being assigned mod(4 bytes).
+
+		reader.c contained a align_struc=32.
+		Change this to align_struc=16, then modify other areas
+		to preserve the long alignment of other data that was
+		lost by that change.
+	TECHNOTE:
+		A modification was made to the 68020 compiler to make alignemt
+		and size allocation of structures and unions the same. 
+		(this makes the 68020 compiler consistent with the 68000).
+		A caution:
+		The modification is significant enough such that code defining
+		global unions or passing unions as parameters that were not 
+		already size divisible by 4 bytes, should be recompiled. 
+
+	FILES:
+		/usr/src/sgs/sgs.020/cmd/cc/pcc2/common/pftn.c
+		/usr/src/sgs/sgs.020/cmd/cc/pcc2/common/reader.c
+		/usr/src/sgs/sgs.020/cmd/cc/pcc2/common/scan.c 
+		/usr/src/sgs/sgs.020/cmd/cc/pcc2/mach/local.c
+		/usr/src/sgs/sgs.020/cmd/cc/pcc2/mach/mach.mk
+===============================================================================
+Fri Sep  5 07:08:29 PDT 1986
+hanna
+sw4
+	DESCRIPTION:
+	In a switch statement, 
+	if  (range  = largest case - smallest case + 14) > SIGNED MAXLONG
+	so that the resultant range wraps to negative, the routine "genswitch"
+	will get confused, generating a jump table, and go into a nearly
+	"infinite" loop.
+	FIX:
+	The variable "range" in "genswitch" is changed from a signed to an
+	unsigned long, providing a greater "range" of cases.
+	TECHNOTE:
+	None.
+	FILES:
+	/usr/src/sgs/sgs.020/cmd/sgs/sgs.020/cmd/cc/pcc2/mach/local.c
+	/usr/src/sgs/sgs.020/cmd/sgs/sgs.020/cmd/cc/pcc2/mach/M68020/local.c
+===============================================================================
+*
+ccom (sgs.000, sgs.020)							sur.837
+									
+	DESCRIPTION:
+	"compiler error: can't deal with op REG"
+
+	FIX:
+	This is known as the ASSIFLAG fix.
+	When a question mark operator used and has side effects (such as
+	some term does an autoincrement (i++)), but returns (void), that is
+	it is marked as not returning any result, it may not evaluate the
+	entire tree correctly, and not find a match in the table. We give it
+	another chance (grep for ASSIF in cgen.c), then reset this flag in
+	match.c.
+	This is related to another QUEST op fix done by ernie, where the
+	void type QUEST was optimized to no code.
+	(hanna: take out ernie's fix and see if it still goes through here
+	 before sending the fix to att)
+
+	FILES:
+	/usr/src/sgs/sgs.0[02]0/common/match.c:
+	/usr/src/sgs/sgs.0[02]0/common/cgen.c:
+	
+===============================================================================
+
+ccom (sgs.0[02]0)						837
+
+	Files:
+
+===============================================================================
+Wed Dec 31 07:54:23 PST 1986
+chang
+	DESCRIPTION:
+		Add the inline asm expansion with arguments capability. 
+		The changes for this inline capability are in the 
+		'#ifdef IN_LINE' sections.
+	FILES:
+	/usr/src/cmd/sgs/comp2/common/cgen.c
+	/usr/src/cmd/sgs/comp2/common/cgram.c
+	/usr/src/cmd/sgs/comp2/common/comm1.c
+	/usr/src/cmd/sgs/comp2/common/comm2.c
+	/usr/src/cmd/sgs/comp2/common/cost.c
+	/usr/src/cmd/sgs/comp2/common/inline.c
+	/usr/src/cmd/sgs/comp2/common/manifest.h
+	/usr/src/cmd/sgs/comp2/common/match.c
+	/usr/src/cmd/sgs/comp2/common/mfile1.h
+	/usr/src/cmd/sgs/comp2/common/optim.c
+	/usr/src/cmd/sgs/comp2/common/pftn.c
+	/usr/src/cmd/sgs/comp2/common/reader.c
+	/usr/src/cmd/sgs/comp2/common/scan.c
+	/usr/src/cmd/sgs/comp2/common/trees.c
+	/usr/src/cmd/sgs/comp2/common/xdefs.c
+	/usr/src/cmd/sgs/comp2/mach/debug.c
+	/usr/src/cmd/sgs/comp2/mach/local.c
+===============================================================================
+Wed Feb 18 10:49:14 PST 1987
+sw5
+chang
+	DESCRIPTION: bugs fixed for asm.
+	FILES:
+	/usr/src/cmd/sgs/comp2/common/scan.c
+=======================================================================
+Wed Feb 18 10:57:57 PST 1987
+sw6
+chang
+	DESCRIPTION: remove inline temporary file.
+	FILES:
+	/usr/src/cmd/sgs/comp2/common/reader.c
+=======================================================================
+Thu Mar  5 08:03:31 PST 1987
+sw7
+chang
+	DESCRIPTION: bug fixed in code generation.
+	compiler generates bad code for the followwing example:	
+	...
+	...
+	...
+	register int *p; 
+	register *n;
+		...
+		...
+		register j;
+		register int t = (016);
+		...
+		...
+		j = (int)(( t )==010? n:p);
+		...
+		...
+
+
+	The bad code was generated as follows:
+		...
+		...
+		mov.l	&8,%d0
+		cmp.l	%d0,%d3
+		bne	L%_11
+		mov.l	%a3,%a0
+		br	L%_12
+	L%_11:
+		mov.l	%a2,%a0
+	L%_12:
+		mov.l	%a2,%d0
+		mov.l	%d0,%d2
+		...
+		...
+	FILES:
+	/usr/src/cmd/sgs/comp2/common/cgen.c
+=======================================================================
+Wed Mar 11 07:14:39 PST 1987
+sw8
+chang
+	DESCRIPTION: fix bus error in f77.
+	FIX:
+		     adjust DSIZE in case when IN_LINE is turned off.
+	FILES:
+	/usr/src/cmd/sgs/comp2/common/manifest.h
+=======================================================================
+Thu Apr 16 08:00:01 PDT 1987
+sw9
+chang
+	DESCRIPTION: inline files stick in /usr/tmp when programs abort
+		     from the first pass of the compiler.
+	FIX: the inline file name is passed form the cc as an argument
+	     which is no more created by c0. When a program aborts form
+	     c0, the cc removes the temporary file.
+	     No inline available unless -I inline filename is provided.
+		
+	TECHNOTE:
+	FILES:
+	/usr/src/cmd/sgs/comp2/common/scan.c
+=======================================================================
+unique id #303
+Tue May 12 15:21:15 PDT 1987
+chang
+sw10
+PROBLEM ID #:960
+
+	DESCRIPTION:
+	The cc command accepts "1.0E" as a float point constant, even
+	though this form isn't legal according to the C manual.
+
+	FIX/DISCUSSION:
+	Now the c0 no longer considers the "1.0E" as a legal floating
+	point constant.
+
+	FILES:
+	usr/src/cmd/sgs/comp2/scan.c
+
+	RELEASE NOTE: (Document one or more of the following.)
+ENHANCEMENT:  
+PROBLEM_FIX:  
+	Now the c0 no longer considers the "1.0E" as a legal floating
+	point constant.
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+===============================================================================
+unique id # 305
+Fri May 15 10:17:57 PDT 1987
+chang
+att call #:232081
+
+	DESCRIPTION:
+	When external variables are declared incorrectly outside of 
+	main, the compiler does not generate an error. However, when
+	the variables are declared incorrectly within main, the compiler
+	will generate an error. The following code illustrates the
+	problem:
+
+	PASSES:
+		#include <stdio.h>
+		char x[10],y[10];z[10];	/*two ";", should fail*/
+		main()
+		{
+		printf("%s, %s, %s\n",x,y,z);
+		}
+
+	FAILS:
+
+		#include <stdio.h>
+		main()
+		{
+		char x[10],y[10];z[10];	/*two ";", should fail*/
+		main()
+		{
+		printf("%
+		printf("%s, %s, %s\n",x,y,z);
+		}
+
+	FIX/DISCUSSION:
+	There is no code change for this bug.  This is user error.
+	According to the the c rule "If the type-specifier is missing
+	from a declaration, it is taken to be int".  Therefore, the 
+	following program should pass.
+
+		#include <stdio.h>
+		char x[10],y[10];z[10];	
+		main()
+		{
+		printf("%s, %s, %s\n",x,y,z);
+		}
+
+	The section 8.2 in page 193 of the book "The C programming
+	language" should be read for a complete description.
+
+	FILES:
+		none
+
+	RELEASE NOTE: (Document one or more of the following.)
+ENHANCEMENT:  
+PROBLEM_FIX:  
+TECHNOTE:   
+	According to the the c rule "If the type-specifier is missing
+	from a declaration, it is taken to be int".  Therefore, the 
+	following program should pass.
+
+		#include <stdio.h>
+		char x[10],y[10];z[10];	/*two ";", should fail*/
+		main()
+		{
+		printf("%s, %s, %s\n",x,y,z);
+		}
+
+	The section 8.2 in page 193 of the book "The C programming
+	language" should be read for a complete description.
+
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+===============================================================================
+unique id # 308
+Wed Jun 10 16:43:39 PDT 1987
+chang
+att call #:223800
+
+	DESCRIPTION:
+	Floats are not passed correctly to functions in c programs.
+
+	FIX/DISCUSSION:
+
+	FILES:
+	none
+
+	RELEASE NOTE: (Document one or more of the following.)
+ENHANCEMENT:  
+PROBLEM_FIX:  
+TECHNOTE:   
+KNOWN_PROBLEM:   
+	Floats are not passed correctly to functions in c programs.
+	The following program is an example of the problem:
+	main(){
+		float f;
+		f = 12.5;
+		printf("main: f = %f\n", f);
+		one(f);
+		two(&f);
+	}
+	one(f2)
+	float f2;
+	{
+		printf("one: f2 = %f\n", f2);
+		two(&f2);
+	}
+	two(f3)
+	float *f3;
+	{
+		printf("two: f3 = %f\n", *f3);
+	}
+
+	This programs outputs:
+	main: f = 12.5
+	one: f2 = 12.5
+	two: f3 = 2.640625
+	two: f3 = 12.5
+
+	The output call of two() from one() is wrong, it should
+	print 12.5.
+
+	The following occurs:
+		main() sets f = 12.5
+		main() then calls one() with the VALUE of f equal
+		to 12.5.
+	However, a function is always called with the next larger type.
+	In other words, one() is really called with a double, not a
+	float.  one() realizes that it has a double, and does the 
+	appropriate things with it.  one() then calls two() with the
+	address of f2 which is the address of a DOUBLE, not a float.
+	Since just the address is passed, two() doesn't know that it
+	got the address of a double instead of a float.
+	At this point, it tries to print the first word of a double as
+	a float, and the output is incorrect.
+
+	The workaround is to use doubles instead of floats --
+	either change all floats to doubles, or use
+	#define float double
+	at the beginning of the programs, and recompile.
+
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+===============================================================================
+unique id # 309
+Thu Jun 11 08:04:47 PDT 1987
+chang
+att call #:239779
+
+	DESCRIPTION:
+	cc does not complain about null dimensions of arrays.
+
+	FIX/DISCUSSION:
+
+	FILES:
+	none
+
+	RELEASE NOTE: (Document one or more of the following.)
+ENHANCEMENT:  
+PROBLEM_FIX:  
+TECHNOTE:   
+KNOWN_PROBLEM:   
+	cc does not complain about null dimensions of arrays.
+	Suppose in one C file a two dimensional array is defined as:
+		int name[10][10];
+	and in another file it is accidentally declared as:
+		extern int name[][];
+	The cc command should give the error message "null dimension"
+	and the compilation should exit fatally. It currently compiles
+	the second file and produces an executable image. The executable
+	does not work correctly.
+
+	Here is the C program illustrating the problem:
+
+	int name[10][10];
+	main(argc,argv)
+	int argc;
+	char *argv[];
+	{
+		a();
+	}
+
+	extern int name[][];   /* WRONG */
+
+	a()
+	{
+		int i;
+		int row, col;
+
+		for (row = 0; row<10; row++)
+		{
+			for (col = 0; col < 10; col++)
+				name[row][col] = 0;
+			}
+	}
+
+	For a workround, use of the lint command will report
+	the problem.
+
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+===============================================================================
+unique id # 310
+Thu Jun 11 15:47:10 PDT 1987
+chang
+att call #:231226
+
+	DESCRIPTION:
+	The C compiler does not give an error for an undefined
+	structure.
+
+	FIX/DISCUSSION:
+
+	FILES:
+	none
+
+	RELEASE NOTE: (Document one or more of the following.)
+ENHANCEMENT:  
+PROBLEM_FIX:  
+TECHNOTE:   
+KNOWN_PROBLEM:   
+	The C compiler does not give an error message for an undefined 
+	structure until a member of that structure is referenced. The
+	following is an example:
+
+		main()
+		{
+			extern struct adr record;
+			record.hello = 0;
+		}
+
+	The compiler gives the following error messages:
+
+        "ccompiler.c", line 4: hello undefined
+        "ccompiler.c", line 4: structure/union member required
+        "ccompiler.c", line 4: illegal lhs of assignment operator
+		
+	Lint does give a warning.
+
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+===============================================================================
+unique id # n/a
+Wed Jul 15 15:12:18 PDT 1987
+hanna (kelly documenting)
+sw# 2
+	DESCRIPTION: A reported problem stated that when characters that
+	had the 8th bit set were used in a program and compiled, the resulting
+	assembly code was incorrect.
+
+	FIX/DISCUSSION:
+	When the 8th bit is set in a character, the compiler now doesn't
+	sign extend the variable as before. Therefore, the character is
+	interpreted as intended and the correct assembly code is created.
+
+	FILES:
+	usr/src/cmd/sgs/comp2/common/scan.c
+
+	RELEASE NOTE: (Document one or more of the following.)
+ENHANCEMENT:  
+PROBLEM_FIX:  
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+===============================================================================
+Sat Sep 12 17:26:58 PDT 1987
+kelly
+sw# kd0
+	DESCRIPTION: needed a larger dimension table for oracle port
+
+	FIX/DISCUSSION:
+	The dimension table in c0 has been increased to 1200*3 from 800*3.
+
+	FILES:
+	usr/src/sgs/sgs.020/cmd/cc/pcc2/common/manifest.h
+
+	RELEASE NOTE: (Document one or more of the following.)
+
+
+ENHANCEMENT:  
+	The dimension table in c0 has been increased to 1200*3 from 800*3.
+PROBLEM_FIX:  
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+===============================================================================
+Mon Sep 21 15:38:47 PDT 1987
+kelly/judy
+
+	DESCRIPTION: bugs fixed for ANDAND or OROR case.
+
+	FIX: The compiler was not properly handling the ANDAND or OROR cases
+	(logical and/logical or without if or while test). The fix has been
+	taken from the original 5.3 source.
+
+	FILES:
+	/usr/src/cmd/sgs/comp2/common/reader.c
+
+	RELEASE NOTE: (Document one or more of the following.)
+ENHANCEMENT:  
+PROBLEM_FIX:  
+	The compiler now properly handles the logical and/or cases in
+	which no if or while statement is involved. 
+
+		Ex:
+	
+			main()
+			{
+			int a,b;
+			a=b=1;
+			((a=(a==2)) && (b=3));
+			printf("%d %d\n",a,b);
+			}
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+===============================================================================
+c0						
+Fri Sep 25 17:35:19 PDT 1987
+judy
+
+	DESCRIPTION: bugs fixed for array defined with null size ( [] ).
+
+	FIX: The compiler now considers a null dimension to be an error.
+
+	FILES:
+	/usr/src/cmd/sgs/comp2/common/pftn.c
+
+	RELEASE NOTE: (Document one or more of the following.)
+ENHANCEMENT:  
+PROBLEM_FIX:  
+	The compiler now properly handles null dimensioned array.
+
+		Ex:
+	
+			main()
+			{
+			int a[][];
+			exit(1);
+			}
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+===============================================================================
+c0						
+Sun Sep 28 12:46:18 PDT 1987
+judy
+
+	DESCRIPTION: bugs fixed for constant expressions
+
+	FIX: The compiler now properly simplifies constant expressions
+	involving the operators &&, ||, and the relational operators.
+	Related EXOPEN problems section 2.02 from sparry at 9/24/87
+
+	FILES:
+	/usr/src/cmd/sgs/comp2/common/trees.c
+
+	RELEASE NOTE: (Document one or more of the following.)
+ENHANCEMENT:  
+PROBLEM_FIX:  
+	The compiler now properly simplifies constant expressions
+	involving the operators &&, ||, and the relational operators.
+
+	The c compiler fails with "illegal initialization" on similar
+	constucts to "static int x = 1 == 2.5;" and all of the following
+	comparisions:
+		(int, long int == != > < >= <= && || double)
+		(double == != > < >= <= && || int, long int)
+		(double == != > < >= <= && || double )
+		(evaluation order || / &&)
+		(|| && group left to right)
+
+	Ex1: 	main()
+		{
+			static int var = 6 && 4;
+			if (var != 1)
+				exit(1);
+			exit(0);
+		}
+
+	Ex2: 	main()
+		{
+			static int var = 5 || 0 && 0;
+			if (var != 1)
+				exit(1);
+			exit(0);
+		}
+		main()
+		{
+			static int var = 1 && 0 | 3;
+			if (var != 1)
+				exit(1);
+			exit(0);
+		}
+
+	Ex3: 	main()
+		{
+			static int var = 0 && 5 / 0;
+			if (var != 1)
+				exit(1);
+			exit(0);
+		}
+
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+===============================================================================
+c0						
+Fri Oct 02 22:46:18 PDT 1987
+judy
+
+	DESCRIPTION: bug fixed for typedef name redeclared in inner scope
+	Related EXOPEN problem section 2.03 from sparry at 9/24/87.
+
+	FIX: The compiler now allows a typedef name to be redeclared in
+	an inner scope.
+
+	FILES:
+	/usr/src/cmd/sgs/comp2/common/scan.c
+
+	RELEASE NOTE: (Document one or more of the following.)
+ENHANCEMENT:  
+PROBLEM_FIX:  
+	The compiler now allows a typedef name to be redeclared in
+	an inner scope.
+
+	Ex:
+		typedef int i;
+		main()
+		{
+			int i;
+			i = 2;
+			if (i != 2)
+				exit(1);
+			exit(0);
+		}
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+===============================================================================
+c0,c1						
+Mon Oct 12 12:35:19 PDT 1987
+judy
+
+	DESCRIPTION: multiply defined label.
+
+	FIX: Change the way compiler to generate labels.  Now compiler
+		 generate label by useing nameid append '%' then function
+		 number. It will prevent multiply label to be generated.
+
+	FILES:
+	/usr/src/cmd/sgs/comp2/common/cgram.y
+	/usr/src/cmd/sgs/comp2/common/pftn.c
+	/usr/src/cmd/sgs/comp2/common/trees.c
+
+PROBLEM_FIX:  
+	Previously, the method by which the compiler generated labels could
+	result in multiply defined labels. Now the compiler will append the
+	nameid with a '%' followed by the function number to create a unique
+	label ('%' is an illegal C label).
+			
+
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+===============================================================================
+Fri Dec 18 14:51:14 PDT 1987
+judy
+
+	DESCRIPTION:
+		Giant (I don't know the exact limit) program would not
+		compile. Get error message "out of tree space; simplify
+		expression"
+
+	FIX:
+		I seems reasonable to increase the tree table size.
+		So I increased TREESZ from 350 to 1000.
+	TECHNOTE:
+		none.
+	FILES:
+		/usr/src/cmd/sgs/pcc2/common/manifest.h
+===============================================================================
+Fri Feb 12 14:51:14 PDT 1988
+shen
+	DESCRIPTION:	Compiler does not support non-ascii data strings.
+	FIX:		Modified handling of input string in lexical analyzer.
+	TECHNOTE:
+		none.
+	FILES:
+		/usr/src/cmd/sgs/pcc2/common/scan.c
+===============================================================================
+Fri Feb 26 10:31:52 PST 1988
+hanna/kelly
+sw# kd0
+	DESCRIPTION:
+		Double indirect for float and double types had some
+		(apparently) faulty table entries in the table that
+		made bad code.  I don't believe that the routine
+		indiradr or its companions are at fault (not yet anyway)
+		I need to run more test cases.
+		For now, by commenting out the entries that use A. in the
+		template I can generate correct code in the faulty cases.
+		No optimization of code is lost.  I'm still trying to think
+		of ways to make this fail.
+		sample:
+		struct ARRay { int i; char *the_data; };
+		typedef struct ARRay BLARRAY;
+		int Vtestarray[5]; BLARRAY Mtestarray={0, (char *)Vtestarray},
+        		*testarray= &Mtestarray;
+		char *x = (char *)Vtestarray;
+		main() { int temp = *(int *)(testarray->the_data); }
+	FIX:
+		Comment out table lines using A. or A-.
+		They don't appear to be written correctly.
+	TECHNOTE:
+PROBLEM FIX:
+		For  the 68020 C compiler, certain code using double indirects
+		to type float no longer results in incorrect code. An example
+		follows:
+
+		struct info {float *fptr;}
+
+		main() 
+		{ 
+			struct {float a;} c;
+			struct info sptr, *structptr;
+			structptr=&sptr;
+			c.a=12345.67;
+			sptr.fptr = &c.a;
+			printf("*structptr->fptr = %f\n",*structptr->fptr);
+		}
+
+
+	FILES:
+		usr/src/cmd/sgs/pcc2/mach/M68020/stin
+===============================================================================
+unique id #
+Mon Apr 25 11:09:54 PDT 1988
+ken
+ken#0
+	DESCRIPTION:
+	"mov.l	(%a0),%fp0" was being generated.  This is an
+	instruction the assembler doesn't know how to interpret.
+	follows an example which generates the problem:
+
+	struct h {
+		int x;
+		double d;
+	} *r, *l;
+	
+	main()
+	{
+		r=(struct h *) malloc(sizeof(struct h));
+		l=(struct h *) malloc(sizeof(struct h));
+		r->d=1.0;
+		l->d=2.0;
+		l->d += r->d;
+	}
+
+	there were at least 5 other known cases of differing types, where
+	the illegal mov.l was generated
+
+	FIX/DISCUSSION:
+	made some pretty major changes to our stin file by incorporating
+	some of the changes made in motorola's new optimizing compiler
+	release 4
+
+	FILES: usr/src/cmd/sgs/pcc2/mach/M68020/stin
+
+	RELEASE NOTE: (Document one or more of the following.)
+ENHANCEMENT:  
+PROBLEM_FIX:  
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+	illegal instructions are no longer generated by the compiler for
+	indirect floating point references and manipulations
+SPERRY_ONLY:
+===============================================================================
+unique id #
+Mon Apr 25 11:09:54 PDT 1988
+ken
+ken#1
+	DESCRIPTION:
+	need another debugging option to dump precise interpretation
+	of i-code between the frontend and the code generator
+
+	FIX/DISCUSSION:
+	created new flag -Xk which sets kdebug (this in scan.c)
+	printed out interpretation of i-code in prtree (this in trees.c)
+	as print the actual i-code
+
+	FILES:	usr/src/cmd/sgs/pcc2/common/scan.c
+		usr/src/cmd/sgs/pcc2/common/trees.c
+		usr/src/cmd/sgs/pcc2/common/kdb.h
+
+	RELEASE NOTE: (Document one or more of the following.)
+ENHANCEMENT:  
+PROBLEM_FIX:  
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+	another debugging option for internal use only!
+SPERRY_ONLY:
+===============================================================================
+unique id #
+Mon Apr 25 11:09:54 PDT 1988
+ken
+ken#2
+	DESCRIPTION:
+		some magic number 080000 was being used without any
+		explanation
+
+	FIX/DISCUSSION:
+		simply created a #define WHAT 080000 so that if
+		we ever discover what this thing is, we can change its
+		name or value and explanation easily!
+
+	FILES:
+		usr/src/cmd/sgs/pcc2/common/trees.c
+
+	RELEASE NOTE: (Document one or more of the following.)
+ENHANCEMENT:  
+PROBLEM_FIX:  
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+===============================================================================
+unique id # n/a
+Wed May  4 09:19:15 PDT 1988
+ken
+ken#3
+	DESCRIPTION:
+	#include <stdio.h>
+	main()
+	{
+	int i=4;
+	printf("%d\n",i);
+	}
+	when this program is "cc -go t t.c" the debuggers think they should be
+	looking in "stdio.h" instead of t.c for the source....
+
+	FIX/DISCUSSION:
+	this is because lxtitle() in scan.c in c0 was just eating the line,
+	instead of calling bg_file()
+	cgram.y had to be changed because it was calling beg_file() directly
+	instead of going through bg_file() (bg_file makes sure beg_file is
+	only called once)
+
+	FILES:
+		usr/src/cmd/sgs/pcc2/common/scan.c
+		usr/src/cmd/sgs/pcc2/common/cgram.y
+
+	RELEASE NOTE: (Document one or more of the following.)
+ENHANCEMENT:  
+PROBLEM_FIX:  
+	cc -g should now generate the correct pseudo-op so that the debuggers
+	know which file to expect the associated source code in.
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+===============================================================================
+unique id # (SUR: I0002188, some local unnumbered bug,)
+Tue May 24 13:51:03 PDT 1988
+ken
+ken#4
+	DESCRIPTION:
+	the following don't work!
+
+	I0002188:
+	#include <stdio.h>
+	#define MODE_3a (06700)
+	main()
+	{
+	unsigned short us;
+	us=MODE_3a;
+	if (~(us | ~MODE_3a)) {
+		printf("mode fail\n");
+		exit(1);
+	}
+	}
+
+	some local bug:
+	#include <stdio.h>
+	main()
+	{char *bug=hello;
+	 if (bug[0] < 128) /* because both should be converted to int before
+			an operation!!! K&R... not necessary, of course
+			if we know that a cmp.b will work, but 0x80 is
+			outside of a signed cmp.b!) */
+	  printf("correct\n");
+	 else
+	  printf("oops!\n");
+	}
+
+	FIX/DISCUSSION:
+	the final compare doesn't sign extend the (us | ~ MODE_3a) because us
+	is unsigned!  therefore, it doesn't think it needs to, but if we did
+	everything with integers, as defined in K&R, it would....
+	this simple means we lose some optimization
+
+	clocal() is simply now defined to return(p) and only that!
+	(by default .... maybe sometime we can find all the work-arounds
+	 necessary to use ifndef instead of ifdef)
+
+	FILES:
+		usr/src/cmd/sgs/pcc2/mach/local.c
+
+	RELEASE NOTE: (Document one or more of the following.)
+ENHANCEMENT:  
+PROBLEM_FIX:  
+	certain funny conversions and OR relationships will now work
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+========================================================================
+unique id # (SUR: I0002186)
+Wed May 25 16:32:03 PDT 1988
+ken
+ken#5
+	DESCRIPTION:
+	The compiler does not convert certain types in accordance with the xopen
+	Convert 'double' to unsigned char' fails.
+	Convert 'double' to unsigned short int' fails.
+	Convert 'float' to unsigned char' fails.
+	Convert 'float' to unsigned short int' fails.
+	Convert 'long float' to unsigned char' fails.
+	Convert 'long float' to unsigned short int' fails.
+	some test cases:
+	  main()
+	  {
+	    double x;
+	    unsigned char y;
+	    x=2.55E2;
+	    y=x;
+	    if (y!=0377)
+	      exit(1);
+	    exit(0);
+	  }
+	-------------------------------------------------------------------
+	  main()
+	  {
+	    double x;
+	    unsigned short int y;
+	    x=6.5535E4;
+	    y=x;
+	    if (y!=65535)
+	      exit(1);
+	    exit(0);
+	  }
+	--------------------------------------------------------------------
+
+	FIX/DISCUSSION:
+	The problem happens when the floating point number should set the
+	high order bit of the unsigned number to which it's converting.
+
+	This occurs because fmov.b %fp0,-9(%fp), does an signed conversion
+	into the byte at -9(%fp)... therefore if %fp0==128.0, the fmov.b
+	will place 0x7f (127) at -9(%fp).  This is not good!  The work around
+	is to fmov.l %fp0,%dn   followed by mov.b %dn,-9(%fp).
+	this works fine for unsigned short and unsigned character destinations,
+	but there is NO fix possible for unsigned int or unsigned long!
+	Therefore, no program should combine "unsigned int"s of bigger than
+	2 gigabytes!
+	The best fix would be some instruction which can do an unsigned
+	conversion, but nobody seems to have one!  This is arguably OK, since
+	floating point is by definition signed, and therefore shouldn't
+	be combined with unsigned numbers!
+
+	FILES:
+		usr/src/cmd/sgs/pcc2/mach/M68020/stin
+
+	RELEASE NOTE: (Document one or more of the following.)
+ENHANCEMENT:  
+PROBLEM_FIX:  
+	in accordance with XOpen, the compiler now generates the correct
+	code to:
+	Convert 'double' to unsigned char'
+	Convert 'double' to unsigned short int'
+	Convert 'float' to unsigned char'
+	Convert 'float' to unsigned short int'
+	Convert 'long float' to unsigned char'
+	Convert 'long float' to unsigned short int'
+	in cases where the conversion should set the high order bit
+TECHNOTE:   
+	it is impossible to do a conversion of 2gigabytes or higher
+	into an unsigned long (without doing the conversion by hand)
+	due to machine instructions on all machines seen so far.  That's
+	probably why XOpen doesn't test for them!
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+===============================================================================
+Mon Aug 15 23:23:38 PDT 1988
+hans
+	DESCRIPTION: changed mach/mach.mk not to use CFLAGS & LDFLAGS when
+	compiling w/ native compiler.
+
+	FIX/DISCUSSION:
+
+	FILES:
+	./mach/mach.mk
+===============================================================================
+

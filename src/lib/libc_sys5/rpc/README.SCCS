@@ -1,0 +1,63 @@
+Z =============================================================================
+X 1247
+X Tue Nov 26 13:08:39 PST 1991
+X simon
+X Fixed what strings
+X util/src/lib/libc_sys5/port/gen
+Z =============================================================================
+Z =============================================================================
+C 1248
+K LANG
+T Tue Nov 26 13:12:00 PST 1991
+U simon
+S Fixed what strings
+R util/src/lib/libc_sys5/rpc/au_ux_prot.c	 24.2
+R util/src/lib/libc_sys5/rpc/clnt_perr.c	 24.2
+R util/src/lib/libc_sys5/rpc/clnt_raw.c	 24.2
+R util/src/lib/libc_sys5/rpc/clnt_simp.c	 24.2
+R util/src/lib/libc_sys5/rpc/clnt_tcp.c	 24.2
+R util/src/lib/libc_sys5/rpc/clnt_udp.c	 24.2
+R util/src/lib/libc_sys5/rpc/get_time.c	 24.2
+R util/src/lib/libc_sys5/rpc/getdom.c	 24.2
+R util/src/lib/libc_sys5/rpc/getfh_i.c	 24.2
+R util/src/lib/libc_sys5/rpc/nfs_svc_i.c	 24.2
+R util/src/lib/libc_sys5/rpc/pmap_clnt.c	 24.2
+R util/src/lib/libc_sys5/rpc/pmap_gtmps.c	 24.2
+R util/src/lib/libc_sys5/rpc/pmap_gtprt.c	 24.2
+R util/src/lib/libc_sys5/rpc/pmap_prot.c	 24.2
+R util/src/lib/libc_sys5/rpc/pmap_rmt.c	 24.2
+R util/src/lib/libc_sys5/rpc/rename.c	 24.2
+R util/src/lib/libc_sys5/rpc/rhost.c	 24.2
+R util/src/lib/libc_sys5/rpc/rpc_prot.c	 24.2
+R util/src/lib/libc_sys5/rpc/svc.c	 24.2
+R util/src/lib/libc_sys5/rpc/svc_au_ux.c	 24.2
+R util/src/lib/libc_sys5/rpc/svc_auth.c	 24.2
+Z =============================================================================
+Z =============================================================================
+C 1249
+K LANG
+T Tue Nov 26 13:16:00 PST 1991
+U simon
+S Fixed what strings
+R util/src/lib/libc_sys5/rpc/svc_raw.c	 24.2
+R util/src/lib/libc_sys5/rpc/svc_simp.c	 24.2
+R util/src/lib/libc_sys5/rpc/svc_tcp.c	 24.2
+R util/src/lib/libc_sys5/rpc/svc_udp.c	 24.2
+R util/src/lib/libc_sys5/rpc/sysv42.c	 24.2
+R util/src/lib/libc_sys5/rpc/sysvexos.c	 24.2
+R util/src/lib/libc_sys5/rpc/xdr.c	 24.2
+R util/src/lib/libc_sys5/rpc/xdr_array.c	 24.2
+R util/src/lib/libc_sys5/rpc/xdr_float.c	 24.2
+R util/src/lib/libc_sys5/rpc/xdr_mem.c	 24.2
+R util/src/lib/libc_sys5/rpc/xdr_rec.c	 24.2
+R util/src/lib/libc_sys5/rpc/xdr_refnce.c	 24.2
+R util/src/lib/libc_sys5/rpc/xdr_stdio.c	 24.2
+R util/src/lib/libc_sys5/yp/yp_all.c	 24.2
+R util/src/lib/libc_sys5/yp/yp_bind.c	 24.2
+R util/src/lib/libc_sys5/yp/yp_enum.c	 24.2
+R util/src/lib/libc_sys5/yp/yp_master.c	 24.2
+R util/src/lib/libc_sys5/yp/yp_match.c	 24.2
+R util/src/lib/libc_sys5/yp/yp_order.c	 24.2
+R util/src/lib/libc_sys5/yp/yperr_str.c	 24.2
+R util/src/lib/libc_sys5/yp/ypprot_err.c	 24.2
+Z =============================================================================

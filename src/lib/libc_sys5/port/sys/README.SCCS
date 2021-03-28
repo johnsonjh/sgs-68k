@@ -1,0 +1,9 @@
+Z =============================================================================
+C 609
+K LANG
+T Wed Jun 12 12:22:37 PDT 1991
+U simon
+S Removed include of immu.h .  Not required.
+R util/src/lib/libc_sys5/port/sys/shmsys.c	 23.3
+B /lib/libc5.a
+Z =============================================================================

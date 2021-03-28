@@ -1,0 +1,90 @@
+Z =============================================================================
+C 77
+K LANG
+T Mon Feb 25 15:59:36 PST 1991
+U simon
+S Changed 020 depends to m68k for 040 processor
+D Changed 020 depends to m68k for 040 processor.  The 020 sections are all 
+D apropos to the 040
+R util/src/cmd/sgs/comp2/mach/local.c	 23.3
+R util/src/cmd/sgs/comp2/mach/macdefs.h	 23.3
+R util/src/cmd/sgs/comp2/mach/mach.mk	 23.3
+B /lib/c0
+B /lib/c1
+Z =============================================================================
+Z =============================================================================
+C 90
+K LANG
+T Wed Feb 27 15:36:38 PST 1991
+U simon
+S Updated make files for 040 release.
+R util/src/cmd/sgs/comp2/mach/mach.mk	 23.4
+R util/src/cmd/sgs/comp2/mach/onepass.mk	 23.3
+R util/src/cmd/sgs/comp2/mach/twopass.mk	 23.3
+B /lib/c0
+B /lib/c1
+Z =============================================================================
+Z =============================================================================
+C 417
+K LANG
+T Tue Apr 23 08:08:25 PDT 1991
+U simon
+P Unable to get into sting.  Paul S. did file an spr.
+S Removed code which dis-allowed -g information for global variable definitions
+D The code for tentative definitions seems to be somewhat unfinished.  This lead
+D to symbol table information for the -g option to be left out for unitialized 
+D global variable declarations.  This broke sdb.  Removed the code and all is
+D well in the world.  Ok, Ok, the rain forests are still being destroyed.  Also
+D 	int i;
+D 	static int i;
+D generates strange code instead of a syntax error, but who is counting.
+N The compiler was not generating the correct information for uninitialized
+N global data.  This information is now correct and works with SDB.
+N 
+R util/src/cmd/sgs/comp2/mach/debug.c	 23.3
+B /lib/c0
+Z =============================================================================
+Z =============================================================================
+C 828
+K LANG
+T Thu Aug 22 16:53:43 PDT 1991
+U roger
+P 5344
+S added code to correctly support profiling (in ANSI and NON-ANSI modes).
+D ******************   THE BUG     ***********************
+D cc -p      <source_file>    comes out with the following message:         
+D 
+D ld: undefined symbol  _mcount%  first referenced in /lib/libp/libc.a     
+D Because of this the profile command cannot be used.  
+D This happens for any source_file.
+D 
+D 
+D ******************   THE PROBLEM ***********************
+D 
+D for ANsi strict mode the libraries expect __mcount%, but the
+D compiler was producing a non-ansi strict symbol: _mcount
+D 
+D ******************   THE SOLUTION ***********************
+D 
+D In function bfcode() [ file ..../comp2/mach/local.c] [line 583]
+D you need to
+D insert the following code:
+D  if ( compiler_mode = MODE_STRICT_ANSI )
+D    printf("      jsr     _mcount%%\n");
+D  else
+D    printf("      jsr     mcount%%\n");
+D 
+D    you also need to declare compiler_mode as an extern int;
+D 
+D 
+D 
+R util/src/cmd/sgs/comp2/mach/local.c	 23.4
+B /lib/c0
+Z =============================================================================
+Z =============================================================================
+C 829
+K LANG
+T Thu Aug 22 16:57:39 PDT 1991
+U roger
+R util/src/cmd/sgs/comp2/mach/local.c	 23.5
+Z =============================================================================

@@ -1,0 +1,87 @@
+Z =============================================================================
+C 551
+K MISC
+T Mon Jun  3 12:41:04 PDT 1991
+U mitch
+P 4998 - fixed
+S bug fix in the routine updatetaent() .
+D The routine updatetaent() was expecting it's first argument to be a
+D pointer to the actual static area that gettaent returns. If the first
+D argument was a pointer to a diffrent ttyauth_t, then the first entry in
+D the dev_auth file would get clobbered.  The SCO sysadmsh had this
+D problem.  The routine was fixed (for 3.3) so the first argument doesn't
+D HAVE to point to gettaent's static.
+D 
+N The secure library routine updatetaent was fixed to accept the correct
+N arguments.
+R util/src/lib/libsec/gettaent.c	 23.2
+B /lib/libsec.a
+Z =============================================================================
+Z =============================================================================
+X 576
+X Wed Jun  5 16:20:55 PDT 1991
+X mitch
+X removed the libsec routine get_idletime, and the file it uses /etc/default/login.def
+X util/src/cmd/sadmin/etc
+Z =============================================================================
+Z =============================================================================
+C 760
+K LANG
+T Mon Aug  5 15:20:21 PDT 1991
+U mitch
+P 5232 FIXED
+P 4928 FIXED
+S Fixed two bugs: call to audit_tachange w/wrong args, and small buf in ta_btoa.
+D Two bugs were fixed:
+D 
+D 	1) The routine updatetaent(), was calling audit_tachange with the
+D 	   arguments backwards.  (SPR 4928)
+D 
+D 	2) The routine ta_btoa was using a temp string "tmp[128]" which as
+D 	   much to small under some conditions.  The string is now declared
+D 	   as "tmp[MAXGU * (NAME_MAX +1)]" ; this provieds room for the
+D 	   maximum number of names and the commas that seperate them. (SPR 5232)
+D 
+R util/src/lib/libsec/gettaent.c	 23.3
+B /lib/libsec
+Z =============================================================================
+Z =============================================================================
+C 761
+K LANG
+T Tue Aug  6 07:36:43 PDT 1991
+U simon
+S Removed useless mcs of .o's.  mcs will be done by install routines.
+R util/src/lib/libsec/libsec.mk	 23.4
+Z =============================================================================
+Z =============================================================================
+X 763
+X Tue Aug  6 11:10:14 PDT 1991
+X mitch
+X Increased the size of a character buffer in devconv
+X 
+X util/src/cmd/secure/conv
+Z =============================================================================
+Z =============================================================================
+C 919
+K LANG
+T Thu Sep  5 16:00:23 PDT 1991
+U mitch
+P 5375 closed
+S Fixed the bug in priv() where it was incorrectly checking for privileges.
+D 
+D The routine priv() was returning:
+D 
+D 	((priv.real | priv.eff) & arg)
+D 
+D it should have been returning:  (and is now)
+D 
+D 	(((priv.real | priv.eff) & arg) == arg)
+D 
+D The diffrence is, the first will return TRUE if the user has ANY of the
+D privileges in the argument.   The second way will return TRUE if the
+D user has ALL of the privileges in the argument.   
+D 
+D 
+R util/src/lib/libsec/privlib.c	 23.2
+B /lib/libsec.a 
+Z =============================================================================

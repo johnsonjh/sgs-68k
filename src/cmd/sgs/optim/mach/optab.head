@@ -1,0 +1,108 @@
+#ident	"@(#)optab.head	25.1	12/2/91 Copyright (c) 1991 by Arix Corp."
+/* optab.head */
+static char SCCSID[] = "@(#) optab.head:	2.1 83/07/08";
+
+/*	MC68000 Optimizer	*/
+
+/* This file contains the base data for the op code table.  It
+** also contains the op code table lookup routine.
+*/
+
+#include "ops.h"
+
+void oerr();
+void serr();
+/* findop -- find op code
+**
+** This routine finds the op code table entry, given an operator string.
+** The table is ordered lexically, and we use a binary search.  All real
+** and pseudo-ops that appear in the input must appear in this table.
+**
+** One wrinkle in the test algorithm is that, on a match, we must be sure
+** the table entry ends where the argument string ends.  If not, the argument
+** is less than the table entry.
+*/
+
+OP *
+findop(ptr,len)
+char * ptr;
+int len;
+{
+    int strncmp();
+    extern OP optab[];
+    register int low = 0;
+    register int high = OP_MAX-OP_MIN;	/* highest numbered slot in table */
+    register int cur;			/* current slot number */
+    register int result;		/* result of string comparison */
+
+    /* binary search loop */
+
+    while ( (cur=(high+low)/2), low <= high )
+    {
+	result = strncmp( ptr, optab[cur].op_name, len );
+	if (result < 0)
+	    high = cur-1;
+	else if (result > 0)
+	    low = cur+1;
+	else				/* match, maybe */
+	{
+	    if (optab[cur].op_name[len] == '\0')
+		return( &optab[cur] );	/* found:  return pointer to
+					** current slot
+					*/
+	    high = cur-1;		/* otherwise, treat as "low" */
+	}
+    }
+
+    /* falling out of loop, the search failed */
+
+    return ( 0 );			/* return NULL for op not found */
+
+/*NOTREACHED*/
+}
+/* getOP -- get OP pointer, given an op code number
+**
+** This routine returns a pointer to the unique OP structure for
+** an op code number.
+*/
+
+OP *
+getOP(opnum)
+OPCODE opnum;
+{
+    extern OP oplabel, opswitch;	/* defined below */
+	extern OP optab[];
+
+    if ( OP_MIN <= opnum && opnum <= OP_MAX )
+	return( &optab[opnum - OP_MIN] );
+    
+    if (opnum == LABEL)
+	return ( &oplabel );
+
+    if (opnum == SWITCH)
+	return ( &opswitch );
+    
+    oerr("Unknown op code in getOP()");
+/*NOTREACHED*/
+}
+/* Op code table */
+
+
+/* These operations are defined here because they don't go in the table.
+** However, there is still a unique structure for each of them.
+*/
+
+static OP oplabel =
+    { "",	LABEL,	1,	NODEST,	{0,0},	0,	NOOPP,	OF_VTRACE };
+
+/* The operands for a switch are:  the destination for the original jmp (1)
+** and an encoding of the branch table (2).  However, no RAND structure is
+** used for the second operand.  Therefore, we show only one operand.
+*/
+static OP opswitch =
+    { "",	SWITCH,	1,	NODEST,	{0,0},	0,	NOOPP,	OF_HBRA | OF_UBRA };
+
+/*	name	code	nsrc	dest	ssize	dsize	oppos	flags	*/
+
+static OP
+optab[] =

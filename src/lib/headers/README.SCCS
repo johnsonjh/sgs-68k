@@ -1,0 +1,37 @@
+Z =============================================================================
+X 175
+X Mon Mar 11 18:04:08 PST 1991
+X gjw
+X Changes made for dynamically allocated stdio. See DESRIPTION.
+X util/src/lib
+Z =============================================================================
+Z =============================================================================
+C 833
+K LANG
+T Fri Aug 23 10:15:28 PDT 1991
+U roger
+S added math constants to use in STRICT ANSI MODE.
+D while building an sgs we found that atan.c and another number of
+D math functions got error messages like "M_PI_2 undefined". In
+D math.h a bunch of constants are ifdef'ed to NOT be used in
+D STRICT ANSI MODE. To overcome this, I have included these
+D constants in _math.h.
+R util/src/lib/headers/_math.h	 23.3
+Z =============================================================================
+Z =============================================================================
+C 834
+K LANG
+T Fri Aug 23 10:27:41 PDT 1991
+U roger
+S I forgot a #.
+R util/src/lib/headers/_math.h	 23.4
+Z =============================================================================
+Z =============================================================================
+C 837
+K LANG
+T Fri Aug 23 16:24:53 PDT 1991
+U salete
+S replaced XX with __STRICT_STDC__
+R util/src/lib/headers/_errno.h	 23.3
+R util/src/lib/headers/_time.h	 23.3
+Z =============================================================================

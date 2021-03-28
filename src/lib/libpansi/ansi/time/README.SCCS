@@ -1,0 +1,79 @@
+Z =============================================================================
+C 827
+K LANG
+T Thu Aug 22 15:28:18 PDT 1991
+U salete
+S replaced XX with _POSIX_SOURCE
+R util/src/lib/libpansi/ansi/time/_addhour.c	 23.3
+R util/src/lib/libpansi/ansi/time/_dechour.c	 23.3
+R util/src/lib/libpansi/ansi/time/_getdst.c	 23.3
+R util/src/lib/libpansi/ansi/time/_time.var.c	 23.3
+R util/src/lib/libpansi/ansi/time/_tzset.c	 23.3
+R util/src/lib/libpansi/ansi/time/gmtime.c	 23.3
+R util/src/lib/libpansi/ansi/time/localtime.c	 23.3
+R util/src/lib/libpansi/ansi/time/mktime.c	 23.3
+Z =============================================================================
+Z =============================================================================
+X 832
+X Thu Aug 22 17:12:22 PDT 1991
+X salete
+X deleted -DXX
+X util/src/lib/libpansi/ansi/string/.
+Z =============================================================================
+Z =============================================================================
+C 858
+K LANG
+T Tue Aug 27 10:37:16 PDT 1991
+U salete
+P SPR 5344
+S add M2 when ansi, delete DXX when posix, add M2 and __STRICT_STDC__ when ansi&M4
+R util/src/lib/libpansi/ansi/time/time.mk	 23.4
+Z =============================================================================
+Z =============================================================================
+C 859
+K LANG
+T Tue Aug 27 10:45:44 PDT 1991
+U salete
+S change _POSIX_SOURCE with __STRIC_STDC__ and change position of underscore vari-
+S able with variavel without underscore.
+R util/src/lib/libpansi/ansi/time/_addhour.c	 23.4
+R util/src/lib/libpansi/ansi/time/_dechour.c	 23.4
+R util/src/lib/libpansi/ansi/time/_getdst.c	 23.4
+R util/src/lib/libpansi/ansi/time/_time.var.c	 23.4
+R util/src/lib/libpansi/ansi/time/_tzset.c	 23.4
+R util/src/lib/libpansi/ansi/time/gmtime.c	 23.4
+R util/src/lib/libpansi/ansi/time/localtime.c	 23.4
+R util/src/lib/libpansi/ansi/time/mktime.c	 23.4
+Z =============================================================================
+Z =============================================================================
+C 878
+K LANG
+T Thu Aug 29 16:45:25 PDT 1991
+U salete
+P SPR 5344
+S deleted -M2 and changed __STRICT_STDC for _ANSI
+R util/src/lib/libpansi/ansi/time/time.mk	 23.5
+Z =============================================================================
+Z =============================================================================
+C 901
+K LANG
+T Tue Sep  3 13:58:35 PDT 1991
+U salete
+S inserted one line with $(M4) before profile and nonprof. POSIX compiled files.
+R util/src/lib/libpansi/ansi/time/time.mk	 23.6
+Z =============================================================================
+Z =============================================================================
+C 1229
+K LANG
+T Thu Nov 21 11:39:32 PST 1991
+U simon
+S Cleaned up Salete's changes for ifdef variable used for ANSI mode vs POSIX mode
+R util/src/lib/libpansi/ansi/time/_addhour.c	 24.2
+R util/src/lib/libpansi/ansi/time/_dechour.c	 24.2
+R util/src/lib/libpansi/ansi/time/_getdst.c	 24.2
+R util/src/lib/libpansi/ansi/time/_time.var.c	 24.2
+R util/src/lib/libpansi/ansi/time/_tzset.c	 24.2
+R util/src/lib/libpansi/ansi/time/gmtime.c	 24.2
+R util/src/lib/libpansi/ansi/time/localtime.c	 24.2
+R util/src/lib/libpansi/ansi/time/mktime.c	 24.2
+Z =============================================================================

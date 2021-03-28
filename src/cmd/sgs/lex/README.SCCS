@@ -1,0 +1,13 @@
+Z =============================================================================
+C 706
+K LANG
+T Tue Jul  9 14:21:56 PDT 1991
+U simon
+S Lex generated code which the compiler could not handle.  Comment out until
+S c0 fixed.
+D The current compiler cannot handle initialization with a const qualified
+D variable.  The code is not required so it is being removed until the compiler
+D has been fixed.  SPR 5270
+R util/src/cmd/sgs/lex/sub2.c	 23.3
+B /usr/bin/lex
+Z =============================================================================

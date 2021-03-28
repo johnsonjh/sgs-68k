@@ -1,0 +1,12 @@
+/*	%W%	*/
+/*	ustat.h	1.1	*/
+/*	3.0 SID #	1.1	*/
+
+#ident	"%Z%uts/head:%M%	%I%"
+
+struct  ustat {
+	daddr_t	f_tfree;	/* total free */
+	ino_t	f_tinode;	/* total inodes free */
+	char	f_fname[6];	/* filsys name */
+	char	f_fpack[6];	/* filsys pack name */
+};

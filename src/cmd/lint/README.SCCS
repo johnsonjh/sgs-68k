@@ -1,0 +1,17 @@
+Z =============================================================================
+C 276
+K UTIL
+T Fri Mar 22 08:06:55 PST 1991
+U simon
+S Welll, they say love is better the second time around, how 'bout re-writes of
+S makefiles.  Fixed use of 'local' cc.
+R util/src/cmd/lint/lint.mk	 23.3
+Z =============================================================================
+Z =============================================================================
+C 699
+K UTIL
+T Tue Jul  9 07:35:26 PDT 1991
+U simon
+S yacc need to be a variable so it may be defined in macdefs/sgsdefs.
+R util/src/cmd/lint/lint.mk	 23.4
+Z =============================================================================

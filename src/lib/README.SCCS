@@ -1,0 +1,133 @@
+Z =============================================================================
+C 50
+K MISC
+T Tue Feb 19 13:27:40 PST 1991
+U gjw
+S Added libnls to list of LIBs in lib.mk
+D Added to the variable LIB libnls so that it can be built from
+D a top level library build or from a full build.
+R util/src/lib/lib.mk	 23.5
+Z =============================================================================
+Z =============================================================================
+C 82
+K LANG
+T Tue Feb 26 15:17:09 PST 1991
+U simon
+S changed the name of libansic to libposixansi to try to make things make sense 
+D Tried to make the directory names make sense
+R util/src/lib/lib.mk	 23.6
+Z =============================================================================
+Z =============================================================================
+C 123
+K LANG
+T Tue Mar  5 14:57:42 PST 1991
+U gjw
+S Changed libposixansi to libposansi in LIB variable to allow complete\
+S  make file name.
+R util/src/lib/lib.mk	 23.7
+Z =============================================================================
+Z =============================================================================
+C 175
+K LANG
+T Mon Mar 11 18:04:08 PST 1991
+U gjw
+S Changes made for dynamically allocated stdio. See DESRIPTION.
+D Stdio is now implemented as a doubly linked list of file structures.
+D The define _NFILE in stdio.h still exists to keep source level compatibility.
+D The way it is implemented is to have the first _NFILE structures in an array,
+D _iob[_NFILE], and then we malloc any extra structures that are needed.
+D 
+D The files that are affected by this change are
+D 
+D /src/build/util/src/includes/stdio.h
+D /src/build/util/src/lib/headers/_stdio.h
+D 
+D /src/build/util/src/lib/libposansi/ansi/stdio/:
+D 
+D _doprnt.c
+D _dowrite.c
+D _endopen.c
+D _filbuf.c
+D _findbuf.c
+D _findiop.c
+D _number.c
+D _stdio.var.c
+D fclose.c
+D fopen.c
+D iob.sh			this creates iob.c which initializes the _iob array.
+D sprintf.c
+D sscanf.c
+D stdio.mk
+D vsprintf.c
+D ../stdlib/_cleanup.c
+D ../port/stdio/fdopen.c
+D 
+D When files are closed the structures are placed onto one of two free lists; one
+D corresponding to structures in the _iob array, and the other corresponding to
+D malloced structures. The buffer associated with each structure is freed, and
+D the structures themselves are only freed on process exit.
+R util/src/lib/libposansi/ansi/stdio/_doprnt.c	 23.4
+R util/src/lib/libposansi/ansi/stdio/_dowrite.c	 23.3
+R util/src/lib/libposansi/ansi/stdio/_endopen.c	 23.3
+R util/src/lib/libposansi/ansi/stdio/_filbuf.c	 23.3
+R util/src/lib/libposansi/ansi/stdio/_findbuf.c	 23.3
+R util/src/lib/libposansi/ansi/stdio/_findiop.c	 23.3
+R util/src/lib/libposansi/ansi/stdio/_number.c	 23.3
+R util/src/lib/libposansi/ansi/stdio/_stdio.var.c	 23.3
+R util/src/lib/libposansi/ansi/stdio/fclose.c	 23.3
+R util/src/lib/libposansi/ansi/stdio/fopen.c	 23.3
+R util/src/lib/libposansi/ansi/stdio/sprintf.c	 23.3
+R util/src/lib/libposansi/ansi/stdio/sscanf.c	 23.3
+R util/src/lib/libposansi/ansi/stdio/vsprintf.c	 23.3
+R util/src/lib/libposansi/ansi/stdlib/_cleanup.c	 23.3
+R util/src/lib/libposansi/port/stdio/fdopen.c	 23.3
+R util/src/lib/headers/_stdio.h	 23.3
+B libc.a
+Z =============================================================================
+Z =============================================================================
+C 469
+K LANG
+T Thu May  9 14:58:30 PDT 1991
+U gjw
+S Made library build parallel.
+D Made the library build parallel. We execute lib.mk 3 times in the
+D background each time with a different set of libraries. We then wait
+D for each process to finish before continuing.
+R util/src/lib/lib.mk	 23.9
+Z =============================================================================
+Z =============================================================================
+C 592
+K MISC
+T Mon Jun 10 14:17:09 PDT 1991
+U gjw
+S Nohup files now put in /src/build/util/src instead of /src/build/util/src/lib.
+R util/src/lib/lib.mk	 23.10
+Z =============================================================================
+Z =============================================================================
+C 1167
+K LANG
+T Wed Nov  6 14:11:07 PST 1991
+U roger
+S included libFPSP.a in the libraries. Th only thing we have to do
+S with it is copy it into the $(LIB) directory.
+R util/src/lib/lib.mk	 24.2
+Z =============================================================================
+Z =============================================================================
+C 1174
+K LANG
+T Thu Nov  7 09:40:13 PST 1991
+U roger
+S included libFPSP.a in the /lib and lib/libp/ directories.
+R util/src/lib/lib.mk	 24.3
+B /lib/libFPSP.a
+B /lib/libp/libFPSP.a
+Z =============================================================================
+Z =============================================================================
+C 1226
+K UTIL
+T Thu Nov 21 09:59:39 PST 1991
+U roger
+S included libFPSP in the build process. This library is built as
+S part of $(LIBS3).
+R util/src/lib/lib.mk	 24.4
+Z =============================================================================

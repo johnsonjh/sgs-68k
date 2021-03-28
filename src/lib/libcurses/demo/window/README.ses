@@ -1,0 +1,28 @@
+#	START NEW ARIX SCCS HEADER
+#
+#	@(#) README.ses: version 25.1 created on 12/2/91 at 19:09:21
+#
+#	Copyright (c) 1990 by Arix Corporation
+#	All Rights Reserved
+#
+#	@(#)README.ses	25.1	12/2/91 Copyright (c) 1990 by Arix Corporation
+#
+#	END NEW ARIX SCCS HEADER
+#
+
+#ident	"@(#)libcurses/demo/window:README.ses	25.1"
+
+========================================================================
+pty.c      window.c				V.3 upgrade
+
+Mon Aug 25 17:01:21 PDT 1986			Chang
+
+	DESCRIPTION: Original port of /usr/src/lib/libcurses/demo/window
+		     routines.
+
+	FIX: 
+
+	FILES:
+	/usr/src/lib/libcurses/demo/window/pty.c
+	/usr/src/lib/libcurses/demo/window/window.c
+========================================================================

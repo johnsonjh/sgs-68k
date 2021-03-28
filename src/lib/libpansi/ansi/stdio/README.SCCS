@@ -1,0 +1,312 @@
+Z =============================================================================
+C 52
+K LANG
+T Wed Feb 20 10:20:49 PST 1991
+U simon
+S Checks for FIFO dis-allow freads of data in FIFO
+D The check for a FIFO in the source dis-allowed the read of data present.
+D We must allow the read to fail and then return the failure
+D 
+R util/src/lib/libansic/ansi/stdio/fgets.c	 23.3
+B /lib/libc.a
+B /lib/libca.a
+Z =============================================================================
+Z =============================================================================
+C 53
+K LANG
+T Wed Feb 20 10:23:48 PST 1991
+U simon
+S Check for FIFO breaks reading of data in FIFO
+D The check for FIFO is not needed and if there was data in the FIFO it would
+D never be read
+R util/src/lib/libansic/ansi/stdio/fread.c	 23.3
+B /lib/libc.a
+B /lib/libca.a
+Z =============================================================================
+Z =============================================================================
+X 175
+X Mon Mar 11 18:04:08 PST 1991
+X gjw
+X Changes made for dynamically allocated stdio. See DESRIPTION.
+X util/src/lib
+Z =============================================================================
+Z =============================================================================
+C 177
+K LANG
+T Mon Mar 11 18:28:46 PST 1991
+U gjw
+S stdio.mk :\
+S 	Added new rule to make iob.c from iob.sh. \
+S \
+S iob.sh :\
+S 	This script creates iob.c which initialises the _iob array.
+R util/src/lib/libposansi/ansi/stdio/stdio.mk	 23.3
+R util/src/lib/libposansi/ansi/stdio/iob.sh	 23.1
+B libc.a
+Z =============================================================================
+Z =============================================================================
+C 180
+K LANG
+T Tue Mar 12 09:35:46 PST 1991
+U gjw
+S Pointing to write directory for m4.def and mcount.def
+R util/src/lib/libposansi/ansi/stdio/stdio.mk	 23.4
+Z =============================================================================
+Z =============================================================================
+C 185
+K LANG
+T Tue Mar 12 10:48:13 PST 1991
+U gjw
+S The variable SGS wasn't being imported from $IROOT/cc. IROOT is imported so\
+S now we grep SGS= in $IROOT/cc then remove the SGS= bit and make that the sgs\
+S path to look for stdio.h
+R util/src/lib/libposansi/ansi/stdio/iob.sh	 23.2
+Z =============================================================================
+Z =============================================================================
+C 230
+K LANG
+T Fri Mar 15 09:48:44 PST 1991
+U gjw
+S Added _sortfree.c to help build the library !! Rolled rev for baseline OS.
+D _sortfree(iop) takes a file structure that is being closed and adds it to the
+D _freeiob list, if the _IOIOB flag is set. It adds it inorder of array index so
+D that when another file is opened we always get the lowest array index of _iob
+D structures.
+R util/src/lib/libposansi/ansi/stdio/_sortfree.c	 23.1
+B libc.a
+Z =============================================================================
+Z =============================================================================
+C 249
+K LANG
+T Tue Mar 19 13:30:26 PST 1991
+U gjw
+S Typo, I said siop._flag = _IOWRT & _IOSTRING, when in fact I meant siop._flag =\
+S  _IOWRT | _IOSTRING
+R util/src/lib/libposansi/ansi/stdio/sprintf.c	 23.4
+Z =============================================================================
+Z =============================================================================
+C 250
+K LANG
+T Tue Mar 19 13:35:17 PST 1991
+U gjw
+S Changed the & in siop._flag = _IOWRT & _IOSTRING to an | .
+R util/src/lib/libposansi/ansi/stdio/vsprintf.c	 23.4
+R util/src/lib/libposansi/ansi/stdio/sscanf.c	 23.4
+Z =============================================================================
+Z =============================================================================
+C 345
+K LANG
+T Thu Apr  4 16:53:31 PST 1991
+U gjw
+S Set the file descriptor field in the file struct to some illegal value.
+D It is necessary to set the file descriptor field to some illegal value,
+D in this case -1, so that when _filbuf is called from _doscan the read
+D will fail. We do not need to do a read since we have the data there in
+D local memory.
+R util/src/lib/libposansi/ansi/stdio/sscanf.c	 23.5
+B sscanf
+B libc.a
+Z =============================================================================
+Z =============================================================================
+C 394
+K LANG
+T Wed Apr 17 14:06:41 PDT 1991
+U gjw
+S Found a small but powerful bug. Need to |= the iop->_flag since they are
+S set in _findiop
+D _findiop sets the flags to _IOIOB or _IOFREE depending on where the iop
+D structure came from. The next thing _endopen does to assign the flags !!
+D I have changed this now so that we OR the flags together.
+R util/src/lib/libposansi/ansi/stdio/_endopen.c	 23.4
+Z =============================================================================
+Z =============================================================================
+C 397
+K LANG
+T Wed Apr 17 15:14:37 PDT 1991
+U gjw
+S Added a check for _firstbuf becoming NULL which is possible in some background
+S processes like getty and init.
+D If all file descriptors are closed then _firstbuf ends up pointing to NULL.
+D If a process then tries to open another file we used to bus error because
+D we didn't check if _firstbuf was NULL before trying to dereference it.
+D 
+D If _firstbuf is NULL we ignore setting _firstbuf->_prev = iop since iop wil
+D become _firstbuf (all file descriptors are closed therefore iop is the first
+D one). iop->_next = _firstbuf becomes NULL which is what we want and _firstbuf
+D becomes iop.
+R util/src/lib/libposansi/ansi/stdio/_findiop.c	 23.4
+Z =============================================================================
+Z =============================================================================
+C 483
+K LANG
+T Tue May 14 10:38:31 PDT 1991
+U gjw
+S Added #ifdef DYNAMIC around the code generated by this script.
+D Needed the #ifdef DYNAMIC so that the code isn't included when we build
+D the NODYNAMIC libraries. Without it _stdio.var.o is overwritten.
+R util/src/lib/libpansi/ansi/stdio/iob.sh	 23.3
+Z =============================================================================
+Z =============================================================================
+C 487
+K LANG
+T Tue May 14 17:05:40 PDT 1991
+U gjw
+S Got the #ifdef DYNAMIC on the wrong line !!
+R util/src/lib/libpansi/ansi/stdio/iob.sh	 23.4
+Z =============================================================================
+Z =============================================================================
+C 489
+K LANG
+T Thu May 16 09:14:40 PDT 1991
+U gjw
+S Put #ifdef DYNAMIC around the code so that it isn't compiled when making a NODYNAMIC library.
+D _sortfree is only used in the DYNAMIC version of fclose. When compiling
+D with NODYNAMIC we don't want to try and compile _sortfree because it
+D will blow up so we put #ifdef DYNAMIC around the code.
+R util/src/lib/libpansi/ansi/stdio/_sortfree.c	 23.2
+Z =============================================================================
+Z =============================================================================
+C 774
+K LANG
+T Tue Aug 13 07:06:40 PDT 1991
+U simon
+S The typo from hell.  #else needed {} to include two statements.
+D Still a few bugs in the system.  A typo set all buffers in stdio to four, yes
+D count them, four bytes long for file descriptors three and above.  Accounts
+D for a slight, almost un-noticable, decrease in util performance.
+R util/src/lib/libpansi/ansi/stdio/_findbuf.c	 23.4
+Z =============================================================================
+Z =============================================================================
+C 813
+K LANG
+T Thu Aug 22 13:44:13 PDT 1991
+U salete
+S replaced XX with _POSIX_SOURCE
+R util/src/lib/libpansi/ansi/stdio/_access81.s	 23.3
+R util/src/lib/libpansi/ansi/stdio/_cvt.c	 23.3
+R util/src/lib/libpansi/ansi/stdio/_doprnt.c	 23.5
+R util/src/lib/libpansi/ansi/stdio/fgets.c	 23.4
+Z =============================================================================
+Z =============================================================================
+C 825
+K LANG
+T Thu Aug 22 15:03:39 PDT 1991
+U salete
+S replaced XX with _POSIX_SOURCE
+R util/src/lib/libpansi/ansi/stdio/_memccpy.s	 23.3
+R util/src/lib/libpansi/ansi/stdio/_mktemp.c	 23.3
+R util/src/lib/libpansi/ansi/stdio/fputs.c	 23.3
+R util/src/lib/libpansi/ansi/stdio/gets.c	 23.3
+R util/src/lib/libpansi/ansi/stdio/perror.c	 23.3
+R util/src/lib/libpansi/ansi/stdio/puts.c	 23.3
+R util/src/lib/libpansi/ansi/stdio/tmpnam.c	 23.3
+Z =============================================================================
+Z =============================================================================
+C 856
+K LANG
+T Tue Aug 27 10:29:22 PDT 1991
+U salete
+P SPR 5344
+S add M2 whn ansi, delete DXX when posix, add M2 and __STRICT_STDC__ when M4&ansi
+R util/src/lib/libpansi/ansi/stdio/stdio.mk	 23.6
+Z =============================================================================
+Z =============================================================================
+C 863
+K LANG
+T Tue Aug 27 11:31:22 PDT 1991
+U salete
+S change _POSIX_SOURCE with __STRICT_STDC__ and position of underscore variable
+S with no underscore variable in ifdef statment.
+R util/src/lib/libpansi/ansi/stdio/../mcount.def	 23.3
+R util/src/lib/libpansi/ansi/stdio/_access81.s	 23.4
+R util/src/lib/libpansi/ansi/stdio/_cvt.c	 23.4
+R util/src/lib/libpansi/ansi/stdio/_doprnt.c	 23.6
+R util/src/lib/libpansi/ansi/stdio/fgets.c	 23.5
+R util/src/lib/libpansi/ansi/stdio/_memccpy.s	 23.4
+R util/src/lib/libpansi/ansi/stdio/_mktemp.c	 23.4
+R util/src/lib/libpansi/ansi/stdio/fputs.c	 23.4
+R util/src/lib/libpansi/ansi/stdio/gets.c	 23.4
+R util/src/lib/libpansi/ansi/stdio/perror.c	 23.4
+R util/src/lib/libpansi/ansi/stdio/puts.c	 23.4
+R util/src/lib/libpansi/ansi/stdio/tmpnam.c	 23.4
+Z =============================================================================
+Z =============================================================================
+C 872
+K LANG
+T Thu Aug 29 09:03:14 PDT 1991
+U salete
+P SPR 5344
+S deleted flag -M2 and changed __STRICT_STDC with _ANSI
+R util/src/lib/libpansi/ansi/stdio/stdio.mk	 23.7
+Z =============================================================================
+Z =============================================================================
+C 873
+K LANG
+T Thu Aug 29 09:09:25 PDT 1991
+U salete
+S changed __STRICT_STDC__ with _ANSI
+R util/src/lib/libpansi/ansi/stdio/_cvt.c	 23.5
+R util/src/lib/libpansi/ansi/stdio/_doprnt.c	 23.7
+R util/src/lib/libpansi/ansi/stdio/fgets.c	 23.6
+R util/src/lib/libpansi/ansi/stdio/_mktemp.c	 23.5
+R util/src/lib/libpansi/ansi/stdio/fputs.c	 23.5
+R util/src/lib/libpansi/ansi/stdio/gets.c	 23.5
+R util/src/lib/libpansi/ansi/stdio/perror.c	 23.5
+R util/src/lib/libpansi/ansi/stdio/puts.c	 23.5
+R util/src/lib/libpansi/ansi/stdio/tmpnam.c	 23.5
+Z =============================================================================
+Z =============================================================================
+C 904
+K LANG
+T Tue Sep  3 15:06:24 PDT 1991
+U salete
+D deleted a _STRICT_STDC flag from the compile line of posix.
+R util/src/lib/libpansi/ansi/stdio/stdio.mk	 23.8
+Z =============================================================================
+Z =============================================================================
+X 1194
+X Wed Nov 13 15:26:25 PST 1991
+X simon
+X Fixed the lib ordering for stdio inclusion.  Ordering was not performed for
+X POSIX and was wrong for ANSI.
+X util/src/lib/libpansi/ansi
+Z =============================================================================
+Z =============================================================================
+C 1212
+K LANG
+T Tue Nov 19 16:01:15 PST 1991
+U simon
+S Fixed up the changes to use _ANSI in compiles for _ vs !_ lib function names.
+R util/src/lib/libpansi/ansi/stdio/stdio.mk	 24.2
+Z =============================================================================
+Z =============================================================================
+C 1220
+K LANG
+T Wed Nov 20 10:19:20 PST 1991
+U simon
+S Put _cleanup in a new home.  This assures that it is WAY DOWN there below all
+S stdio calls to insure that the REAL one is used if ANY stdio stuff is used.
+R util/src/lib/libpansi/ansi/stdio/_flsbuf.c	 24.3
+R util/src/lib/libpansi/ansi/stdio/_stdio.var.c	 24.2
+R util/src/lib/libpansi/ansi/stdio/stdio.mk	 24.3
+Z =============================================================================
+Z =============================================================================
+C 1228
+K LANG
+T Thu Nov 21 11:24:42 PST 1991
+U simon
+S Got the ansi/POSIX names correct for .s files
+R util/src/lib/libpansi/ansi/stdio/_access81.s	 24.2
+R util/src/lib/libpansi/ansi/stdio/_memccpy.s	 24.2
+Z =============================================================================
+Z =============================================================================
+C 1246
+K LANG
+T Tue Nov 26 11:43:28 PST 1991
+U simon
+S Cleaned up what strings
+R util/src/lib/libpansi/port/gen/ttyname.c	 24.2
+R util/src/lib/libpansi/port/gen/getgrent.c	 24.2
+R util/src/lib/libpansi/port/gen/ftw.c	 24.2
+R util/src/lib/libpansi/ansi/stdio/_sortfree.c	 24.2
+Z =============================================================================

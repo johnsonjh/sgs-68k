@@ -1,0 +1,29 @@
+Z =============================================================================
+C 236
+K LANG
+T Fri Mar 15 15:00:36 PST 1991
+U jsaunder
+S Added sypport for symbolic links
+D changed the stat system call to lstat to support sym links
+D 
+N ftw uses lstat so that symbolic links can be detected while doing
+N a tree walk.
+R util/src/lib/libposansi/port/gen/ftw.c	 23.4
+R util/src/lib/libc_sys5/port/gen/ftw.c	 23.4
+B /lib/libc.a
+B /lib/libansic.a
+Z =============================================================================
+Z =============================================================================
+X 1246
+X Tue Nov 26 11:43:28 PST 1991
+X simon
+X Cleaned up what strings
+X util/src/lib/libpansi/ansi/stdio
+Z =============================================================================
+Z =============================================================================
+X 1250
+X Tue Nov 26 13:19:41 PST 1991
+X simon
+X Fixed what strings
+X util/src/lib/libc_sys5/yp
+Z =============================================================================

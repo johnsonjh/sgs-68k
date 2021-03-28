@@ -1,0 +1,9 @@
+#ident	"@(#):rofix	25.1	12/2/91 Copyright (c) 1991 by Arix Corp."
+#	ATT:ident	"cpp:common/:rofix	1.2"
+
+
+ed $1 <<!
+g/^[ 	]*\.data/s/data/text/
+w
+q
+!

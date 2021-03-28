@@ -1,0 +1,69 @@
+Z =============================================================================
+X 237
+X Fri Mar 15 16:07:20 PST 1991
+X jsaunder
+X interface for 4 new system calls. (lstat, lchown, symlink, readlink)
+X util/src/lib/libposansi/mach/sys
+Z =============================================================================
+Z =============================================================================
+X 300
+X Mon Mar 25 17:15:03 PST 1991
+X hans
+X Kernel open file extension compatibility. setrlimit() and getrlimit() sys calls.
+X util/src/cmd/crash/S3000
+Z =============================================================================
+Z =============================================================================
+C 960
+K LANG
+T Thu Sep 12 12:36:24 PDT 1991
+U simon
+S Removed fstatfs from libc ( POSIX ) It is SYSV only.
+R util/src/lib/libpansi/mach/mach.mk	 23.7
+B /lib/libc.a
+Z =============================================================================
+Z =============================================================================
+C 1055
+K LANG
+T Wed Oct  2 13:13:21 PDT 1991
+U simon
+S Changed lorder call to use one which reads the standard input, not *.o.  There
+S are too many '.o' files to do '*'.
+R util/src/lib/libpansi/mach/mach.mk	 23.8
+B /lib/libc.a
+Z =============================================================================
+Z =============================================================================
+C 1064
+K LANG
+T Thu Oct  3 07:40:42 PDT 1991
+U simon
+P 5354
+S Removed setpgrp from POSIX lib.  System V only.
+N The system call "setpgrp" has been removed from the POSIX libc.a .  This call
+N is only defined under SVID System V C.  If you wish to link programs which use
+N this call, please use the -SYSV flag to cc.  Please refer to the POSIX 1003.1
+N definition for the "setpgid" system call, the POSIX functional equivalent to
+N "setpgrp".
+R util/src/lib/libpansi/mach/mach.mk	 23.9
+B /lib/libc.a
+Z =============================================================================
+Z =============================================================================
+C 1078
+K UTIL
+T Mon Oct  7 08:54:56 PDT 1991
+U simon
+S added getpgrp to POSIX libc.  This is a cutdown version which had both
+S getpgrp and setpgrp before.  setpgrp is not defined in POSIX.
+N setpgrp has been removed from the POSIX libc.a .  This was there in error.
+N setpgrp is only defined in the SVID libc.a.  Please see the man pages for
+N setsid() and setpgid() for POSIX routines similar to the SVID setpgrp.
+R util/src/lib/libpansi/mach/mach.mk	 23.10
+B /lib/libc.a
+Z =============================================================================
+Z =============================================================================
+X 1194
+X Wed Nov 13 15:26:25 PST 1991
+X simon
+X Fixed the lib ordering for stdio inclusion.  Ordering was not performed for
+X POSIX and was wrong for ANSI.
+X util/src/lib/libpansi/ansi
+Z =============================================================================

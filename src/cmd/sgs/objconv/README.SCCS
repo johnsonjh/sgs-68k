@@ -1,0 +1,8 @@
+Z =============================================================================
+C 167
+K LANG
+T Thu Mar  7 16:13:34 PST 1991
+U gjw
+S Forced as to be compiled as a POSIX binary
+R util/src/cmd/sgs/objconv/objconv.mk	 23.3
+Z =============================================================================

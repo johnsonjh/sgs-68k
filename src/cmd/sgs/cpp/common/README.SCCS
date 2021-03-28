@@ -1,0 +1,192 @@
+Z =============================================================================
+C 303
+K LANG
+T Tue Mar 26 15:37:26 PST 1991
+U simon
+P 4675
+S cpp limits too small for Plum Hall tests.
+D Changed max escaped newlines to 600 to cover the method of line counting
+D used in Plum Hall tests.  509 characters required.
+R util/src/cmd/sgs/cpp/common/cpp.c	 23.3
+B /lib/cpp
+Z =============================================================================
+Z =============================================================================
+C 696
+K LANG
+T Tue Jul  9 07:30:17 PDT 1991
+U simon
+S cpp should not define it's own YACC.  This is only to be defined in 
+S macdefs / sgsdefs.
+R util/src/cmd/sgs/cpp/common/cpp.mk	 23.3
+Z =============================================================================
+Z =============================================================================
+C 769
+K LANG
+T Thu Aug  8 08:46:05 PDT 1991
+U simon
+S NCPS is a define in one of the included include files.  We want the local one.
+R util/src/cmd/sgs/cpp/common/cpp.c	 23.4
+Z =============================================================================
+Z =============================================================================
+C 791
+K LANG
+T Wed Aug 21 11:24:25 PDT 1991
+U roger
+P 5321
+S 
+S cpp did not like "\"
+D 
+D ******************   THE BUG     ***********************
+D /* define foo(x1,x2,x3) x1+x2+x3 */
+D 
+D #define foo(x1\
+D ,x2\
+D ,x3\
+D ) x1 \
+D +x2\
+D +x3\
+D 
+D j1.c: 2: bad formal: \
+D 
+D j1.c: 3: bad formal: \
+D 
+D j1.c: 4: bad formal: \
+D 
+D j1.c: 7: Unexpected EOF within #if, #ifdef or #ifndef
+D 
+D ******************   THE PROBLEM ***********************
+D 
+D cpp was unable to parse correctly the backslash continuation.
+D The reason was easy to found: it just did NOT care about it: no
+D actions were done in cpp to handle this case.
+D 
+D ******************   THE SOLUTION ***********************
+D 
+D in file cpp.c I have changed the function cotoken(). The
+D original function cotoken() has become cotoken2(), and the new
+D cotoken calls the old one and then looks for the "\^J" pattern
+D and wipes it out.
+D The new function cotoken is as follows:
+D 
+D /* backslash = 92
+D    linefeed  = 10
+D    */
+D char *
+D cotoken( p )
+D register char *p;
+D {
+D     register char *i,*j,*k;
+D     int odd;
+D 
+D     p = cotoken2(p);
+D     for (i=p ; *i != 0 ;i++)
+D     {
+D      while ( *i != 0 && *(i++) != 92 )  ;
+D      if ( *i != 0 )
+D      {
+D 	 odd=1;
+D 	 while ( *(i++) == 92 ) odd = !odd;
+D 	 if (odd && *(--i)==10)
+D 	 {
+D 	  for (k=i+1,j=i-1; *k != 0 ;k++,j++) *j = *k;
+D 	  *j = 0;
+D 	  *(j+1) = 0;
+D 	 }
+D       }
+D     }
+D     return(p);
+D }
+R util/src/cmd/sgs/cpp/common/cpp.c	 23.5
+B /lib/cpp
+Z =============================================================================
+Z =============================================================================
+C 1009
+K LANG
+T Mon Sep 23 13:24:23 PDT 1991
+U roger
+S two problems addressed:
+S 1) backslashes in the middle of the formals of a macro now are
+S accepted.
+S 2) cpp in SYSV puts no spaces before and after a macro.
+D for the change number 1) (to handle '\')
+D added code when it starts processing the formals of a macro in
+D function dodef [line 649]
+D for change number 2) 
+D function pushback was unconditionally inserting a blank before and
+D after a macro expansion. Changed so that it tests if it is in
+D SYSV mode and, if true,DOES NOT insert the blanks. 
+R util/src/cmd/sgs/cpp/common/mac.c	 23.3
+B /lib/cpp
+B /lib/cpp2
+B /lib/cpp4
+Z =============================================================================
+Z =============================================================================
+C 1047
+K LANG
+T Fri Sep 27 09:37:53 PDT 1991
+U roger
+S undone the change in previous delta that fixed  the problems we
+S had with cpp writing spaces before and after macros.
+D for some reason unknown to me , the change in previous delta to
+D fix "spaces before and after macros" caused the new cpp to stop
+D processing its input file before it was already finished, thus
+D causing c0 to die with a "bus error"
+R util/src/cmd/sgs/cpp/common/mac.c	 23.4
+B /lib/cpp
+Z =============================================================================
+Z =============================================================================
+C 1203
+K LANG
+T Thu Nov 14 15:56:04 PST 1991
+U simon
+S Typo disallowed debugging.
+D If the NODBG ifdef variable was not set a typo in the normally commented out code showed
+D up.  Gone, Gone, Gone!!
+R util/src/cmd/sgs/cpp/common/mac.c	 24.2
+B /lib/cpp
+Z =============================================================================
+Z =============================================================================
+C 1205
+K LANG
+T Mon Nov 18 13:37:36 PST 1991
+U simon
+P 5453
+S Removed code which broke recursive macro substitution.
+D The routine which adjusted the lower pointer to the disables address range for
+D expanded macros just plain should not have existed.  Now it doesn't.  In the
+D following example this is shown:
+D 
+D #define A aa
+D #define B bb
+D #define C(X,Y)	s(X,B,Y)
+D C(A,B);
+D 
+D Parse as follows:
+D 	C(A,B); -> C(A, bb );
+D 		       ^  ^  -- paint B blue over this range
+D 	C(A, bb ); -> C(A,B, bb );
+D 	C(A,B, bb ); -> C( aa ,B, bb );
+D 			  ^  ^ -- paint A blue over this range
+D 	C( aa ,B, bb ); -> s( aa ,B, bb );
+D 			  ^              ^ -- paint C blue over this range
+D 	s( aa ,B, bb ); -> s( aa , bb , bb );
+D 				  ^  ^ -- B painted blue
+D 
+D The old version updated as follows:
+D 	C(A,B); -> C(A, bb );
+D 		       ^  ^  -- paint B blue over this range
+D 	C(A, bb ); -> C(A,B, bb );
+D 			  ^    ^ -- update B to be blue over this range.  Bogus
+D 				    Dude!!
+D 	C(A,B, bb ); -> C( aa ,B, bb );
+D 			  ^  ^ -- paint A blue over this range
+D 				  update B
+D 	C( aa ,B, bb ); -> s( aa ,B, bb );
+D 			  ^              ^ -- paint C blue over this range
+D 					      update B and A
+D 	s( aa ,B, bb ); -> s( aa , bb , bb );
+D 				  Generate ERROR!!
+D 				  ^  ^ -- B painted blue
+R util/src/cmd/sgs/cpp/common/mac.c	 24.3
+B /lib/cpp*
+Z =============================================================================

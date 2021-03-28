@@ -1,0 +1,23 @@
+#	START NEW ARIX SCCS HEADER
+#
+#	@(#) README.ses: version 25.1 created on 12/2/91 at 20:08:31
+#
+#	Copyright (c) 1990 by Arix Corporation
+#	All Rights Reserved
+#
+#	@(#)README.ses	25.1	12/2/91 Copyright (c) 1990 by Arix Corporation
+#
+#	END NEW ARIX SCCS HEADER
+#
+
+#ident	"@(#)libplot/plot:README.ses	25.1"
+
+========================================================================
+Thu Aug 21 13:31:24 PDT 1986				
+Chang
+									
+	DESCRIPTION: Original port of libplot routines.
+	FIX: libplot.a generated. Not able to test.
+	Nothing was changed in this directory.
+	FILES:
+========================================================================

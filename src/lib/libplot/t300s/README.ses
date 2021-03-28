@@ -1,0 +1,23 @@
+#	START NEW ARIX SCCS HEADER
+#
+#	@(#) README.ses: version 25.1 created on 12/2/91 at 20:10:17
+#
+#	Copyright (c) 1990 by Arix Corporation
+#	All Rights Reserved
+#
+#	@(#)README.ses	25.1	12/2/91 Copyright (c) 1990 by Arix Corporation
+#
+#	END NEW ARIX SCCS HEADER
+#
+
+#ident	"@(#)libplot/t300s:README.ses	25.1"
+
+========================================================================
+Thu Aug 21 14:09:51 PDT 1986				
+Chang
+
+	DESCRIPTION: Original port of t300s routines.
+                     Nothing was changed in this directory.
+	FIX: lib300s.a generated. Not able to test.
+	FILES:
+========================================================================

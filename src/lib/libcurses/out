@@ -1,0 +1,45 @@
+
+The build of libcurses generates programs and header files.
+We remove any old versions of these files before we begin.
+
+	rm -f term.h keycaps curses.h keyname.c termcap.c tiget.c tnames.c tinames.c tifnames.c tifget.c
+
+libcurses.a is built using ./tmp for work space.
+Verifying the existence of ./tmp.
+
+	./tmp exists
+
+
+Building keycaps
+
+	rm -rf ./tmp/keycaps keycaps
+	grep "KEY_" caps > keycaps
+
+keycaps has been built
+
+
+Building ./curses.h
+
+	rm -f curses.h
+	ed - < curses.ed
+	 chmod 0664 curses.h
+	rm -rf ./tmp/keycaps
+
+curses.h has been built
+
+
+Building term.h
+
+	ed - < maketerm.ed
+	 chmod 0664 term.h tnames.c tinames.c tifnames.c
+
+term.h has been built
+
+	/src1/s90/src/bru/tools/cc -I. -DSIGTSTP=24 -SYSV -O -DS3000  -DM68040 -Dm68k -UM68020 -Z0202000095 -c _addch.c
+Can't find /src1/s90/src/bru/util/src/bootsgs/lib/cpp
+*** Error code 1
+
+Stop.
+*** Error code 1
+
+Stop.

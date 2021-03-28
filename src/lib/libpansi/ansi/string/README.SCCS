@@ -1,0 +1,51 @@
+Z =============================================================================
+C 826
+K LANG
+T Thu Aug 22 15:24:45 PDT 1991
+U salete
+S replaced XX with _POSIX_SOURCE
+R util/src/lib/libpansi/ansi/string/strerror.c	 23.3
+Z =============================================================================
+Z =============================================================================
+C 832
+K LANG
+T Thu Aug 22 17:12:22 PDT 1991
+U salete
+S deleted -DXX
+R util/src/lib/libpansi/ansi/string/string.mk	 23.3
+R util/src/lib/libpansi/ansi/string/../time/time.mk	 23.3
+Z =============================================================================
+Z =============================================================================
+C 857
+K LANG
+T Tue Aug 27 10:33:33 PDT 1991
+U salete
+P SPR 5344
+S add M2 when ansi, delete DXX when posix, add M2 and __STRICT_STDC__ when M4&ansi
+R util/src/lib/libpansi/ansi/string/string.mk	 23.4
+Z =============================================================================
+Z =============================================================================
+C 903
+K LANG
+T Tue Sep  3 15:02:23 PDT 1991
+U salete
+S insert line with $(M4) CC on prof. and nonprof.before the posix compiled files
+S without the _ANSI flag
+R util/src/lib/libpansi/ansi/string/string.mk	 23.5
+Z =============================================================================
+Z =============================================================================
+C 905
+K LANG
+T Tue Sep  3 15:09:39 PDT 1991
+U salete
+S changed POSIX SOURCE with __STRICT_STDC__ and underscore var. changed position with no underscore var.
+R util/src/lib/libpansi/ansi/string/strerror.c	 23.4
+Z =============================================================================
+Z =============================================================================
+C 907
+K LANG
+T Tue Sep  3 15:14:46 PDT 1991
+U salete
+S inserted __ before and after STRICT_STDC
+R util/src/lib/libpansi/ansi/string/strerror.c	 23.5
+Z =============================================================================

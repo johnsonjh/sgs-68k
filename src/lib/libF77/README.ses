@@ -1,0 +1,60 @@
+#	START NEW ARIX SCCS HEADER
+#
+#	@(#) README.ses: version 25.1 created on 12/2/91 at 18:29:53
+#
+#	Copyright (c) 1990 by Arix Corporation
+#	All Rights Reserved
+#
+#	@(#)README.ses	25.1	12/2/91 Copyright (c) 1990 by Arix Corporation
+#
+#	END NEW ARIX SCCS HEADER
+#
+
+#ident	"@(#)libF77:README.ses	25.1"
+
+========================================================================
+Wed Aug 20 11:27:27 PDT 1986				
+chang
+
+	DESCRIPTION: Original port of libF77 routines.
+	FIX: libF77.a generated. Not able to test.
+	FILES:
+========================================================================
+main.c
+Mon Sep  8 10:25:47 PDT 1986
+Chang
+	DESCRIPTION: Original port of libF77 routine.
+        The gsa test suite and some other programs have problems with
+        accuracy when rounding is left at extended precision. 
+	In V.2 set the rounding mode to double precision.
+
+	FIX: 
+
+	FILES:
+	/usr/src/lib/libF77/main.c
+=======================================================================
+pow_zi.c
+Mon Sep  8 11:20:55 PDT 1986
+Chang
+	DESCRIPTION: Original port of libF77 routine.
+        V.3 and V.2 are different in the procedure call z_div.
+        V.3 --- z_div(&x, p, a);
+        V.2 --- z_div(&x, a);
+
+	FIX:
+
+	FILES:
+	/usr/src/lib/libF77/pow_zi.c
+
+========================================================================
+Mon Sep 22 15:38:21 PDT 1986
+hanna
+
+	DESCRIPTION:
+		Install now puts libF77 into /lib. ??
+		I can't find anything to confirm or deny this.
+	FIX:
+	TECHNOTE:
+		/usr/*lib/libF77 is now found in /*lib/libF77.
+	FILES:
+===============================================================================

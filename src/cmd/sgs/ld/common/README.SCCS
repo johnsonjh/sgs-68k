@@ -1,0 +1,52 @@
+Z =============================================================================
+X 542
+X Fri May 31 09:07:13 PDT 1991
+X simon
+X Reinvented the use of the -z flag ( now the default ) and added -0.
+X util/src/cmd/sgs/ld/mach
+Z =============================================================================
+Z =============================================================================
+C 778
+K LANG
+T Wed Aug 14 08:48:15 PDT 1991
+U simon
+S Sorry James,  address zero is once again legal for reads.  ILLEGAL_0 ifdef in
+S globs.c
+D Too many applications seem to depend on bad refs to null
+D pointers sooo, until 3.4 they are going to be allowed.
+N The linker will be changed in the next release (3.4) to create binaries in
+N which references to address zero are illegal.  Please see the cc(1) man
+N page for the '-z' option, which will be the default, and the '-0' option
+N which is the current default.
+R util/src/cmd/sgs/ld/common/globs.c	 23.4
+B /bin/ld
+Z =============================================================================
+Z =============================================================================
+C 1207
+K LANG
+T Mon Nov 18 15:47:41 PST 1991
+U roger
+S change to get the shared libraries working
+D in pboslist() changed the use of ok2bind.
+D ok2bind is avariable that I don't know what was trying to do,
+D but now is allways set to 1. If any problems arise, contact
+D Barry Keane (he should know if that variable is only A1000
+D stuff, or it's important.
+R util/src/cmd/sgs/ld/common/ld2.c	 24.2
+B /bin/ld
+Z =============================================================================
+Z =============================================================================
+C 1222
+K UTIL
+T Wed Nov 20 14:10:40 PST 1991
+U roger
+S the change for the shared libs, was incompatible with ifiles.Changed
+S it to handle both ( It is unclear if it will work for ifiles and
+S shared libs AT THE SAME TIME)
+D in dfn_scn_grp() we process ifiles (among other things.) When we
+D see an ifile we set the flag ifile_present. When we get to the
+D point wher we have to start binding things, ok2bind is TRUE only
+D if we DO NOT have any ifile present.
+R util/src/cmd/sgs/ld/common/ld2.c	 24.3
+B /bin/ld
+Z =============================================================================

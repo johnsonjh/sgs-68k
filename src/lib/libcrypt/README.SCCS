@@ -1,0 +1,12 @@
+Z =============================================================================
+C 426
+K UTIL
+T Wed Apr 24 09:59:12 PDT 1991
+U gjw
+S Make file now makes a domestic version and international version of libcrypt.a
+D The domestic version of libcrypt.a contains the function decrypt, whereas 
+D the international version does not contain this. Also the crypt function
+D is different between international and domestic versions.
+R util/src/lib/libcrypt/libcrypt.mk	 23.3
+B /usr/lib/libcryt.a
+Z =============================================================================

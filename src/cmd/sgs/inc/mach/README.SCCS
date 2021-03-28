@@ -1,0 +1,9 @@
+Z =============================================================================
+C 549
+K LANG
+T Mon Jun  3 10:43:45 PDT 1991
+U simon
+S Added 040 magic number recognition.
+D Needed new magic number to recognize 68040
+R util/src/cmd/sgs/inc/mach/sgs.h	 23.3
+Z =============================================================================

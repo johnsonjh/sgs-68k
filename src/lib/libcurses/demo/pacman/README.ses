@@ -1,0 +1,29 @@
+#	START NEW ARIX SCCS HEADER
+#
+#	@(#) README.ses: version 25.1 created on 12/2/91 at 19:08:35
+#
+#	Copyright (c) 1990 by Arix Corporation
+#	All Rights Reserved
+#
+#	@(#)README.ses	25.1	12/2/91 Copyright (c) 1990 by Arix Corporation
+#
+#	END NEW ARIX SCCS HEADER
+#
+
+#ident	"@(#)libcurses/demo/pacman:README.ses	25.1"
+
+========================================================================
+Mon Aug 25 16:26:57 PDT 1986				
+Chang
+
+	DESCRIPTION: Original port of /usr/src/lib/libcurses/demo/pacman
+   	             routines.
+
+	FIX: 
+	FILES:
+	/usr/src/lib/libcursesd/demo/pacman/getopt.c
+	/usr/src/lib/libcursesd/demo/pacman/monster.c
+	/usr/src/lib/libcursesd/demo/pacman/movie.c
+	/usr/src/lib/libcursesd/demo/pacman/pacman.c
+	/usr/src/lib/libcursesd/demo/pacman/util.c
+========================================================================

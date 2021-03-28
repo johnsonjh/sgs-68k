@@ -1,0 +1,18 @@
+Z =============================================================================
+C 154
+K LANG
+T Thu Mar  7 15:50:35 PST 1991
+U gjw
+S Forced as to be compiled as a POSIX binary
+R util/src/cmd/sgs/f77/f77optim/f77optim.mk	 23.3
+Z =============================================================================
+Z =============================================================================
+C 479
+K LANG
+T Mon May 13 12:43:24 PDT 1991
+U simon
+S POSIX didn't fly with f77 optim.  Conflicts in the use of memcpy.  Use SVSV
+R util/src/cmd/sgs/f77/f77optim/f77optim.mk	 23.4
+R util/src/cmd/sgs/f77/f77optim/mach/mach.mk	 23.6
+B /usr/lib/f77optim
+Z =============================================================================

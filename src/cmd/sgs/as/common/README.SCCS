@@ -1,0 +1,24 @@
+Z =============================================================================
+C 482
+K LANG
+T Tue May 14 09:05:49 PDT 1991
+U simon
+S Errors in command line caused deref of null pointer.
+D If an error occured in the command line the printing of that error dereferenced
+D a null list of files.  The error routine now checks for a null arguement and
+D does not print it if null.
+R util/src/cmd/sgs/as/common/errors.c	 23.3
+B /bin/as
+Z =============================================================================
+Z =============================================================================
+C 1091
+K LANG
+T Wed Oct  9 10:34:12 PDT 1991
+U roger
+S added the -Y[md],dir and the -Yn,name options to the assembler.
+R util/src/cmd/sgs/as/common/pass0.c	 23.3
+B /bin/as
+B /bin/as2
+B /bin/as3
+B /bin/as4
+Z =============================================================================

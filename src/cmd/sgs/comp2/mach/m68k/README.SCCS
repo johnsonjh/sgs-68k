@@ -1,0 +1,86 @@
+Z =============================================================================
+C 76
+K LANG
+T Mon Feb 25 11:53:15 PST 1991
+U simon
+S changed 020 specific ifdefs to generic m68k
+D Added support for 040 processor.  m68k covers both 020 and 040.
+R util/src/cmd/sgs/comp2/mach/m68k/local2.c	 23.3
+B /lib/c0
+B /lib/c1
+Z =============================================================================
+Z =============================================================================
+C 320
+K LANG
+T Fri Mar 29 08:26:11 PST 1991
+U simon
+P 4953
+S Added production to fix temp assignments of return from xor
+D biff( func().a ^ func().b ); Failed with the return from the second func call
+D overwriting the return from the first.  Added a production to always store
+D the return in a register ( not the address of the return );
+N An error in handling of the use of exclusive or in a function call has been
+N fixed.  The line:
+N 
+N 	func( str().a ^ str().b ) 
+N 
+N could fail with the return of the first call to str being overwritten by
+N the return from the second call to str.
+N 
+R util/src/cmd/sgs/comp2/mach/m68k/stin	 23.3
+B /lib/c1
+B 
+Z =============================================================================
+Z =============================================================================
+C 332
+K LANG
+T Mon Apr  1 17:08:37 PST 1991
+U gjw
+S OK!! So one may not put # NEW in the stin file.  So hang me!!
+D OOPS!!!!
+R util/src/cmd/sgs/comp2/mach/m68k/stin	 23.5
+Z =============================================================================
+Z =============================================================================
+C 408
+K LANG
+T Fri Apr 19 10:03:53 PDT 1991
+U simon
+S Removed change make to attempt a fix for Xor of structure members
+D Code change caused back end to generate illegal assemble code.
+R util/src/cmd/sgs/comp2/mach/m68k/stin	 23.6
+B /lib/c1
+Z =============================================================================
+Z =============================================================================
+C 1180
+K LANG
+T Thu Nov  7 11:22:40 PST 1991
+U roger
+S included templates to support floating point emulation of fintrz and fscale.
+D for every template that has fintrz or fscale in it, a second template is introduced that does the same but jumping to a subroutine. Note that
+D the order is important. 
+D First we have the "emulated template" with a user flag ($U4). If
+D the -F flag is not set, the user_need() will fail and we'll find
+D the non-emulated template.
+R util/src/cmd/sgs/comp2/mach/m68k/stin	 24.2
+B /lib/c1
+Z =============================================================================
+Z =============================================================================
+C 1181
+K LANG
+T Thu Nov  7 11:27:59 PST 1991
+U roger
+S Included a new case in zzzcode(). ('U'). 
+S In the templates for the emulation of floating point we have the
+S following pattern
+S 
+S 		mov.ZTR fp0,-(%sp)
+S 		jsr ....
+S 		add.w &ZUR,%sp
+S 			^
+S 			Here we have to emit a 4,8 or 12
+S depending on the size of the operand we previously pushed.
+S That's what the 'U' case in zzzcode() is for.
+S 
+R util/src/cmd/sgs/comp2/mach/m68k/local2.c	 24.2
+B /lib/c1
+Z =============================================================================

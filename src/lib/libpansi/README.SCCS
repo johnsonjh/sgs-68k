@@ -1,0 +1,46 @@
+Z =============================================================================
+C 129
+K LANG
+T Wed Mar  6 14:04:44 PST 1991
+U gjw
+S Changed references to libansic to libposansi.
+R util/src/lib/libposansi/libposansi.mk	 23.4
+Z =============================================================================
+Z =============================================================================
+C 416
+K MISC
+T Sat Apr 20 13:06:28 PDT 1991
+U gjw
+S Changed any remaining occurrences of libposansi to libpansi.
+D The directory libposansi changed to libpansi to allow for SCCS to prepend
+D s. to the name. This means all occurrences of libposansi in the make files
+D had to be changed to libpansi.
+R util/src/lib/libpansi/libpansi.mk	 23.5
+Z =============================================================================
+Z =============================================================================
+C 1173
+K LANG
+T Thu Nov  7 09:35:04 PST 1991
+U roger
+S Changed the name of the "ansim" directory and makefile to
+S "posixm". Note also that all the math libraries are build and
+S archived in .../ansi/math, so thus the "Ignore cp: cannot access
+S math/*.o"
+R util/src/lib/libpansi/libpansi.mk	 24.2
+Z =============================================================================
+Z =============================================================================
+C 1219
+K LANG
+T Wed Nov 20 09:55:48 PST 1991
+U simon
+S No need for echo
+R util/src/lib/libpansi/libpansi.mk	 24.3
+Z =============================================================================
+Z =============================================================================
+C 1239
+K LANG
+T Fri Nov 22 15:44:27 PST 1991
+U simon
+S Removed the removes of the interum libs.  Looses history!!
+R util/src/lib/libpansi/libpansi.mk	 24.4
+Z =============================================================================

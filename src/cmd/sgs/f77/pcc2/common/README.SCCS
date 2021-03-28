@@ -1,0 +1,23 @@
+Z =============================================================================
+C 96
+K LANG
+T Thu Feb 28 16:09:32 PST 1991
+U simon
+S ansiized cost.c.  040ized reader.c
+S 
+D cost.c stringized the arg to printf.  Now uses the # op
+D 
+R util/src/cmd/sgs/f77/pcc2/common/cost.c	 23.2
+R util/src/cmd/sgs/f77/pcc2/common/reader.c	 23.3
+Z =============================================================================
+Z =============================================================================
+C 473
+K LANG
+T Fri May 10 10:40:55 PDT 1991
+U simon
+S WARNING!!  WARNING!!  Brain Lock!!  Left one M68020 define where an m68k define
+S required
+R util/src/cmd/sgs/f77/pcc2/common/match.c	 23.2
+B /usr/lib/f77pass2
+B 
+Z =============================================================================

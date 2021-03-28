@@ -1,0 +1,220 @@
+Z =============================================================================
+C 120
+K UTIL
+T Tue Mar  5 12:35:50 PST 1991
+U simon
+S Added code to check for timeouts set through halfdelay.  Ignored before
+D wgetch was ignoring timeouts set for the terminal using halfdelay.  A check
+D has been added to determine if this 'other' timeout is set before overwriting
+D it with the 'window' value set using 'timeout' or 'wtimeout'.
+N A bug in timeouts using halfdelay has been fixed.  The value was overridded
+N by values set using timeout().
+R util/src/lib/libcurses/screen/wgetch.c	 23.2
+B /lib/libcurses.a
+Z =============================================================================
+Z =============================================================================
+C 187
+K LANG
+T Tue Mar 12 12:38:24 PST 1991
+U simon
+P 4942
+S fcntl setting of O_NDELAY was breaking halfdelay and wtimeout.
+D The use of fcntl(NDELAY) was dis-allowing proper timeouts using halfdelay,
+D wtimeout, and timeout.  Removed that code and all is well
+N halfdelay() and wtimeout() now work as documented.  Previously timeout occured
+N immediatly.
+R util/src/lib/libcurses/screen/ttimeout.c	 23.2
+B /usr/lib/libcurses.a
+Z =============================================================================
+Z =============================================================================
+C 199
+K LANG
+T Wed Mar 13 09:09:54 PST 1991
+U simon
+S Generic changes from new lib source.  
+S 
+D Made updates taking changes from newer lib source.  Mostly better error
+D checking
+N Added better error checking to numerous libcurses routines
+R util/src/lib/libcurses/screen/_mvwinstr.c	 23.2
+R util/src/lib/libcurses/screen/color_cont.c	 23.2
+R util/src/lib/libcurses/screen/delterm.c	 23.2
+R util/src/lib/libcurses/screen/idlok.c	 23.2
+R util/src/lib/libcurses/screen/newpad.c	 23.2
+R util/src/lib/libcurses/screen/newwin.c	 23.2
+R util/src/lib/libcurses/screen/scurscreen.c	 23.2
+R util/src/lib/libcurses/screen/termcap.ed	 23.2
+R util/src/lib/libcurses/screen/tgetch.c	 23.2
+R util/src/lib/libcurses/screen/tput.c	 23.3
+R util/src/lib/libcurses/screen/whline.c	 23.2
+R util/src/lib/libcurses/screen/wrefresh.c	 23.2
+R util/src/lib/libcurses/screen/wvline.c	 23.2
+R util/src/lib/libcurses/screen/s_refresh.c	 23.2
+B /usr/lib/libcurses.a
+Z =============================================================================
+Z =============================================================================
+C 203
+K LANG
+T Wed Mar 13 10:05:24 PST 1991
+U gjw
+S Changed cur_term->_color_tbl to be SP->_color_tbl.
+R util/src/lib/libcurses/screen/color_cont.c	 23.3
+Z =============================================================================
+Z =============================================================================
+C 232
+K UTIL
+T Fri Mar 15 18:22:39 p   1991
+U craig
+P No spr entered yet for this problem
+S Use setitimer vs alarm for better resolution in reading func keys.
+D Curses tries to interpret func keys by noting the time between keys. If the
+D keys match the keys in a func key table and the keys came in rapid succession
+D then curses getch interprets the input as one func key. Curses times the keys
+D by setting an alarm system call for 1 sec and issuing a read. Since alarms
+D go off "on the second" the sigalarm could arrive any time from right now to
+D one sec from now. One sec is too long (people can type faster than that) and
+D no time at all is too short (func keys spit out characters at about 100 chars
+D per second). The setitimer system call allows one "tick" (50 Hz) resoution.
+D Curses now uses setitimer to wait 100 ms between keys.
+N In the past func keys sometimes showed up as several seperate characters.
+N Now function keys are always interpretted as func keys.
+R util/src/lib/libcurses/screen/tgetch.c	 23.3
+B /lib/libccurses.a
+B all utilites that use curses eg vi
+B 
+Z =============================================================================
+Z =============================================================================
+C 349
+K LANG
+T Fri Apr  5 10:37:49 PST 1991
+U simon
+S The alarm for function key recognition was too short for networked terminals.
+S Increased to 3/10 sec.
+D Function keys were not being recognized as such by curses.  Turns out
+D that over X terminals we need a longer timeout value.  Changed to
+D 3/10 second.
+R util/src/lib/libcurses/screen/tgetch.c	 23.4
+Z =============================================================================
+Z =============================================================================
+C 406
+K LANG
+T Fri Apr 19 09:32:37 PDT 1991
+U simon
+S make compile of lint libs System V
+D Lint checks files in the SYSV mode.  The lib for curses needs to be compiles
+D to match this
+D 
+R util/src/lib/libcurses/screen/makefile	 23.2
+Z =============================================================================
+Z =============================================================================
+C 455
+K LANG
+T Wed May  8 10:51:10 PDT 1991
+U gjw
+S Some busted debug code not fully implemented. Removed icvar and dcvar refs.
+R util/src/lib/libcurses/screen/init_costs.c	 23.2
+Z =============================================================================
+Z =============================================================================
+C 456
+K LANG
+T Wed May  8 11:08:21 PDT 1991
+U gjw
+S Chnaged r to key_ptrs in DEBUG code ! r should've been address of key struct.
+R util/src/lib/libcurses/screen/setkeymap.c	 23.2
+Z =============================================================================
+Z =============================================================================
+C 457
+K LANG
+T Wed May  8 11:28:58 PDT 1991
+U gjw
+S input_queue changed to _input_queue and fl_rawmode changed to _fl_rawmode !
+R util/src/lib/libcurses/screen/wgetch.c	 23.3
+Z =============================================================================
+Z =============================================================================
+C 458
+K LANG
+T Wed May  8 11:42:40 PDT 1991
+U gjw
+S Removed mix from DEBUG code, and type cast win->_y[y] to an int.
+R util/src/lib/libcurses/screen/wclrtoeol.c	 23.2
+Z =============================================================================
+Z =============================================================================
+C 459
+K LANG
+T Wed May  8 12:00:25 PDT 1991
+U gjw
+S Removed useless DEBUG code.
+R util/src/lib/libcurses/screen/initscr.c	 23.2
+Z =============================================================================
+Z =============================================================================
+C 466
+K LANG
+T Thu May  9 09:21:23 PDT 1991
+U gjw
+S Accidently slipped in a newline in the middle of a string literal!
+R util/src/lib/libcurses/screen/wclrtoeol.c	 23.3
+R util/src/lib/libcurses/screen/wgetch.c	 23.4
+Z =============================================================================
+Z =============================================================================
+C 599
+K LANG
+T Tue Jun 11 10:11:06 PDT 1991
+U simon
+S Made libcurses.a POSIX.  This will include processing of SIGTSTP.
+R util/src/lib/libcurses/screen/makefile	 23.3
+Z =============================================================================
+Z =============================================================================
+C 654
+K LANG
+T Tue Jun 25 10:01:25 PDT 1991
+U simon
+S Cleaned up for build/ansi compile
+R util/src/lib/libcurses/screen/makefile	 23.4
+Z =============================================================================
+Z =============================================================================
+C 663
+K UTIL
+T Tue Jun 25 11:20:34 PDT 1991
+U gjw
+S Added declaration of _outch to get this to compile.
+D The function _turn_off_background used the macro _PUTS which in turn used a 
+D function _outch. Unfortunately this was not declared at the head of wrefresh.c
+D and needed declaring in all functions that used this macro are function. This
+D particular one was missed. Now fixed by adding the line :
+D 
+D 	extern int _outch();
+R util/src/lib/libcurses/screen/wrefresh.c	 23.3
+B /usr/lib/libcurses.a
+Z =============================================================================
+Z =============================================================================
+C 780
+K LANG
+T Mon Aug 19 23:55:00 PDT 1991
+U mitch
+S In routine was tring to do a strcmp on a NULL ptr.
+D 
+D The pointer exit_attribute_mode was being used in a strcmp, when it might
+D have a value of NULL.  With the new compiler, 0 is not a valid address.
+D 
+D Now the strcmp is not done if the pointer is not a valid address.
+D 
+D 
+R util/src/lib/libcurses/screen/setupterm.c	 23.2
+B /usr/lib/libcurses.a
+Z =============================================================================
+Z =============================================================================
+C 964
+K LANG
+T Sat Sep 21 13:22:45 PDT 1991
+U simon
+S Shortened name of lint lib to allow build in POSIX environment.  15 chars!!
+R util/src/lib/libcurses/libcurses.mk	 23.2
+R util/src/lib/libcurses/screen/makefile	 23.6
+Z =============================================================================
+Z =============================================================================
+X 1250
+X Tue Nov 26 13:19:41 PST 1991
+X simon
+X Fixed what strings
+X util/src/lib/libc_sys5/yp
+Z =============================================================================

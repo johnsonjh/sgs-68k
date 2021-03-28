@@ -1,0 +1,29 @@
+
+10/15/88  K. Sherwood
+
+Include files: none
+
+Libraries: none
+
+Source: from Arix 4.24 68000 sgs	(zeplin:/S/4.0/usr/src/sgs/sgs.000)
+
+Tools for the creation of the sgs tape
+Built with library and include files from castra:/sgs/4x
+Had to be linked in by hand due to crt1.o crt0.o incompatibility
+as, cc, ld, cpp : s3000 sgs stuff		(castra:/sgs/s3000/bin)
+
+ar, make, yacc, lex: V.3 release 1.1		(castra:/bin)
+------------------------------------------------------------------------------
+# SAMPLE of line used to link the objects
+CWD="/"
+
+BINDIR="$CWD/bin"
+LIBDIR="$CWD/lib"
+ULIBDIR="$CWD/usr/lib"
+
+LIB="-Y L,$LIBDIR"	# the first (root) library
+ULIB="-Y U,$ULIBDIR"	# the second (usr) library
+
+
+set -x
+$BINDIR/ld $LIBDIR/crt0.o *.o $LIB $ULIB -ll -lc -o /mnt/ducky/sgsjunk/build/000/0on5/bin/cc

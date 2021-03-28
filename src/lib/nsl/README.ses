@@ -1,0 +1,64 @@
+#	START NEW ARIX SCCS HEADER
+#
+#	@(#) README.ses: version 25.1 created on 12/2/91 at 20:16:00
+#
+#	Copyright (c) 1990 by Arix Corporation
+#	All Rights Reserved
+#
+#	@(#)README.ses	25.1	12/2/91 Copyright (c) 1990 by Arix Corporation
+#
+#	END NEW ARIX SCCS HEADER
+#
+
+#ident	"@(#)nsl:README.ses	25.1"
+
+========================================================================
+Tue Aug 26 10:04:05 PDT 1986				
+Chang
+
+	DESCRIPTION: Original port of nsl routines.
+		     No directory lib/nsl is in V.2.
+	             Cannot load mkshlib.
+	FIX:
+	FILES:
+===============================================================================
+Wed Oct  1 10:49:59 PDT 1986
+hanna
+
+	DESCRIPTION:
+		When mkshlib is up and going, we should try this again.
+		ps. nsl should be made only  for the native compiler.
+	FIX:
+	TECHNOTE:
+	FILES:
+===============================================================================
+Wed Feb 11 12:06:16 PST 1987
+hanna
+
+	DESCRIPTION:
+		The first versions of v.3 on the current hardware will support
+		shared libraries, but we will not be providing any. With the
+		introduction of the 800 (bridge) the maximum address space
+		will increase so that locations of currently defined shared
+		libraries would be stuck in the middle of the new address 
+		space instead of at the top where we would like it to be.
+	FIX:
+		Anyway, for this release use a modified nsl.mk to make a
+		regular library. The nsl.mk.shar file contains the original
+		shared library make that will be used later.
+	TECHNOTE:
+	FILES:
+		usr/src/lib/nsl/nsl.mk
+		usr/src/lib/nsl/nsl.mk.shar
+===============================================================================
+Mon Aug 24 15:43:56 PDT 1987
+kelly
+	DESCRIPTIONS: 
+		ported 5.3.1 changes. Almost every file had changes of
+		some sort.
+===============================================================================
+Fri Sep 18 15:38:47 PDT 1987
+judy
+	DESCRIPTIONS: 
+		changed _import.h to make regular library.
+===============================================================================

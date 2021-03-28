@@ -1,0 +1,37 @@
+#ident	"@(#)rename.comp	25.1	12/2/91 Copyright (c) 1991 by Arix Corp."
+/*	Copyright (c) 1984 AT&T	*/
+/*	  All Rights Reserved  	*/
+
+/*	THIS IS UNPUBLISHED PROPRIETARY SOURCE CODE OF AT&T	*/
+/*	The copyright notice above does not evidence any   	*/
+/*	actual or intended publication of such source code.	*/
+
+/*
+ *	System V NFS - Release 3.2/V3
+ *
+ *	Copyright 1986, 1987, 1988 Lachman Associates, Incorporated (LAI)
+ *
+ *	All Rights Reserved.
+ *
+ *	The copyright above and this notice must be preserved in all
+ *	copies of this source code.  The copyright above does not
+ *	evidence any actual or intended publication of this source
+ *	code.
+ *
+ *	This is unpublished proprietary trade secret source code of
+ *	Lachman Associates.  This source code may not be copied,
+ *	disclosed, distributed, demonstrated or licensed except as
+ *	expressly authorized by Lachman Associates.
+ */
+#include <stdio.h>
+#include <syscall.h>
+
+extern int rename(const char *from,const char *to)
+{
+	int ret;
+
+	remove(to);
+	if (link(from, to) < 0) { return(-1); };
+	if ((ret = remove(from)) < 0) { remove(to); };
+	return(ret);
+}

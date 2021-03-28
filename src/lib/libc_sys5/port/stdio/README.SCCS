@@ -1,0 +1,142 @@
+Z =============================================================================
+X 107
+X Fri Mar  1 13:42:04 PST 1991
+X gjw
+X The define _NFILE in stdio.h is no longer the limit of open files.\
+X It is now possible to have open as many files as the kernel will allow.\
+X This has been done by making the file structure list into a linked list,\
+X  rather than an array of _NFILE.
+X /util/src/lib/libc_sys5
+Z =============================================================================
+Z =============================================================================
+C 112
+K LANG
+T Mon Mar  4 11:01:42 PST 1991
+U gjw
+S Added -DDYNAMIC to DEFLIST variable so make will build the dynamic version\
+S of stdio.
+R util/src/lib/libc_sys5/port/stdio/stdio.mk	 23.4
+Z =============================================================================
+Z =============================================================================
+C 113
+K LANG
+T Mon Mar  4 11:05:39 PST 1991
+U gjw
+S Added  #ifndef DYNAMIC to initial iop is NULL check.
+R util/src/lib/libc_sys5/port/stdio/flsbuf.c	 23.4
+B fclose
+B fflush
+Z =============================================================================
+Z =============================================================================
+C 114
+K LANG
+T Mon Mar  4 13:31:14 PST 1991
+U gjw
+S Brought fdopen.c up to date with changes to stdio with respect to _findiop.
+R util/src/lib/libc_sys5/port/stdio/fdopen.c	 23.3
+B fdopen
+B popen
+Z =============================================================================
+Z =============================================================================
+C 119
+K LANG
+T Tue Mar  5 09:22:42 PST 1991
+U gjw
+S Typo !
+R util/src/lib/libc_sys5/port/stdio/setbuf.c	 23.4
+B setbuf
+Z =============================================================================
+Z =============================================================================
+C 124
+K LANG
+T Tue Mar  5 17:23:51 PST 1991
+U gjw
+S TYPO !
+R util/src/lib/libc_sys5/port/stdio/fopen.c	 23.4
+B fopen
+B freopen
+Z =============================================================================
+Z =============================================================================
+C 178
+K LANG
+T Mon Mar 11 18:31:49 PST 1991
+U gjw
+S Changed grep '#define _NFILE' to grep '#define FOPEN_MAX'
+R util/src/lib/libc_sys5/port/stdio/iob.sh	 23.3
+Z =============================================================================
+Z =============================================================================
+C 186
+K LANG
+T Tue Mar 12 10:52:55 PST 1991
+U gjw
+S The variable SGS is not imported from $IROOT/cc so now we import $IROOT and\
+S grep for SGS= in $IROOT/cc, remove the SGS= and use this as the path to find\
+S usr/include/stdio.h
+R util/src/lib/libc_sys5/port/stdio/iob.sh	 23.4
+Z =============================================================================
+Z =============================================================================
+C 251
+K LANG
+T Tue Mar 19 13:39:39 PST 1991
+U gjw
+S Changed the & in strbuf._flag = _IOWRT & _IOSTRING to an | .
+R util/src/lib/libc_sys5/port/stdio/scanf.c	 23.4
+Z =============================================================================
+Z =============================================================================
+C 312
+K LANG
+T Wed Mar 27 18:22:20 PST 1991
+U gjw
+S Corrected popen so that poptr actually gets assigned to something before we \
+S use it !
+D We malloc a new structure when we do a popen so that the structure will be
+D around for first_pipe to point to when we exit popen. We free this structure 
+D when we pclose.
+R util/src/lib/libc_sys5/port/stdio/popen.c	 23.5
+B popen
+B pclose
+Z =============================================================================
+Z =============================================================================
+C 346
+K LANG
+T Thu Apr  4 17:01:38 PST 1991
+U gjw
+S Set the file descriptor field in the file struct to some illegal value.
+D It is necessary to set the file descriptor field to some illegal value,
+D in this case -1, so that the read in _filbuf, that is called from _doscan,
+D fails. We don't need to do a read since the structure is fake and we have
+D the data in local memory.
+R util/src/lib/libc_sys5/port/stdio/scanf.c	 23.5
+Z =============================================================================
+Z =============================================================================
+C 398
+K LANG
+T Wed Apr 17 16:13:18 PDT 1991
+U gjw
+S Added a check for _firstbuf being NULL before we dereference  it.
+D Some processes close all file descriptors and then expect to be able to
+D open a file ! The problem before the change was that when all file
+D descriptors are closed _firstbuf points to NULL then when the process
+D opens a new file _findiop tries to dereference _firstbuf.
+D 
+D We now check for _firstbuf being NULL.
+R util/src/lib/libc_sys5/port/stdio/findiop.c	 23.4
+Z =============================================================================
+Z =============================================================================
+C 488
+K LANG
+T Tue May 14 17:08:24 PDT 1991
+U gjw
+S Added #ifdef DYNAMIC around the code generated by this script.
+D We need to #ifdef DYNAMIC this code so that it doesn't get included
+D in the NODYNAMIC versions of the libraries.
+R util/src/lib/libc_sys5/port/stdio/iob.sh	 23.5
+Z =============================================================================
+Z =============================================================================
+C 491
+K LANG
+T Thu May 16 09:23:49 PDT 1991
+U gjw
+S Missed out an #ifdef DYNAMIC around the declaration of poptr in pclose.
+R util/src/lib/libc_sys5/port/stdio/popen.c	 23.6
+Z =============================================================================

@@ -1,0 +1,204 @@
+#	START NEW ARIX SCCS HEADER
+#
+#	@(#) README.ses: version 25.1 created on 12/2/91 at 20:19:05
+#
+#	Copyright (c) 1990 by Arix Corporation
+#	All Rights Reserved
+#
+#	@(#)README.ses	25.1	12/2/91 Copyright (c) 1990 by Arix Corporation
+#
+#	END NEW ARIX SCCS HEADER
+#
+
+#ident	"@(#)terminfo:README.ses	1.2"
+
+===============================================================================
+Mon Oct  6 10:36:57 PDT 1986
+hanna
+
+	DESCRIPTION:
+		Port of new terminal descriptions.
+		Use all of the new descriptions. 
+		Add the capability of handling the wy50 132 column.
+		Add the qume101 description.
+		Add the tvi910 description.
+		This must always be made with the 5.3 tic, in ../libcurses. 
+		That makefile will make localtic and install it in /tmp.
+		(the old 5.2 tic bus errors.)
+	FIX:
+	TECHNOTE:
+		The TERM name for wyse 50 terminals with the 132 column option 
+		are the normal wyse 50 names appended with a 'w'.  (eg: wy50w)
+		The following TERM strings are no longer supported:
+			4027-17ws 		4027ex		aa
+			aaa-rv-unk		alto		bitgraph-ni
+			bg-ni			bitgraph-nv	bg2.0-nv
+			bg-nv			bg		bg2.0-rv
+			bg-rv			bitgraph-rv	bg1.25-nv
+			bg1.25-rv		blit-pb		ca
+			infoton			obitgraph	obitgraph-nv
+			obitgraph-rv		screwpoint	zeph
+
+	FILES:
+===============================================================================
+Mon Aug 24 09:33:08 PDT 1987
+kelly
+sw#
+	DESCRIPTION: Ported the 5.3.1 terminfo; few changes:
+
+			att.ti
+			dec.ti - added vt220 support
+	FIX:
+	TECHNOTE:
+	FILES:
+===============================================================================
+Mon Apr 11 18:00:00 PDT 1988
+shen
+	DESCRIPTION: When ESC Y is typed too quickly it causes 
+	clear-to-end-of-screen. 
+
+	FIX/DISCUSSION: removed setting for key_eos (clear-to-end-of-screen key
+	sequence) for wyse 50 terminal type so that in the event that 
+	ESC Y is typed too quickly it will not be interpreted as 
+	clear-to-end-of-screen. 
+
+	FILES:	/V.3.1/usr/src/lib/terminfo/misc.ti
+
+	RELEASE NOTE: (Document one or more of the following.)
+no release note required because:
+ENHANCEMENT:  
+PROBLEM_FIX:  
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+	When ESC Y is typed too quickly it no longer causes 
+	clear-to-end-of-screen. 
+SPERRY_ONLY:
+===============================================================================
+unique id # n/a
+Fri Jun 10 15:45:52 PDT 1988
+ken
+ken#0
+	DESCRIPTION:
+	some terminal or other isn't supported!!!
+
+	FIX/DISCUSSION:
+	I got the fos description from Jim Dyson (from Orion Trading)
+	through Ginger White and typed it in by hand......
+	I guess we support whatever it was they wanted to support now!
+
+	FILES:
+
+	RELEASE NOTE: (Document one or more of the following.)
+ENHANCEMENT:  
+PROBLEM_FIX:  
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+===============================================================================
+Thur Sep 1 15:45:52 PDT 1988
+shen
+	DESCRIPTION: The terminfo description for wy50w (132 column mode wyse
+	50) is missing.
+
+	FIX/DISCUSSION: added terminfo description for wy50w.
+
+	FILES:	usr/src/lib/terminfo/misc.ti
+
+	RELEASE NOTE: (Document one or more of the following.)
+ENHANCEMENT:  
+PROBLEM_FIX:  
+	Added terminfo description for wy50w (132 column mode wyse 50).
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+===============================================================================
+Sun Mar 5 18:00:00 PDT 1989
+shen spr# 1923
+
+	DESCRIPTION: terminfo source code in /usr/lib/terminfo/src is missing
+
+	FIX/DISCUSSION: lib/terminfo/terminfo.mk was not installing terminfo
+		source code in /usr/lib/terminfo/src.
+
+	FILES:	usr/src/lib/terminfo/terminfo.mk
+
+	RELEASE NOTE: (Document one or more of the following.)
+ENHANCEMENT:  
+PROBLEM_FIX:  
+	terminfo source code is not installed in /usr/lib/terminfo/src 
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+===============================================================================
+Thur Sep 28 12:33:00 PDT 1989
+misha/shen
+	DESCRIPTION:  Support for interactive 386/IX AT terminals & X terminal
+
+	FIX/DISCUSSION: Added at386.ti for interactive 386/IX AT terminals &
+		added xterm.ti for X WINDOW terminals. 
+
+	FILES:	lib/terminfo/at386.ti
+		lib/terminfo/xterm.ti
+
+	RELEASE NOTE: (Document one or more of the following.)
+ENHANCEMENT:  
+PROBLEM_FIX:  
+	Added support for interactive 386/IX AT terminals & X WINDOW terminals
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+===============================================================================
+Wed Nov 2 10:00:00 PDT 1989
+shen
+	DESCRIPTION:  5.3.2 port
+
+	FILES:	lib/terminfo/*
+
+	FIX/DISCUSSION:
+
+	RELEASE NOTE:	
+
+===============================================================================
+Thur Dec  21 16:33:00 PDT 1989
+stone/shen
+	DESCRIPTION: On wyse terminals, keys with escape sequence definitions
+		were causing delay under vi.
+ 
+	FIX/DISCUSSION: Remove key definitions with escape sequence sine
+		these do not affect vi anyway. 
+	
+
+	FILES:	lib/terminfo/misc.ti
+
+	RELEASE NOTE: (Document one or more of the following.)
+ENHANCEMENT:  
+PROBLEM_FIX:  
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+===============================================================================
+

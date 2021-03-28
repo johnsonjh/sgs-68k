@@ -1,0 +1,30 @@
+Z =============================================================================
+C 237
+K LANG
+T Fri Mar 15 16:07:20 PST 1991
+U jsaunder
+S interface for 4 new system calls. (lstat, lchown, symlink, readlink)
+D Four new sytem calls have been added for symbolic link support.
+D they are lstat, symlink, readlink and chown.
+N There are four new system calls available to provide symbolic link support.
+N See these man pages: stat(2), chown(2), readlink(2) and symlink(2).
+N 
+R util/src/lib/libc_sys5/mach/mach.mk	 23.3
+R util/src/lib/libc_sys5/mach/sys/lchown.s	 23.2
+R util/src/lib/libc_sys5/mach/sys/lstat.s	 23.2
+R util/src/lib/libc_sys5/mach/sys/readlink.s	 23.2
+R util/src/lib/libc_sys5/mach/sys/symlink.s	 23.2
+R util/src/lib/libposansi/mach/mach.mk	 23.3
+R util/src/lib/libposansi/mach/sys/lchown.s	 23.2
+R util/src/lib/libposansi/mach/sys/lstat.s	 23.2
+R util/src/lib/libposansi/mach/sys/readlink.s	 23.2
+R util/src/lib/libposansi/mach/sys/symlink.s	 23.2
+B /lib/libc.a
+Z =============================================================================
+Z =============================================================================
+X 300
+X Mon Mar 25 17:15:03 PST 1991
+X hans
+X Kernel open file extension compatibility. setrlimit() and getrlimit() sys calls.
+X util/src/cmd/crash/S3000
+Z =============================================================================

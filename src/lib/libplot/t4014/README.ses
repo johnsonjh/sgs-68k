@@ -1,0 +1,23 @@
+#	START NEW ARIX SCCS HEADER
+#
+#	@(#) README.ses: version 25.1 created on 12/2/91 at 20:11:11
+#
+#	Copyright (c) 1990 by Arix Corporation
+#	All Rights Reserved
+#
+#	@(#)README.ses	25.1	12/2/91 Copyright (c) 1990 by Arix Corporation
+#
+#	END NEW ARIX SCCS HEADER
+#
+
+#ident	"@(#)libplot/t4014:README.ses	25.1"
+
+========================================================================
+Tue Aug 19 13:24:14 PDT 1986				
+chang
+									
+	DESCRIPTION: Original port of t4014 routines.
+	Nothing was changed in this directory.
+	FIX: lib4014.a generated. Not able to test.
+	FILES:
+========================================================================

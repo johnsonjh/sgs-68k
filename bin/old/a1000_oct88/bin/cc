@@ -1,0 +1,16 @@
+: cc -- cc frontend script for 4.24 SGS
+
+dir=/src1/a1000/sgs/old/a1000_oct88
+
+exec $dir/bin/bin/cc \
+	-YS,$dir/lib \
+	-Yp,$dir/lib \
+	-Y0,$dir/lib \
+	-Y1,$dir/lib \
+	-Y2,$dir/lib \
+	-Ya,$dir/bin \
+	-Yl,$dir/bin \
+	-YL,$dir/lib \
+	-YU,$dir/usr/lib \
+	-YI,$dir/usr/include \
+	$@

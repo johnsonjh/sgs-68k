@@ -1,0 +1,51 @@
+Z =============================================================================
+X 91
+X Wed Feb 27 15:41:45 PST 1991
+X simon
+X Added use of family variable instead of just M68020
+X util/src/cmd/sgs/coptim/mach
+Z =============================================================================
+Z =============================================================================
+C 407
+K LANG
+T Fri Apr 19 09:44:21 PDT 1991
+U simon
+P There was one but I cannot find it.
+S Removed optimization of second and supsequent assignments to a conv node of
+S a constant.
+D Code of the form:
+D 
+D 	short i, j;
+D 	int k;
+D 
+D 	i = 0;
+D 	k = j = i;
+D 
+D 	failed to initialize j;  This has been fixed in the global optimizer.
+D 	The sub-tree for the assignemt to j was being matched as the "SAME"
+D 	tree as the assigment to i.
+D 
+N Some statements, assignments to non-ints, were being removed by the optimizer
+N incorrectly.  A program like:
+N 
+N 	int i;
+N 	short j, k;
+N 
+N 	j = 10;
+N 
+N 	i = k = j;
+N 
+N Would not assign 10 to k.  This has been fixed.
+R util/src/cmd/sgs/coptim/common/bb.c	 23.3
+B /lib/coptim
+Z =============================================================================
+Z =============================================================================
+C 586
+K LANG
+T Mon Jun 10 10:51:47 PDT 1991
+U simon
+S if'ed around deref of null pointer
+D Code never checked for null return from strtok.  Now it does.
+R util/src/cmd/sgs/coptim/common/gather.c	 23.3
+B /lib/coptim
+Z =============================================================================

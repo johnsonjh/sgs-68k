@@ -1,0 +1,174 @@
+Z =============================================================================
+C 117
+K LANG
+T Mon Mar  4 14:57:35 PST 1991
+U gjw
+S Brought upto date the CORRECT version of stdio.h for use with dynamic stdio.
+R util/src/includes/stdio.h	 23.3
+Z =============================================================================
+Z =============================================================================
+C 184
+K LANG
+T Tue Mar 12 10:14:55 PST 1991
+U gjw
+S Removed a tab from the FOPEN_MAX define to help build both libc and libc5.
+R util/src/includes/stdio.h	 23.4
+Z =============================================================================
+Z =============================================================================
+C 242
+K LANG
+T Mon Mar 18 13:09:38 PST 1991
+U gjw
+S Added define for DYNAMIC if it is not already defined.
+D Added the DYNAMIC definition so that a user can undefine it if they don't \
+D need it.
+R util/src/includes/stdio.h	 23.5
+Z =============================================================================
+Z =============================================================================
+C 245
+K LANG
+T Tue Mar 19 10:16:38 PST 1991
+U gjw
+S The struct type name "file" has been changed to "_FILE". This had to be done \
+S to avoid a conflict with the type "file" in sys/file.h
+R util/src/includes/stdio.h	 23.6
+Z =============================================================================
+Z =============================================================================
+C 257
+K UTIL
+T Tue Mar 19 23:41:08 p   1991
+U craig
+S Use system limits values from param.h
+D Limits.h defines several items which are system parameters. The source of these
+D values is in sys/param.h. In order to have ONE source for these parameters
+D limits.h should include sys/param.h. The items that now use values from param.h
+D are: ARG_MAX = NCARGS, LINK_MAX = MAXLINK, PID_MAX = MAXPID, and
+D UID_MAX = MAXUID. OPEN_MAX didn't change since we don't have NOFILES anymore.
+D _POSIX_ARG_MAX etc. didn't change since they probably should drive param.h, not
+D be diven by param.h.
+R util/src/includes/limits.h	 23.3
+B /usr/include/limits.h
+Z =============================================================================
+Z =============================================================================
+X 318
+X Fri Mar 29 00:02:16 PST 1991
+X mitch
+X Removed timouts, et al from the login program
+X util/src/cmd/login/secure
+Z =============================================================================
+Z =============================================================================
+C 418
+K LANG
+T Tue Apr 23 09:52:02 PDT 1991
+U simon
+P 4938
+S Added smarts to include file to remove warnings in cc POSIX mode.
+D libc.h was not compatible with POSIX mode of cc in the past.  Even though this
+D is a -SYSV include file it is very useful for all modes of the compiler soooo,
+D fixed ifndefs and such to compile -M0 and -M1 without warnings.
+R util/src/includes/libc.h	 23.3
+Z =============================================================================
+Z =============================================================================
+C 548
+K LANG
+T Mon Jun  3 10:41:19 PDT 1991
+U simon
+S Added 68040 OS magic number.  M68040MAGIC_OS == 0523
+D Needed new magic number for ident of os/iopm os.  Added to filehdr.h to be
+D recognized by ISMAGIC() macro.
+R util/src/includes/filehdr.h	 23.3
+Z =============================================================================
+Z =============================================================================
+C 550
+K MISC
+T Mon Jun  3 10:53:13 PDT 1991
+U mitch
+S removed duplicate and redundant defines between param.h and sys/param.h :-)
+D The include files param.h and sys/param.h had a lot of the same defines,
+D most were defined to the same thing, but a few had diffrent values.  So,
+D the file param.h now just includes "sys/param.h".   ...and alls well that
+D ends well.
+N The include file "/usr/include/param.h has been changed simply inlcude
+N /usr/include/sys/param.h.  This was done because the files were almost
+N the same.
+R /util/src/includes/param.h	 23.3
+R /system/pm/sys/param.h	 23.7
+B /usr/include/param.h
+B /usr/include/sys/param.h
+Z =============================================================================
+Z =============================================================================
+C 591
+K LANG
+T Mon Jun 10 12:35:02 PDT 1991
+U simon
+S memmove is an ansi/posix routine.  Was in the "generic" section of the inc file
+R util/src/includes/string.h	 23.3
+Z =============================================================================
+Z =============================================================================
+C 627
+K LANG
+T Fri Jun 14 15:37:36 PDT 1991
+U gjw
+S Had to change NODYNAMIC to _NODYNAMIC for OS consistency.
+R util/src/includes/stdio.h	 23.7
+Z =============================================================================
+Z =============================================================================
+C 633
+K UTIL
+T Tue Jun 18 17:23:19 p   1991
+U craig
+P 5214
+S Get all dsdb and acdb headers for $(ROOT)/usr/include/sys/iopm.
+D The build process requires includes.mk to move all iopm/dsdb/acdb header files
+D to $(ROOT)/usr/include for the utilities to build. The information as to where
+D these header files are is redundant to the information in the spec_files.
+D When I moved the IOPM header files to /usr/include/sys/iopm/* I did not
+D change includes.mk, now I have.
+R util/src/includes/includes.mk	 23.4
+Z =============================================================================
+Z =============================================================================
+C 666
+K LANG
+T Tue Jun 25 11:39:54 PDT 1991
+U gjw
+S The FILE structure had struct file types as members. This was incompatible with
+S sys/file.h. We now have struct _FILE as members.
+D This file used to be okay but somehow thing got changed and the FILE structure
+D was suddenly incompatible with the file structure from sys/file.h. This has
+D been remedied by changing the typedef struct file { ... to 
+D typedef struct _FILE { ....
+R util/src/includes/stdio.h	 23.8
+Z =============================================================================
+Z =============================================================================
+C 740
+K LANG
+T Mon Jul 29 09:01:47 PDT 1991
+U simon
+S va_start was busted.  Started the pointer for varargs off by four bytes.
+D va_start incorrectly used __argtype, a compiler builtin.  This use was removed
+D to make varargs using stdarg.h work.
+N In previous releases varargs parsing using the definitions in stdarg.h were
+N initialized incorrectly using the  va_start macro.  This has been corrected in
+N this release.
+R util/src/includes/stdarg.h	 23.3
+Z =============================================================================
+Z =============================================================================
+C 742
+K LANG
+T Mon Jul 29 15:19:05 PDT 1991
+U simon
+S fixed bug where va_arg(short) would fail.
+D va_arg(short) would not work.  The pointer to the arglist would only be
+D inc'ed by sizeof(short) which is now how we pass on the stack.  Now
+D uses __argtype(short) which is a compiler builtin which does the right 
+D thing.
+R util/src/includes/varargs.h	 23.3
+Z =============================================================================
+Z =============================================================================
+C 1002
+K LANG
+T Mon Sep 23 09:05:59 PDT 1991
+U roger
+S changed "@ echo" to "@echo" (The former was causing an error)
+R util/src/includes/includes.mk	 23.5
+Z =============================================================================

@@ -1,0 +1,55 @@
+#	ATT:#ident	"terminfo:fortune.ti	1.3"	*/
+	
+#ident	"@(#)lib/terminfo:fortune.ti	25.1"
+
+# Manufacturer:	FORTUNE
+# Class:	III
+# Info:
+#	This is the original fortune entry, probably outdated
+#
+ofos|ofortune|fortune system,
+	is2=^_..,
+	lines#25, cols#80,
+	am, bw,
+	clear=^L$<20>, ed=^\Y$<3*>,
+	ich1=^\Q$<5>, dch1=^\W$<5>,
+	cup=^\C%p1%' '%+%c%p2%' '%+%c,
+	ht=^Z,
+	home=^^$<10>, cud1=^J$<3>, cuu1=^K$<3>, cub1=^H,
+	kbs=^H, kcud1=^Ay\r, khome=^A?\r, kcub1=^Aw\r, kcuf1=^Az\r, kcuu1=^Ax\r,
+	ind=^J$<5>,
+	smso=^\H`, rmso=^\I`, xmc#0,
+	smul=^\HP, rmul=^\IP,
+	el=^\Z,
+	rev=\EH, .sgr0=\EI,
+
+# new entry to add which came from Jim Dyson (Orion Trading) via Ginger White
+fos|FT|fortune|Fortune Terminal,
+	am, bw, xon,
+	cols#80, lines#25,
+	acsc=+?\,>.108-0`5j*k(l\sm"n$q&t!u)v%w#x-, bel=^G,
+	blink=\EN, bold=^\H`, civis=\E], clear=\f$<20>,
+	cnorm=\E\\, cr=\r, cub1=\b, cud1=\n$<3>, cuf1=\t,
+	cup=^\C%pl%'\s'%+%c%p2%'\s'%+%c, cuu1=^K$<3>,
+	cvvis=\E[, dch1=^\W$<5>, dim=^\I?, dl1=^\r$<15>,
+	ed=^\Y$<3*>, el=^\Z, enacs=\E)F, home=^^$<10>,
+	ich1=^\Q$<5>, il1=^\e$<15>, ind=\n$<5>, invis=^\HD,
+	is2=^.., is3=^\)F^\(B^O, kHLP=^Az\r, ka1=^A7\r,
+	ka3=^A9\r, kbs=\b, kc1=^Al\r, kc3=^A3\r, kcan=^ ,
+	kcub1=^Aw\r, kcud1=^Ay\r, kcuf1=^Az\r, kcuu1=^Ax\r,
+	kdch1=^At\r, kel=^AT\r, kent=^Aq\r, kf0=^A@\r,
+	kf1=^Aa\r, kf10=^Aj\r, kf11=^Ak\r, kf12=^Al\r,
+	kf13=^Am\r, kf14=^An\r, kf15=^Ao\r, kf16=^Ap\r,
+	kf17=^AA\r, kf18=^AB\r, kf19=^AC\r, kf2=^Ab\r,
+	kf20=^AD\r, kf21=^AE\r, kf22=^AF\r, kf23=^AG\r,
+	kf24=^AH\r, kf25=^AI\r, kf26=^AJ\r, kf27=^AK\r,
+	kf28=^AL\r, kf29=^AM\r, kf3=^Ac\r, kf30=^AN\r,
+	kf31=^AO\r, kf32=^AP\r, kf4=^Ad\r, kf5=^Ae\r,
+	kf6=^Af\r, kf7=^Ag\r, kf8=^Ah\r, kf9=^Ai\r,
+	khlp=^A@\r, khome=^A?\r, kick1=^Ar\r, knp=^Au\r,
+	kpp=^As\r, lf0=Help, lf1=F1, lf10=f10, lf2=F2, lf3=F3,
+	lf4=F4, lf5=F5, lf6=F6, lf7=F7, lf8=f8, lf9=f9,
+	rep=%p1%c\EF%p2%'?'%+%c, rev=\EH, ri=^K\r$<5>,
+	rmacs=^O, rmso=^\I$, rmul=\EZ, sgr0=^\I?^O, smacs=^N,
+	smso=^\H$, smul=\EY,
+# endken#0

@@ -1,0 +1,7 @@
+
+#ident	"@(#)sdb/com::rofix	25.1"
+
+g/^[ 	]*\.data/s/data/text/
+w
+q
+# OLD MOT:rofix	6.1	

@@ -1,0 +1,105 @@
+/*	START NEW ARIX SCCS HEADER			*/
+/*							*/
+/*	@(#) r0.c: version 25.1 created on 12/2/91 at 16:51:24	*/
+/*							*/
+/*	Copyright (c) 1990 by Arix Corporation		*/
+/*	All Rights Reserved				*/
+/*							*/
+#ident	"@(#)r0.c	25.1	12/2/91 Copyright (c) 1990 by Arix Corporation"
+/*							*/
+/*	END NEW ARIX SCCS HEADER			*/
+/*							*/
+/*	Copyright (c) 1984 AT&T	*/
+/*	  All Rights Reserved  	*/
+
+/*	THIS IS UNPUBLISHED PROPRIETARY SOURCE CODE OF AT&T	*/
+/*	The copyright notice above does not evidence any   	*/
+/*	actual or intended publication of such source code.	*/
+
+/*	ATT:#ident	"ratfor:r0.c	1.3"	*/
+	
+#ident        "@(#)ratfor:r0.c  25.1"
+
+#include "r.h"
+
+int	swlevel	= -1;
+int	swexit[5];
+int	nextcase[5];
+
+swcode() {
+	transfer = 0;
+	putcom("switch");
+	swlevel++;
+	if (swlevel >= 5)
+		error("Switches nested > 5");
+	swexit[swlevel] = yyval = genlab(1);
+	outcode("\tI");
+	outnum(yyval);
+	outcode(" = ");
+	balpar();
+	outdon();
+	nextcase[swlevel] = 0;
+	indent++;
+}
+
+getcase() {
+	int t, lpar;
+	char token[100];
+
+	if (nextcase[swlevel] != 0) {
+		outgoto(swexit[swlevel]);
+		outcont(nextcase[swlevel]);
+	}
+	indent--;
+	outcode("\tif(.not.(");
+	do {
+		outcode("I");
+		outnum(swexit[swlevel]);
+		outcode(".eq.(");
+		lpar = 0;
+		do {
+			if ((t=gtok(token)) == ':')
+				break;
+			if (t == '(')
+				lpar++;
+			else if (t == ')')
+				lpar--;
+			else if (t == ',') {
+				if (lpar == 0)
+					break;
+				}
+			outcode(token);
+		} while (lpar >= 0);
+		if (lpar < 0)
+			error("Missing left parenthesis in case");
+		if (t == ',')
+			outcode(").or.");
+	} while (t != ':');
+	if (lpar != 0)
+		error("Missing parenthesis in case");
+	outcode(")))");
+	nextcase[swlevel] = genlab(1);
+	outgoto(nextcase[swlevel]);
+	indent++;
+}
+
+getdefault() {
+	char token[20];
+	if (gnbtok(token) != ':')
+		error("Missing colon after default");
+	outgoto(swexit[swlevel]);
+	outcont(nextcase[swlevel]);
+	indent--;
+	putcom("default");
+	indent++;
+}
+
+endsw(n, def) {
+	if (def == 0)
+		outcont(nextcase[swlevel]);
+	swlevel--;
+	if (swlevel < -1)
+		error("Switches unwound too far");
+	indent--;
+	outcont(n);
+}

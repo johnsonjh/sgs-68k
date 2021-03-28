@@ -1,0 +1,51 @@
+Z =============================================================================
+C 812
+K LANG
+T Thu Aug 22 13:40:08 PDT 1991
+U salete
+S replaced XX with _POSIX_SOURCE
+R util/src/lib/libpansi/ansi/signal/signal.s	 23.3
+Z =============================================================================
+Z =============================================================================
+C 831
+K LANG
+T Thu Aug 22 17:09:44 PDT 1991
+U salete
+S deleted -DXX
+R util/src/lib/libpansi/ansi/signal/signal.mk	 23.3
+Z =============================================================================
+Z =============================================================================
+C 855
+K LANG
+T Tue Aug 27 10:23:44 PDT 1991
+U salete
+P SPR numbr 5344
+S add M2 when ansi, delete DXX when posix, add M2 and __STRICT_STDC__ when M4&ansisi 
+R util/src/lib/libpansi/ansi/signal/signal.mk	 23.4
+Z =============================================================================
+Z =============================================================================
+C 860
+K LANG
+T Tue Aug 27 10:52:34 PDT 1991
+U salete
+S replaced _POSIX_SOURCE with __STRICT_STDC__ and change the position of variable
+S underscore with variavel no underscore in ifdef statement.
+R util/src/lib/libpansi/ansi/signal/signal.s	 23.4
+Z =============================================================================
+Z =============================================================================
+C 874
+K LANG
+T Thu Aug 29 10:23:57 PDT 1991
+U salete
+P PR 5344
+S deleted -M2 and changed __STRICT_STDC__ with _ANSI
+R util/src/lib/libpansi/ansi/signal/signal.mk	 23.5
+Z =============================================================================
+Z =============================================================================
+C 908
+K LANG
+T Tue Sep  3 15:17:28 PDT 1991
+U salete
+S deleted _STRICT_STDC__ flag from the line that cpmpile posix.
+R util/src/lib/libpansi/ansi/signal/signal.mk	 23.6
+Z =============================================================================

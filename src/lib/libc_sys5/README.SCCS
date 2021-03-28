@@ -1,0 +1,50 @@
+Z =============================================================================
+C 107
+K LANG
+T Fri Mar  1 13:42:04 PST 1991
+U gjw
+S The define _NFILE in stdio.h is no longer the limit of open files.\
+S It is now possible to have open as many files as the kernel will allow.\
+S This has been done by making the file structure list into a linked list,\
+S  rather than an array of _NFILE.
+D Stdio is now implemented as a doubley linked list of file structures.
+D The define _NFILE  in stdio.h still exists to keep source level compatibility.
+D The way it is implemented is to have the first _NFILE structures in an array,
+D _iob[_NFILE], and then we malloc any extra structures that are needed.
+D 
+D The files that have been affected by this change are
+D 
+D /src/build/system/pm/sys/stdio.h
+D /src/build/util/src/lib/libc_sys5/port/stdio/:
+D 
+D 	data.c
+D 	doscan.c
+D 	filbuf.c
+D 	findiop.c
+D 	flsbuf.c
+D 	fopen.c
+D 	iob.sh		this creates iob.c which initialises the _iob array.
+D 	popen.c
+D 	scanf.c
+D 	setbuf.c
+D 	stdio.mk
+D 
+D When files are closed the structures are placed on one of two free lists; one
+D corresponding to structures in the _iob array, and the other corresponding to
+D malloced structures. The buffers associated with each structure is freed, and
+D the structures themselves are only freed on process exit.
+R /system/pm/sys/stdio.h	 23.2
+R /util/src/lib/libc_sys5/port/stdio/data.c	 23.3
+R /util/src/lib/libc_sys5/port/stdio/doscan.c	 23.3
+R /util/src/lib/libc_sys5/port/stdio/filbuf.c	 23.3
+R /util/src/lib/libc_sys5/port/stdio/findiop.c	 23.3
+R /util/src/lib/libc_sys5/port/stdio/flsbuf.c	 23.3
+R /util/src/lib/libc_sys5/port/stdio/fopen.c	 23.3
+R /util/src/lib/libc_sys5/port/stdio/popen.c	 23.4
+R /util/src/lib/libc_sys5/port/stdio/scanf.c	 23.3
+R /util/src/lib/libc_sys5/port/stdio/setbuf.c	 23.3
+R /util/src/lib/libc_sys5/port/stdio/iob.sh	 23.2
+R /util/src/lib/libc_sys5/port/stdio/stdio.mk	 23.3
+B /usr/include/stdio.h
+B /lib/libc5.a
+Z =============================================================================

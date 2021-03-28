@@ -1,0 +1,67 @@
+Z =============================================================================
+C 331
+K LANG
+T Mon Apr  1 15:50:38 PST 1991
+U gjw
+S Added the pragma nostrwrite to the make file and made (_)sys_errlist[] const.
+D The nostrwrite pragma forces the compiler to put all the string constants
+D into the text segment rather than the data section. This allows these
+D strings to be shared along with the text of the progam. Consequently
+D the (_)sys_errlist array has been made a const to allow it to be
+D compiled into the text section.
+R util/src/lib/libposansi/ansi/errno/errno.mk	 23.3
+R util/src/lib/libposansi/ansi/errno/_errno.var.c	 23.4
+Z =============================================================================
+Z =============================================================================
+C 382
+K MISC
+T Mon Apr 15 09:25:48 PDT 1991
+U gjw
+S Removed -Xnostrwrite from DEFLIST.
+D It seems that if -Xnostrwrite is defined things don't work. We have to 
+D iron out all the places where string constants are being written before
+D we can set this flag, but unfortunately we don't have the time just now.
+R util/src/lib/libposansi/ansi/errno/errno.mk	 23.4
+Z =============================================================================
+Z =============================================================================
+C 794
+K UTIL
+T Thu Aug 22 09:13:51 PDT 1991
+U salete
+R util/src/lib/libpansi/ansi/errno/_errno.var.c	 23.5
+Z =============================================================================
+Z =============================================================================
+C 830
+K LANG
+T Thu Aug 22 17:06:35 PDT 1991
+U salete
+S deleted -DXX
+R util/src/lib/libpansi/ansi/./errno/errno.mk	 23.5
+R util/src/lib/libpansi/ansi/./locale/locale.mk	 23.4
+Z =============================================================================
+Z =============================================================================
+C 838
+K LANG
+T Fri Aug 23 16:45:44 PDT 1991
+U salete
+S replaced _POSIX_SOURCE with __STRICT_STDC_ and changed the position of the _variable with variable
+R util/src/lib/libpansi/ansi/errno/_errno.var.c	 23.5
+Z =============================================================================
+Z =============================================================================
+C 853
+K LANG
+T Tue Aug 27 10:13:35 PDT 1991
+U salete
+P 
+P SPR number 5344
+S add M2 when ansi, delete -DXX when posix, add M2 and __STRICT_STDC when ansi&M4  
+R util/src/lib/libpansi/ansi/errno/errno.mk	 23.5
+Z =============================================================================
+Z =============================================================================
+C 869
+K LANG
+T Wed Aug 28 14:31:54 PDT 1991
+U salete
+S changed position of one underscore variable with the no underscore
+R util/src/lib/libpansi/ansi/errno/_errno.var.c	 23.6
+Z =============================================================================

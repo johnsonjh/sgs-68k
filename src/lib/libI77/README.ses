@@ -1,0 +1,131 @@
+#	START NEW ARIX SCCS HEADER
+#
+#	@(#) README.ses: version 25.1 created on 12/2/91 at 18:41:48
+#
+#	Copyright (c) 1990 by Arix Corporation
+#	All Rights Reserved
+#
+#	@(#)README.ses	25.1	12/2/91 Copyright (c) 1990 by Arix Corporation
+#
+#	END NEW ARIX SCCS HEADER
+#
+
+#ident	"@(#)libI77:README.ses	25.1"
+
+========================================================================
+Tue Aug 19 13:24:14 PDT 1986				chang
+									
+	DESCRIPTION: Original port of libI77 routines.
+	FIX: libI77.a generated. Not able to test.
+	FILES:
+===============================================================================
+Tue Sep 23 06:21:59 PDT 1986
+hanna
+
+	DESCRIPTION:
+		The library has been moved to /*lib. (was in /usr/*lib)
+		A profiled version is in /usr/*lib/libp.
+		STRANGE.
+	FIX:
+	TECHNOTE:
+	FILES:
+===============================================================================
+
+Mon Sep  8 13:10:47 PDT 1986
+Chang
+									
+	DESCRIPTION: ecvt.c is slightly different in V.3 version and
+	V.2 version as following.
+        #if !defined(pdp11) && !defined(u3b5)
+        .....
+        #else
+  		frexp(tvalue, &binexp);
+        #endif
+
+	FIX: No change was made.
+
+	FILES:
+	/usr/src/lib/libI77/ecvt.c
+=====================================================================
+Mon Sep  8 13:17:21 PDT 1986
+Chang
+	DESCRIPTION: err.c is slightly different in V.3 version and
+	V.2 version as followwing.
+	V.3 --- setvbuf(stdout, 0, _IOLBF, 0);	/* the buf arg in 
+	                                           setvbuf? */
+	V.2 --- setvbuf(stdout, _IOLBF, 0, 0);
+	FIX: 
+		hanna:
+		Note that the 5.3 argument ordering is correct.
+		The ordering in the setvbuf subroutine has been changed to match
+		the documentation.
+	FILES:
+	/usr/src/lib/libI77/err.c
+========================================================================
+Wed Mar 26 12:57:52 PST 1986
+hanna
+	DESCRIPTION:
+	f77 could not read unformatted data of form
+	2*,
+	which was supposed to skip one complex input and one 
+	double precision input.
+	FIX:
+	l_C: the routine that reads complex type input would swallow (GETC)
+	the "2", and so not recognize the * syntax.
+	an ungetc was added so that it could reread the digit.
+	FILES:
+	/usr/src/sgs/sgs.020/lib/libI77/lread.c
+============================================================================
+=====================================================================
+wrtfmt.c
+Mon Sep  8 13:28:26 PDT 1986
+Chang
+									
+	DESCRIPTION: wrtfmt.c is slightly different in V.3 version and
+	V.2 version as followwing.
+        V.3 --- if(dd != 0) dp -= scale;
+	V.2 --- if(p->pf != 0) dp -= scale;
+
+	FIX: No change was made because dd is the temporary contains
+	     p->pf.
+
+	FILES:
+	/usr/src/lib/libI77/wrtfmt.c
+===============================================================================
+Mon Sep 22 16:24:47 PDT 1986
+hanna
+sw#
+	DESCRIPTION:
+		After the fopen call, there is now a printf("hey %s....
+		if the fopen fails. Seriously, guys.
+	FIX:
+		Comment out the test and printf
+		Send att bug paper.
+	TECHNOTE:
+	FILES:
+		/usr/src/lib/libI77/endfile.c
+===============================================================================
+Tue Sep 23 06:16:00 PDT 1986
+hanna
+	DESCRIPTION:
+		the var "reading" is now set before an finit in routine
+		s_rsue.
+	FIX:
+	TECHNOTE:
+	FILES:
+		/usr/src/lib/libI77/sue.c
+===============================================================================
+Tue Sep 29 09:16:00 PDT 1987
+judy
+sw0
+	DESCRIPTION:
+		Look like a logic bug in the code.
+	FIX: 	Fixed
+	FILES:
+		usr/src/lib/libI77/rdfmt.c
+	TECHNOTE:
+		Line 123 was:
+		else if (*ps='f' || *ps == 'F') { *n=0; return(0); }
+		Now:
+		else if (*ps=='f' || *ps == 'F') { *n=0; return(0); } /* sw0 */
+===============================================================================

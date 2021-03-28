@@ -1,0 +1,284 @@
+#	START NEW ARIX SCCS HEADER
+#
+#	@(#) README.ses: version 25.1 created on 12/2/91 at 19:07:59
+#
+#	Copyright (c) 1990 by Arix Corporation
+#	All Rights Reserved
+#
+#	@(#)README.ses	25.1	12/2/91 Copyright (c) 1990 by Arix Corporation
+#
+#	END NEW ARIX SCCS HEADER
+#
+========================================================================
+Mon Aug 25 16:03:59 PDT 1986				
+Chang
+
+	DESCRIPTION: Original port of libcurses/screen routines.
+        There are 8,000 lines differences when do a diff in between
+	V.3 and V.2.
+
+	FIX: libcurses.a was generated. Not able to test. 
+
+	FILES:
+========================================================================
+Tue Sep  9 15:18:16 PDT 1986
+Chang
+There are a lots of differences in V.3 to following files:
+addch.c, addstr.c, capnames.c, doupdate.c, endwin.c, getch.c, getstr.c,
+initkeypad.c, initscr.c, insch.c, ll_refresh.c, makenew.c, newterm.c,
+scroll.c, setupterm.c, show.c, tparm.c, vidputs.c.
+
+There are some changes in between V.3 and V.2 in following files:
+box.c, cbreak.c, deleteln.c, doprnt.c, draino.c, flushinp.c, insertln.c,
+mvwprintw.c, mvwscanw.c, nocbreak.c, noraw.c, overlay.c, overwrite.c,
+putp.c, raw.c, tputs.c, typeahead.c, unctrl.c, vsprintf.c, wprintw.c.
+
+The following files are slightly changed:
+beep.c, clearok.c, clrtobot.c, curses.c, def_prog.c, delch.c, delwin.c,
+doscan.c, erase.c, erasechar.c, flash.c, gettmode.c, has_ic.c,
+intrflush.c, killchar.c, longname.c, m_addch.c, m_erase.c, m_initscr.c,
+meta.c, move.c, mvcur.c, mvprintw.c, mvscanw.c, mvwin.c, nl.c, printw.c,
+resetterm.c, resetty.c, scanw.c, set_term.c, setterm.c, subwin.c,
+touchwin.c, vsscanf.c, wattroff.c, wscanw.c.
+===============================================================================
+Mon Sep 29 15:21:16 PDT 1986
+hanna
+
+	DESCRIPTION:
+		Some disturbing or interesting items.
+		. it appears that SYSV is defined, but napms.c has some sort
+		  of note saying use it at your own risk -- check out
+		. setupterm.c has a define DUMPTI, but not defined (and we don't
+		  have dumpti.c that the makefile references.)
+		. vsprintf uses _NFILE !!!
+		. curses.h term.h unctrl.h are installed to usr/include from 
+		  here, not usr/src/uts/head (put a note in that directory that
+		  this is the case)
+		. the makefile makes a native tic to put into tmp where the
+		  terminfo stuff can find it and use it.
+		. new utilities: captoinfo, infocmp,show,dumpti(?)
+		. use our termcap not theirs
+		. dumpti is made but not installed, what is it?
+		  ( install scripts don't show it as being installed )
+	FIX:
+	TECHNOTE:
+	FILES:
+===============================================================================
+Mon Sep 29 15:26:20 PDT 1986
+hanna
+
+	DESCRIPTION:
+		The 5.0 libtermcap.a libtermlib.a are no longer supported.
+		/usr/lib/libcurses.a is linked to these names.
+	FIX:
+	TECHNOTE:
+		Include above notice to users.
+	FILES:
+===============================================================================
+Tue Sep 30 07:21:39 PDT 1986
+hanna
+
+	DESCRIPTION:
+		maketerm.ed will not take the % signs necessary for the #ident
+		string. So it is left out of the file itself. All doc for this
+		file will have to be done through sccs strings and readme.ses.
+	FIX:
+	TECHNOTE:
+	FILES:
+		/usr/src/lib/libcurses/screen/maketerm.ed
+===============================================================================
+Tue Sep 30 10:53:24 PDT 1986
+hanna
+
+	DESCRIPTION:
+		The files in demo have not been checked out.
+		They are not as high priority as the library itself.
+	FIX:
+	TECHNOTE:
+	FILES:
+		/usr/src/lib/libcurses/demo/*
+===============================================================================
+Tue Sep 30 11:30:28 PDT 1986
+hanna
+
+	DESCRIPTION:
+		ONE LAST TASK, somebody needs to merge our termcap with 
+		the att version.
+		currently, the att version will be installed.
+		(chang could do this)
+
+		Updated Oct 14, 1987 (kelly) NO termcap was being installed.
+		Install the arete version. Source has been moved to cmd/adm/mach
+	FIX:
+	TECHNOTE:
+	FILES:
+===============================================================================
+Mon Oct  6 11:29:40 PDT 1986
+hanna
+
+	DESCRIPTION:
+		I have included, but commented out dumpti and show in the
+		makefile.
+		ASK ATT whether these can be installed.
+	FIX:
+	TECHNOTE:
+	FILES:
+===============================================================================
+unique id # 286
+Fri May  8 09:48:04 PDT 1987
+kelly
+sw#0
+att Call #225422
+	DESCRIPTION: There is a problem in the curses library, where memory is
+	malloc'ed and assumed to be initialized.
+
+	FIX/DISCUSSION:
+	Rather than using malloc(3C), use calloc(3C) when the memory should
+	be initialized.
+
+	FILES:
+	usr/src/lib/libcurses/screen/setupterm.c
+
+	RELEASE NOTE: (Document one or more of the following.)
+ENHANCEMENT:  
+PROBLEM_FIX:  
+	The memory that is malloc'ed when using curses is assumed to be
+	initialized. Therefore, calls to malloc have been changed to calls
+	to calloc.
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+===============================================================================
+unique id # n/a
+Mon Oct  5 16:58:55 PDT 1987
+kelly
+sw# kd
+	DESCRIPTION: add character for 8 bit support was not working properly.
+
+	FIX/DISCUSSION:
+	Because a declaration for a input/output in waddch was not unsigned,
+	the 8th bit was being stripped off. This has been problem corrected.
+
+	FILES:
+	usr/src/lib/libcurses/screen/waddch.c
+
+	RELEASE NOTE: (Document one or more of the following.)
+ENHANCEMENT:  
+PROBLEM_FIX:  
+	Because a declaration for an input/output character in waddch was 
+	not unsigned, the 8th bit was being stripped off. This problem has
+	been corrected.
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+===============================================================================
+unique id # n/a
+Wed Oct  7 08:23:23 PDT 1987
+kelly
+	DESCRIPTION: llib-lcurses was getting a syntax error from lint.
+
+	FIX/DISCUSSION: a variable that is not used (because of 5.3 update)
+	was not being defined so lint complained. This variable is now being
+	defined.
+
+	FILES:
+	usr/src/lib/libcurses/screen/llib-lcurses
+
+	RELEASE NOTE: (Document one or more of the following.)
+None needed. Internal.
+===============================================================================
+Sun Mar 5 14:20:20 PDT 1989
+shen  spr#2279
+	DESCRIPTION: /etc/termcap no longer contains term type wy50 
+
+	FIX/DISCUSSION:
+	Added term type wy50 to usr/src/lib/libcurses/termcap.
+
+	FILES:
+	usr/src/lib/libcurses/termcap
+
+	RELEASE NOTE: (Document one or more of the following.)
+ENHANCEMENT:  
+PROBLEM_FIX:  
+	/etc/termcap now contains term type wy50 
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+===============================================================================
+SPR # n/a
+Tue May  9 13:42:06 PDT 1989
+J. Curtis
+sw# n/a
+	DESCRIPTION:  changed "cc" to "/bin/cc" for native compilations
+	changed to use the LOCALINCS, also
+
+	FIX/DISCUSSION: n/a
+
+	FILES: lib/libcurses/libcurses.mk
+
+	RELEASE NOTE: (Document one or more of the following.)
+
+No release note is needed because:  customer will never know
+
+===============================================================================
+Wed Nov 2 10:00:00 PDT 1989
+shen
+	DESCRIPTION: 5.3.2 port.
+
+	FIX/DISCUSSION:
+
+	FILES:	lib/libcurses/*
+
+	RELEASE NOTE:
+
+
+===============================================================================
+Wed Sep 19 13:30:00 PDT 1990
+shen spr# 4456
+	DESCRIPTION: libcurses missing scr_restore entry point 
+
+	FIX/DISCUSSION: added AT&T's can_change.c and _scr_restore.c
+	Note: Due to SCCS limit of 14 characters for file name, a number of
+	filenames in libcurses have changed. The following documents
+	filename changes:
+
+	Arix		AT&T		Arix		AT&T
+	----		----		----		----
+
+	Maddchnstr.c	_mvaddchnstr.c	Maddchstr.c	_mvaddchstr.c
+	Minchnstr.c	_mvinchnstr.c	Mwaddchnst.c	_mvwaddchnst.c
+	Mwaddchstr.c	_mvwaddchstr.c	Mwaddnstr.c	_mvwaddnstr.c
+	Mwinchnst.c	_mvwinchnst.c	Mwinchstr.c	_mvwinchstr.c
+	Mwinsnstr.c	_mvwinsnstr.c	__sscans.c	V2.__sscans.c
+	_sprintw.c	V2._sprintw.c	d_curterm.c	del_curterm.c
+	gbdlins.c	_garbagdlins.c	gbdwin.c	_garbagedwin.c
+	m_addstr.c	V3.m_addstr.c	m_initscr.c	V3.m_initscr.c
+	m_newterm.c	V3.m_newterm.c	m_refresh.c	V3.m_refresh.c
+	pchchar.c	V3.pechochar.c	upd_old_y.c	V3.upd_old_y.c
+	s_curterm.c	_set_curterm.c	s_ll_dump.c	scr_ll_dump.c
+	s_noutref.c	slk_noutref.c	s_refresh.c	slk_refresh.c
+	s_restore.c	slk_restore.c	scurscreen.c	setcurscreen.c
+	tterminfo.c	testterminfo.c	wchchar.c	V3.wechochar.c
+	wtroff.c	V3.wattroff.c	wtrset.c	V3.wattrset.c
+	sc_restore.c	_scr_restore.c
+
+
+	FILES:	lib/libcurses/screen/can_change.c
+		lib/libcurses/screen/sc_restore.c
+
+	RELEASE NOTE:
+===============================================================================
+
+

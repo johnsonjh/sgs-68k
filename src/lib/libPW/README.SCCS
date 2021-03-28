@@ -1,0 +1,32 @@
+Z =============================================================================
+C 365
+K MISC
+T Wed Apr 10 13:31:57 PDT 1991
+U gjw
+S Reaplaced ar with $(AR) so that the library is built with the correct ar.
+R util/src/lib/libPW/libPW.mk	 23.2
+Z =============================================================================
+Z =============================================================================
+C 499
+K LANG
+T Mon May 20 12:01:04 PDT 1991
+U simon
+S removed the test byte from alloca.s .  Not required for the S90
+N The libPW function 'alloca()' depends on the use of link and unlk in the
+N calling routine.  The current optimizer removes these instructions in addition
+N to the use of the frame pointer.  With this in mind modules which contain a
+N call to 'alloca()' MUST NOT be optimized.
+R util/src/lib/libPW/alloca.s	 23.2
+Z =============================================================================
+Z =============================================================================
+C 500
+K LANG
+T Mon May 20 13:17:31 PDT 1991
+U simon
+P 4932
+S Set up xmsg and xcreat so that they are not optimized.  This is required
+S when calls are made to alloca().
+R util/src/lib/libPW/libPW.mk	 23.3
+B /usr/bin/bdiff
+B /lib/lib/libPW.a
+Z =============================================================================

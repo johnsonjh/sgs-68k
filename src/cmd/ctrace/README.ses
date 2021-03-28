@@ -1,0 +1,79 @@
+#	START NEW ARIX SCCS HEADER
+#
+#	@(#) README.ses: version 25.1 created on 12/2/91 at 14:09:32
+#
+#	Copyright (c) 1990 by Arix Corporation
+#	All Rights Reserved
+#
+#	@(#)README.ses	25.1	12/2/91 Copyright (c) 1990 by Arix Corporation
+#
+#	END NEW ARIX SCCS HEADER
+#
+========================================================================
+ctrace								V.3 port
+
+Thu Oct 16 17:18:19 PDT 1986					baumann
+
+	DESCRIPTION:
+	No code changes.
+
+	FILES:
+========================================================================
+ctrace								V.3.1 port
+Fri Sep 11 10:10:26 PDT 1987
+judy
+
+	DESCRIPTION: New file from 5.3.1 release
+	No code changes.
+
+	FILES: /usr/src/cmd/ctrace/runtime.c
+========================================================================
+unique id # n/a
+Wed Dec  2 08:51:37 PST 1987
+kelly
+	DESCRIPTION: Permissions were not being set for ctrace directory.
+
+	FIX/DISCUSSION: Change makefile
+
+	FILES:
+	usr/src/cmd/ctrace/ctrace.mk
+
+	RELEASE NOTE: (Document one or more of the following.)
+None needed.
+===============================================================================
+unique id # sur 00001510
+Wed May 11 14:30:00 PDT 1988
+ken
+ken#0
+	DESCRIPTION:
+ctrace cannot properly display negative integer values if the size of an
+integer is the same as an character address pointer.  If they are the same,
+the function, u_ct_, is fooled into thinking a character pointer value has
+been passed to it.  The test that fails is on line 304 of the runtime.c
+file and is:
+if (_size == sizeof(char *) && value.p != 0) {
+because value.p is 0xffff (for integer of -1_, this test is true and
+allows the test on line 311 to be made:
+if (*value.p!='\0')
+which causes a 'Bus error - core dumped' to occur and aborts normal program
+execution.
+
+	FIX/DISCUSSION:
+	if (_size == sizeof(char*) && value.i > 0) { 
+	fixes the problem!!! maybe a little kludgy, since I don't know
+	if we should be receiving a 0xffff value in value.[pild] or not
+
+	FILES:
+	usr/src/cmd/ctrace/runtime.c
+
+	RELEASE NOTE: (Document one or more of the following.)
+ENHANCEMENT:  
+PROBLEM_FIX:  
+ctrace can now properly display negative integer values.
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:

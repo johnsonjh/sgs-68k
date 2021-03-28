@@ -1,0 +1,76 @@
+Z =============================================================================
+X 236
+X Fri Mar 15 15:00:36 PST 1991
+X jsaunder
+X Added sypport for symbolic links
+X util/src/lib/libposansi/port/gen
+Z =============================================================================
+Z =============================================================================
+C 744
+K LANG
+T Tue Jul 30 08:05:07 PDT 1991
+U simon
+S Brought over fix in the libpansi ftw.  Would not descend after error.
+D On an error ( some types ) ftw would quit pre-maturly.  Now it does not.
+R util/src/lib/libc_sys5/port/gen/ftw.c	 23.5
+Z =============================================================================
+Z =============================================================================
+C 896
+K UTIL
+T Tue Sep  3 17:50:09 p   1991
+U sriram
+P 4921
+S If the device name matches syscon, it is actually looking for console.
+D 
+D Inserted an if(strcmp) to see whether the name searched for is syscon
+D in which case it should return console; This is because in single user mode
+D /dev/console and /dev/syscon are linked together and certain cases it
+D should not return syscon as getlogin will fail to open the console.
+D 
+D Changed the following:
+D 
+D 			if(tsb.st_rdev == fsb.st_rdev &&
+D 				(tsb.st_mode&S_IFMT) == S_IFCHR &&
+D 				(!pass1 || tsb.st_ino == fsb.st_ino)) {
+D 				(void) closedir(df);
+D 				return(rbuf);
+D 			}
+D TO
+D 			if(tsb.st_rdev == fsb.st_rdev &&
+D 				(tsb.st_mode&S_IFMT) == S_IFCHR &&
+D 				(!pass1 || tsb.st_ino == fsb.st_ino)) {
+D 				if(strcmp(db->d_name, "syscon")) {
+D 					(void) closedir(df);
+D 					return(rbuf);
+D 				}
+D 			}
+R util/src/lib/libc_sys5/port/gen/ttyname.c	 23.3
+Z =============================================================================
+Z =============================================================================
+C 1247
+K LANG
+T Tue Nov 26 13:08:39 PST 1991
+U simon
+S Fixed what strings
+R util/src/lib/libc_sys5/inet/inet_addr.c	 24.2
+R util/src/lib/libc_sys5/inet/inet_lnaof.c	 24.2
+R util/src/lib/libc_sys5/inet/inet_mkadr.c	 24.2
+R util/src/lib/libc_sys5/inet/inet_netof.c	 24.2
+R util/src/lib/libc_sys5/inet/inet_netwk.c	 24.2
+R util/src/lib/libc_sys5/inet/inet_ntoa.c	 24.2
+R util/src/lib/libc_sys5/net/gethostent.c	 24.2
+R util/src/lib/libc_sys5/net/gethostnm.c	 24.2
+R util/src/lib/libc_sys5/net/getnetent.c	 24.2
+R util/src/lib/libc_sys5/net/getntgrent.c	 24.2
+R util/src/lib/libc_sys5/net/getprtoent.c	 24.2
+R util/src/lib/libc_sys5/net/getrpcent.c	 24.2
+R util/src/lib/libc_sys5/net/getservent.c	 24.2
+R util/src/lib/libc_sys5/net/innetgr.c	 24.2
+R util/src/lib/libc_sys5/port/gen/ftw.c	 24.2
+R util/src/lib/libc_sys5/port/gen/getgrent.c	 24.2
+R util/src/lib/libc_sys5/port/gen/getpwent.c	 24.2
+R util/src/lib/libc_sys5/port/gen/ttyname.c	 24.2
+R util/src/lib/libc_sys5/rpc/asyncd_i.c	 24.2
+R util/src/lib/libc_sys5/rpc/au_none.c	 24.2
+R util/src/lib/libc_sys5/rpc/au_unix.c	 24.2
+Z =============================================================================

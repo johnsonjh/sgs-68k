@@ -1,0 +1,139 @@
+#	START NEW ARIX SCCS HEADER
+#
+#	@(#) README.ses: version 25.1 created on 12/2/91 at 18:43:48
+#
+#	Copyright (c) 1990 by Arix Corporation
+#	All Rights Reserved
+#
+#	@(#)README.ses	25.1	12/2/91 Copyright (c) 1990 by Arix Corporation
+#
+#	END NEW ARIX SCCS HEADER
+#
+
+#ident	"@(#)libPW:README.ses	25.1"
+
+========================================================================
+Fri Aug 22 08:48:25 PDT 1986				    Chang	
+
+	DESCRIPTION: Original port of libPW routines.
+	FIX: libPW.a generated. Not able to test.
+	FILES:
+========================================================================
+Mon Sep  8 14:24:50 PDT 1986
+Chang
+
+	DESCRIPTION: There are a lots of differences in between V.3 and
+	V.2 of curdir.c. It should be tested.
+	(hanna: removed calls to chdir -- look up documentation)
+	FIX: 
+	FILES:
+	/usr/src/lib/libPW/curdir.c
+========================================================================
+Mon Sep  8 14:32:32 PDT 1986
+Chang
+	DESCRIPTION: 
+		hanna:
+		Fatal.c modified to allow setjmp.h to define the proper
+		number of registers in jmpbuf.
+		(ATT default is 10 -- we need at least 13)
+	FIX: 
+	FILES:
+	/usr/src/lib/libPW/fatal.c
+===============================================================================
+Tue Sep 23 07:01:56 PDT 1986
+hanna
+
+	DESCRIPTION:
+		libPW.a is now installed in /*lib (was in /usr/*lib)
+		need to warn our users.
+	FIX:
+	TECHNOTE:
+	FILES:
+===============================================================================
+Tue Sep 23 07:01:56 PDT 1986
+hanna
+
+	DESCRIPTION:
+		Use Ernie's old optimized one.
+		chang: pull the move.c off of the 5.2 vax tape and
+		see if there are any bug fixes between the 5.2 & 5.3 defaults.
+	FIX:
+	TECHNOTE:
+	FILES:
+		/usr/src/lib/libPW/move.c
+===============================================================================
+unique id #302
+Mon May 11 11:41:02 PDT 1987
+chang
+sw0
+att call #:102715
+
+	DESCRIPTION:
+	The PW library function xalloc, a porting tool designed on DEC
+	Computers, can cause porting problems to other computers.
+	The reason can be found in the following statements of
+	/usr/src/lib/libPW/xalloc.c file.
+
+		# ifdef vax
+		# define MAX_PAGE	256000
+		# else
+		# define MAX_PAGE	65535 - 8000
+		# endif
+
+	FIX/DISCUSSION:
+	The problem is due to these statements check to determine
+	whether the computer is a VAX.  If it is NOT a VAX Computer
+	it then assumes that it is a PDP 11/70 Computer. It never
+	checks for any other computer.
+	Now the xalloc.c defines the right MAX_PAGE for ARETE's machine.
+
+	FILES:
+	usr/src/lib/libPW/xalloc.c
+
+	RELEASE NOTE: (Document one or more of the following.)
+ENHANCEMENT:  
+PROBLEM_FIX:  
+	Now the xalloc.c defines the right MAX_PAGE for ARETE's machine.
+		
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+===============================================================================
+Mon Sep 28 19:41:02 PDT 1987
+judy
+sw0
+
+	DESCRIPTION:
+	New cpp does not allow text followning the #ifndef.
+
+	FIX/DISCUSSION:
+	Ex:
+	Was:
+		# ifdef pdp
+		# define MAX_PAGE	65535 - 8000
+		# endif
+		# ifdef vax || u3b
+		# define MAX_PAGE	256000
+		# endif
+		# ifndef
+		# define MAX_PAGE	1000
+		# endif
+		
+	Now:
+		# ifdef pdp
+		# define MAX_PAGE	65535 - 8000
+		# else
+		# if vax || u3b
+		# define MAX_PAGE	256000
+		# else
+		# define MAX_PAGE	1000
+		# endif /* vax || v3b */
+		# endif /* pdp */
+
+	TECHNODE:
+		No technode are required.
+===============================================================================

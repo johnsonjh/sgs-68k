@@ -1,0 +1,16 @@
+Z =============================================================================
+C 1158
+K LANG
+T Tue Oct 29 00:01:33 GMT 1991
+U petert
+P 5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED5350 FIXED
+S split chmod and put its newmode function into libgen for chmod, mkdir & mkdirp
+D mkdir did not allow directories to have their permissions set with symbolic
+D arguments using the -m option. The processing of this argument was already
+D handled by a function in chmod, newmode. I put this function into the libgen
+D library as a seperate file that is used by chmod, mkdir and mkdirp.
+R util/src/lib/libgen/mkdirp.c	 23.2
+R util/src/lib/libgen/newmode.c	 23.2
+R util/src/lib/libgen/libgen.mk	 23.2
+B usr/lib/libgen.a
+Z =============================================================================

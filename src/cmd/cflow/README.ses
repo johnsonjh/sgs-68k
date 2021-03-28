@@ -1,0 +1,66 @@
+#	START NEW ARIX SCCS HEADER
+#
+#	@(#) README.ses: version 25.1 created on 12/2/91 at 13:55:35
+#
+#	Copyright (c) 1990 by Arix Corporation
+#	All Rights Reserved
+#
+#	@(#)README.ses	25.1	12/2/91 Copyright (c) 1990 by Arix Corporation
+#
+#	END NEW ARIX SCCS HEADER
+#
+========================================================================
+
+Fri Nov 21 16:28:54 PST 1986
+Chang
+									
+	DESCRIPTION: Original port of cflow routines.
+
+	FIX: 
+
+	FILES:
+========================================================================
+unique id # n/a
+Tue Apr 19 17:45:39 PDT 1988
+hans 
+
+	DESCRIPTION: cflow does not work, it says 
+	"sh : /0lib : cannot excecute".  
+
+	FIX/DISCUSSION: There was a c-style comment from the port, and
+	the makefile didn't include a '-DFLEXNAMES' to make lpfx
+	compatible with lint1, whose output it uses.
+
+	FILES: 	/usr/src/cmd/cflow/cflow.mk
+		/usr/src/cmd/cflow/cflow.sh
+
+	RELEASE NOTE: (Document one or more of the following.)
+ENHANCEMENT:  
+PROBLEM_FIX:  
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+	Cflow no longer issues the complaint "sh : /0lib : cannot execute".
+	It now executes correctly with no complaints.
+SPERRY_ONLY:
+===============================================================================
+SPR # 1517
+Tue Nov 15 16:41:38 PST 1988
+ducky
+dux#1
+	DESCRIPTION:
+	Somehow line 8 in cflow.sh did not get changed from /* */ style
+	to # style comment.  
+
+	FIX/DISCUSSION:
+	I replaced the /* with a # and removed the */.
+
+	FILES:
+	usr/src/cmd/cflow/cflow.sh
+	RELEASE NOTE: (Document one or more of the following.)
+
+PROBLEM_FIX: Fixed bug # 1517 
+===============================================================================

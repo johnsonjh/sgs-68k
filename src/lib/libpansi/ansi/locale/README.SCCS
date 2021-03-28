@@ -1,0 +1,38 @@
+Z =============================================================================
+C 795
+K LANG
+T Thu Aug 22 09:35:43 PDT 1991
+U salete
+S replaced ifdef XX with ifdef _POSIX_SOURCE
+R util/src/lib/libpansi/ansi/locale/_setctype.c	 23.3
+Z =============================================================================
+Z =============================================================================
+C 796
+K LANG
+T Thu Aug 22 09:42:15 PDT 1991
+U salete
+S replaced ifdef XX with ifdef _POSIX_SOURCE   
+R util/src/lib/libpansi/ansi/locale/setlocale.c	 23.3
+Z =============================================================================
+Z =============================================================================
+X 830
+X Thu Aug 22 17:06:35 PDT 1991
+X salete
+X deleted -DXX
+X util/src/lib/libpansi/ansi/./errno
+Z =============================================================================
+Z =============================================================================
+C 910
+K LANG
+T Tue Sep  3 15:23:16 PDT 1991
+U salete
+S inserted 2 line before the cc for posix, without ANSI flag
+R util/src/lib/libpansi/ansi/locale/locale.mk	 23.5
+Z =============================================================================
+Z =============================================================================
+C 911
+K LANG
+T Tue Sep  3 15:26:59 PDT 1991
+U salete
+R util/src/lib/libpansi/ansi/locale/setlocale.c	 23.4
+Z =============================================================================

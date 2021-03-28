@@ -1,0 +1,85 @@
+Z =============================================================================
+C 811
+K LANG
+T Thu Aug 22 13:24:47 PDT 1991
+U salete
+S replace XX with _POSIX_SOURCE
+R util/src/lib/libpansi/ansi/mcount.def	 23.3
+Z =============================================================================
+Z =============================================================================
+X 863
+X Tue Aug 27 11:31:22 PDT 1991
+X salete
+X change _POSIX_SOURCE with __STRICT_STDC__ and position of underscore variable
+X with no underscore variable in ifdef statment.
+X util/src/lib/libpansi/ansi/stdio/.
+Z =============================================================================
+Z =============================================================================
+C 892
+K LANG
+T Tue Sep  3 09:04:14 PDT 1991
+U simon
+S For the ansi profiled version of libc we still need exit and co.  Added to ar
+R util/src/lib/libpansi/ansi/ansi.mk	 23.6
+B /lib/libp/libca.a
+Z =============================================================================
+Z =============================================================================
+C 1194
+K LANG
+T Wed Nov 13 15:26:25 PST 1991
+U simon
+S Fixed the lib ordering for stdio inclusion.  Ordering was not performed for
+S POSIX and was wrong for ANSI.
+D The stdio function inclusion is controlled by the ordering of libc.a .  The
+D lib must be in the following order:
+D 	High level stdio functions
+D 	       .
+D 	       .
+D 	       .
+D 	Low level stdio functions
+D 	       .
+D 	       .
+D 	       .
+D 	exit.o
+D 	fakcu.o
+D 
+D If the user program does not call any of the High level stdio functions, none
+D of the Low level functions are linked in.  exit always gets linked in; exit
+D calls _cleanup.  Linking downward the last thing to be linked in is fakcu.o
+D which has a "ret" for _cleanup.  This means that your binary would be very
+D short in the case of main(){}.  The previous libs had _cleanup.o, exit.o, then
+D fakcu.o.  This wouldn't link in _cleanup.o because exit.o had not linked it in
+D yet.  OOPS!!  In this case fakcu.o would be linked in and for fully buffered
+D programs, 'ls > out' for example, the last buffer would never be flushed out!!
+D Sooo, to make a long story short, _cleanup is now in _flsbuf which is brought
+D in if any of the High level stdio routines are called and all is well.
+N Previously POSIX linked programs would include low level STDIO routines 
+N whether or not high level stdio routines were called.  This is no longer the
+N case.  This changed is in the ordering of /lib/libca.a and /lib/libc.a.
+N In addition, some output data could be lost at the end of ANSI linked programs
+N if the output was fully buffered.  The last buffer was not being flushed.
+N This would manifest itself in programs which wrote to stdout and were 
+N redirected to a file:
+N 
+N 	"program"
+N 	"program > out"
+N 
+N or programs which wrote to stdio style file pointers and never closed them 
+N themselves.  In the example above the run without stdout redirected would
+N print all of the proper information and the second example would put only a
+N truncated listing into "out".
+R util/src/lib/libpansi/ansi/stdio/_flsbuf.c	 24.2
+R util/src/lib/libpansi/ansi/stdlib/stdlib.mk	 24.2
+R util/src/lib/libpansi/ansi/ansi.mk	 24.2
+R util/src/lib/libpansi/mach/mach.mk	 24.2
+B /lib/libc.a
+B /lib/libca.a
+Z =============================================================================
+Z =============================================================================
+C 1237
+K LANG
+T Fri Nov 22 08:33:43 PST 1991
+U simon
+S math cp now taken care of elsewhere
+R util/src/lib/libpansi/ansi/ansi.mk	 24.3
+Z =============================================================================

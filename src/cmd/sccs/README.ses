@@ -1,0 +1,158 @@
+#	START NEW ARIX SCCS HEADER
+#
+#	@(#) README.ses: version 25.1 created on 12/2/91 at 17:07:06
+#
+#	Copyright (c) 1990 by Arix Corporation
+#	All Rights Reserved
+#
+#	@(#)README.ses	25.1	12/2/91 Copyright (c) 1990 by Arix Corporation
+#
+#	END NEW ARIX SCCS HEADER
+#
+===============================================================================
+sccs								V.3 upgrade
+
+Thu Sep  4 16:15:22 PDT 1986					kelly
+
+	DESCRIPTION: Original port. Testing complete.
+
+	FIX:
+
+	FILES:
+	/usr/src/cmd/sccs/*
+	
+===============================================================================
+Tue Jan 20 08:42:08 PST 1987
+kelly
+
+	DESCRIPTION: the help message for ut13 is misspelled (occure should
+	be occur).
+
+	FIX: correct spelling.
+
+	FILES:
+	usr/src/cmd/sccs/help.d/ut
+===============================================================================
+unique id # 284
+Thu May  7 15:11:48 PDT 1987
+kelly
+att Call # 226342
+	DESCRIPTION: The what command does not recognize "$Header:" keyword
+	strings
+
+	FIX/DISCUSSION:
+	The what command, used to identify SCCS files, currently recognizes 
+	the identification string "@(#)". Other miscellaneous strings will
+	not be recognized.
+
+	FILES:
+
+	RELEASE NOTE: (Document one or more of the following.)
+ENHANCEMENT:  
+PROBLEM_FIX:  
+TECHNOTE:   
+	The what command, used to identify SCCS files, currently recognizes 
+	the identification string "@(#)". Other miscellaneous strings will
+	not be recognized.
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+===============================================================================
+unique id # 367 
+(same as unique id # 418)
+Wed Aug  5 11:15:44 PDT 1987
+kelly
+sw# kd0
+	DESCRIPTION: prs was not recognizing two letter keywords.
+
+	FIX/DISCUSSION:
+	A #if in the source did not have M68020 and m68k defined.
+
+	FILES:
+	usr/src/cmd/sccs/cmd/prs.c
+
+	RELEASE NOTE: (Document one or more of the following.)
+
+No release note is needed because:
+
+ENHANCEMENT:  
+PROBLEM_FIX:  
+	The sccs utility prs now properly handles two letter keywords as
+	well as one letter keywords.
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+===============================================================================
+sccs								V.3.1 port
+Mon Sep 21 18:08:42 PDT 1987
+judy
+
+	DESCRIPTION: New files from 5.3.1 release tape. All the files in
+			libPW is combined into mpwlib.
+
+	FIX:
+
+	FILES:
+	/usr/src/cmd/sccs/cmd/delta.c
+	/usr/src/cmd/sccs/cmd/prs.c
+	/usr/src/cmd/sccs/cmd/what.c
+	/usr/src/cmd/sccs/lib/cassi/deltack.c
+	/usr/src/cmd/sccs/lib/comobj/newstats.c
+	/usr/src/cmd/sccs/lib/comobj/putline.c
+	/usr/src/cmd/sccs/lib/comobj/dohist.c
+	/usr/src/cmd/sccs/lib/mpwlib/abspath.c
+	/usr/src/cmd/sccs/lib/mpwlib/any.c
+	/usr/src/cmd/sccs/lib/mpwlib/cat.c
+	/usr/src/cmd/sccs/lib/mpwlib/clean.c
+	/usr/src/cmd/sccs/lib/mpwlib/dname.c
+	/usr/src/cmd/sccs/lib/mpwlib/fatal.c
+	/usr/src/cmd/sccs/lib/mpwlib/fdfopen.c
+	/usr/src/cmd/sccs/lib/mpwlib/imatch.c
+	/usr/src/cmd/sccs/lib/mpwlib/index.c
+	/usr/src/cmd/sccs/lib/mpwlib/lockit.c
+	/usr/src/cmd/sccs/lib/mpwlib/logname.c
+	/usr/src/cmd/sccs/lib/mpwlib/patoi.c
+	/usr/src/cmd/sccs/lib/mpwlib/rename.c
+	/usr/src/cmd/sccs/lib/mpwlib/repl.c
+	/usr/src/cmd/sccs/lib/mpwlib/satoi.c
+	/usr/src/cmd/sccs/lib/mpwlib/setsig.c
+	/usr/src/cmd/sccs/lib/mpwlib/sname.c
+	/usr/src/cmd/sccs/lib/mpwlib/strend.c
+	/usr/src/cmd/sccs/lib/mpwlib/trnslat.c
+	/usr/src/cmd/sccs/lib/mpwlib/mach/alloca.s
+	/usr/src/cmd/sccs/lib/mpwlib/mach/move.c
+	/usr/src/cmd/sccs/lib/mpwlib/userexit.c
+	/usr/src/cmd/sccs/lib/mpwlib/xlink.c
+	/usr/src/cmd/sccs/lib/mpwlib/xopen.c
+	/usr/src/cmd/sccs/lib/mpwlib/xpipe.c
+	/usr/src/cmd/sccs/lib/mpwlib/xunlink.c
+	/usr/src/cmd/sccs/lib/mpwlib/zero.c
+===============================================================================
+Fri Oct 7 11:15:44 PDT 1987
+shen
+	DESCRIPTION: Ported for NFS 5.3
+
+	FILES:
+	usr/src/cmd/sccs/cmd/cmd.mk
+
+	RELEASE NOTE: (Document one or more of the following.)
+
+No release note is needed because:
+
+ENHANCEMENT:  
+PROBLEM_FIX:  
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+===============================================================================

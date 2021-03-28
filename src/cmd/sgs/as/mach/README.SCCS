@@ -1,0 +1,71 @@
+Z =============================================================================
+X 83
+X Tue Feb 26 15:19:49 PST 1991
+X simon
+X Added ifdefs for m68k family.  In the case of 020 the 030 is automatically
+X defined.  For the 040 040 and m68k is used
+X util/src/cmd/sgs/as/mach/m68k
+Z =============================================================================
+Z =============================================================================
+C 501
+K MISC
+T Mon May 20 13:43:10 PDT 1991
+U gjw
+S Added make for machine dependent version of as.
+D This make now makes 4 versions of as. as, as2, as3, as4. Where as2 is
+D the as that produces M68020 code etc.
+D 
+D The default as produced corresponds with the variable MACH as defined in
+D integ.defs.
+D 
+D When the disk release is made each version is saved and the one 
+D corresponding to MACH is linked to the default as.
+R util/src/cmd/sgs/as/mach/mach.mk	 23.4
+B /bin/as
+B /bin/as2
+B /bin/as3
+B /bin/as4
+Z =============================================================================
+Z =============================================================================
+C 588
+K LANG
+T Mon Jun 10 11:31:24 PDT 1991
+U simon
+S Added 040 instructions for floating point
+R util/src/cmd/sgs/as/mach/gendefs.h	 23.3
+R util/src/cmd/sgs/as/mach/m68k/ops.out	 23.4
+R util/src/cmd/sgs/as/mach/m68k/gencode.c	 23.6
+R util/src/cmd/sgs/as/mach/m68k/parse.y	 23.3
+R util/src/cmd/sgs/as/mach/m68k/instab.h	 23.4
+B /bin/as
+B /bin/as2
+B /bin/as3
+B /bin/as4
+Z =============================================================================
+Z =============================================================================
+C 593
+K MISC
+T Mon Jun 10 15:50:46 PDT 1991
+U gjw
+S Added rm of as2, as3 and as4 to clobber rule.
+R util/src/cmd/sgs/as/mach/mach.mk	 23.5
+Z =============================================================================
+Z =============================================================================
+C 659
+K LANG
+T Tue Jun 25 10:31:24 PDT 1991
+U simon
+S Cleaned up multiple as compile
+R util/src/cmd/sgs/as/mach/mach.mk	 23.6
+Z =============================================================================
+Z =============================================================================
+C 1093
+K LANG
+T Wed Oct  9 10:54:30 PDT 1991
+U roger
+S the makefile now creates files CM4DEFS and CM4TVDEFS in the
+S /usr/lib directory.(note that they are empty!).
+R util/src/cmd/sgs/as/mach/mach.mk	 23.8
+B /usr/lib/cm4defs
+B /usr/lib/cm4tvdefs
+Z =============================================================================

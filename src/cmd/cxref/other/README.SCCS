@@ -1,0 +1,19 @@
+Z =============================================================================
+X 59
+X Thu Feb 21 10:38:35 PST 1991
+X simon
+X Fixed definition of current machine.  Added ability to define M68040
+X util/src/cmd/cxref/.
+Z =============================================================================
+Z =============================================================================
+C 73
+K UTIL
+T Fri Feb 22 12:05:03 PST 1991
+U simon
+S Added processing of FAMILY to xcpp.  Now returns 1 for processor family
+D Added the use and processing of the processor family.  Keys off of info
+D passed from the makefile.  Currently passed family is set to m68k.  May
+D be -Ddefined to other families
+R util/src/cmd/cxref/other/cpp.c	 23.3
+B /usr/lib/xcpp
+Z =============================================================================

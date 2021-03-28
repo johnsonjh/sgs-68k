@@ -1,0 +1,44 @@
+#	START NEW ARIX SCCS HEADER
+#
+#	@(#) README.ses: version 25.1 created on 12/2/91 at 16:47:53
+#
+#	Copyright (c) 1990 by Arix Corporation
+#	All Rights Reserved
+#
+#	@(#)README.ses	25.1	12/2/91 Copyright (c) 1990 by Arix Corporation
+#
+#	END NEW ARIX SCCS HEADER
+#
+========================================================================
+prof								V.3 port
+
+Thu Oct 16 17:18:19 PDT 1986					baumann
+
+	DESCRIPTION:
+
+
+	FILES:
+	usr/src/cmd/prof/prof.c
+========================================================================
+Mon Jun 27 10:11:00 PDT 1988
+shen #0
+	DESCRIPTION: PROF gives no error when -a -n is are together and
+	-o -x are used together. 
+
+	FIX/DISCUSSION: "stty -raw" does not change settings for CS8 and
+
+	FILES:	/usr/src/cmd/prof/prof.c
+
+	RELEASE NOTE: (Document one or more of the following.)
+no release note required because:
+ENHANCEMENT:  
+PROBLEM_FIX:  
+	PROF gives error when -a -n is are together and -o -x are used together. 
+TECHNOTE:   
+KNOWN_PROBLEM:   
+NO_SUPPORT:   
+MAN_PAGE:   
+ARETE_SPECIFIC:  
+INTERNAL_ONLY:
+SPERRY_ONLY:
+===============================================================================

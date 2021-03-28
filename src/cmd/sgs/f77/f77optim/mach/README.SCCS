@@ -1,0 +1,22 @@
+Z =============================================================================
+X 98
+X Thu Feb 28 16:15:15 PST 1991
+X simon
+X added m68k defines to replace 020 specific ifdefs.  For 040
+X util/src/cmd/sgs/f77/f77optim/mach/m68k
+Z =============================================================================
+Z =============================================================================
+C 155
+K LANG
+T Thu Mar  7 15:52:11 PST 1991
+U gjw
+S Forced as to be compiled as a POSIX binary
+R util/src/cmd/sgs/f77/f77optim/mach/mach.mk	 23.5
+Z =============================================================================
+Z =============================================================================
+X 479
+X Mon May 13 12:43:24 PDT 1991
+X simon
+X POSIX didn't fly with f77 optim.  Conflicts in the use of memcpy.  Use SVSV
+X util/src/cmd/sgs/f77/f77optim/.
+Z =============================================================================
