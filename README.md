@@ -1,6 +1,6 @@
 # SGS-68K
 
-* AT&T (Software Generation System) SGS for Motorola 68000
+* AT&T SGS (Software Generation System) for Motorola 68000
 
   * C
   * FORTRAN-77
