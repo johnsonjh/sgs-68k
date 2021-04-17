@@ -1,0 +1,6 @@
+*.r linguist-vendored
+*.rpc linguist-vendored
+*.rp linguist-vendored
+.r linguist-vendored
+.rpc linguist-vendored
+.rp linguist-vendored
