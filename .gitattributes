@@ -5,3 +5,5 @@
 .rpc linguist-vendored
 .rp linguist-vendored
 Makefile linguist-vendored
+*.mk linguist-vendored
+.mk linguist-vendored
