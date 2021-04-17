@@ -7,3 +7,5 @@
 Makefile linguist-vendored
 *.mk linguist-vendored
 .mk linguist-vendored
+*.h linguist-vendored
+.j linguist-vendored
